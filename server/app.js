@@ -6,7 +6,7 @@ const session = require('express-session');// Middleware for handling sessions
 const cors = require('cors');              // Middleware for enabling Cross-Origin Resource Sharing
 const app = express();
 require('dotenv').config();
-
+require('./passport-config')(passport);
 
 // Configure middleware
 app.use(express.json());                   // Parse JSON request bodies
@@ -23,6 +23,19 @@ app.use(passport.session());                // Enable session support for Passpo
 mongoose.connect(process.env.MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true })
 .then(() => console.log('MongoDB Connected to Hanguru Database'))
 .catch(err => console.error(err));
+
+app.get('/', (req, res) => {
+  res.send('Hello World!');
+});
+
+const authRoutes = require('./routes/auth');
+app.use('/api', authRoutes);
+
+// Import routes
+const userRoutes = require('./routes/users');
+
+// Use routes
+app.use('/api/users', userRoutes);
 
 // Define the port to listen on
 const PORT = process.env.PORT || 5000;
