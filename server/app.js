@@ -5,12 +5,14 @@ const passport = require('passport');      // Middleware for handling user authe
 const session = require('express-session');// Middleware for handling sessions
 const cors = require('cors');              // Middleware for enabling Cross-Origin Resource Sharing
 const app = express();
+require('dotenv').config();
+
 
 // Configure middleware
 app.use(express.json());                   // Parse JSON request bodies
 app.use(cors());                            // Enable Cross-Origin Resource Sharing
 app.use(session({ 
-  secret: 'your_secret_key',                // Secret key for session management
+  secret: process.env.SESSION_SECRET,                // Secret key for session management
   resave: false,                            // Don't save session if unmodified
   saveUninitialized: false                  // Don't create session until something is stored
 }));
