@@ -13,3 +13,4 @@ logs
 
 # Dependency directories
 node_modules/
+data/
