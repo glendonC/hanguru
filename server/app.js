@@ -7,6 +7,7 @@ const cors = require('cors');              // Middleware for enabling Cross-Orig
 const app = express();
 require('dotenv').config();
 require('./passport-config')(passport);
+const bcrypt = require('bcrypt');
 
 // Configure middleware
 app.use(express.json());                   // Parse JSON request bodies
