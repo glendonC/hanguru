@@ -1,18 +1,30 @@
-version: '3'
+version: '3.8'
+
 services:
-  app:
-    container_name: node_app
-    restart: always
-    build: ./
+  server:
+    build: 
+      context: ./server
+      dockerfile: Dockerfile
     ports:
-      - "8080:8080"
+      - '8080:8080'
+    volumes:
+      - ./server:/usr/src/app
+      - /usr/src/app/node_modules
     environment:
       - MONGO_URI=mongodb://mongo:27017/hanguru
-      - PORT=8080
     depends_on:
       - mongo
+
+  client:
+    build: 
+      context: ./client
+      dockerfile: Dockerfile
+    ports:
+      - '3000:80'
+    depends_on:
+      - server
+
   mongo:
-    container_name: mongo_db
     image: mongo
     ports:
-      - "27017:27017"
+      - '27017:27017'
