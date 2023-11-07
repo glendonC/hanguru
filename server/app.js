@@ -7,7 +7,8 @@ const cors = require('cors');              // Middleware for enabling Cross-Orig
 const app = express();
 require('dotenv').config();
 require('./passport-config')(passport);
-const bcrypt = require('bcrypt');
+const bcrypt = require('bcryptjs');
+
 
 // Configure middleware
 app.use(express.json());                   // Parse JSON request bodies
@@ -39,9 +40,9 @@ const userRoutes = require('./routes/users');
 app.use('/api/users', userRoutes);
 
 // Define the port to listen on
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 8080;
 
 // Start the server and listen on the specified port
-app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
+app.listen(PORT, '0.0.0.0', () => {
+  console.log('Server is running on port 6000');
 });

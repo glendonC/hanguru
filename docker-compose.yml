@@ -3,19 +3,16 @@ services:
   app:
     container_name: node_app
     restart: always
-    build: .
+    build: ./
     ports:
-      - "6000:5000"
-    links:
-      - mongo
+      - "8080:8080"
     environment:
       - MONGO_URI=mongodb://mongo:27017/hanguru
+      - PORT=8080
+    depends_on:
+      - mongo
   mongo:
     container_name: mongo_db
     image: mongo
-    volumes:
-      - ./data:/data/db
     ports:
       - "27017:27017"
-    environment:
-      - MONGO_INITDB_DATABASE=hanguru
