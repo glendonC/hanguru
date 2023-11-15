@@ -3,15 +3,20 @@ const bcrypt = require('bcryptjs');
 const User = require('./models/User');
 
 function initialize(passport) {
-  const authenticateUser = async (email, password, done) => {
-    // Match user by email
-    const user = await User.findOne({ email: email });
-    if (user == null) {
-      return done(null, false, { message: 'No user with that email' });
-    }
-
+  const authenticateUser = async (usernameOrEmail, password, done) => {
     try {
-      if (await bcrypt.compare(password, user.password)) {
+      // Check if input is an email or username
+      const isEmail = usernameOrEmail.includes('@');
+      const user = isEmail 
+        ? await User.findOne({ email: usernameOrEmail })
+        : await User.findOne({ username: usernameOrEmail });
+
+      if (!user) {
+        return done(null, false, { message: 'No user found' });
+      }
+
+      const isMatch = await bcrypt.compare(password, user.password);
+      if (isMatch) {
         return done(null, user);
       } else {
         return done(null, false, { message: 'Password incorrect' });
@@ -20,11 +25,16 @@ function initialize(passport) {
       return done(e);
     }
   };
-
-  passport.use(new LocalStrategy({ usernameField: 'email' }, authenticateUser));
+  
+  passport.use(new LocalStrategy({ usernameField: 'usernameOrEmail' }, authenticateUser));
   passport.serializeUser((user, done) => done(null, user.id));
   passport.deserializeUser(async (id, done) => {
-    return done(null, await User.findById(id));
+    try {
+      const user = await User.findById(id);
+      done(null, user);
+    } catch (e) {
+      done(e);
+    }
   });
 }
 

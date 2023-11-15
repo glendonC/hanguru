@@ -1,24 +1,33 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useState } from 'react';
+import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
+import AuthPage from './pages/AuthPage';
+import HomePage from './pages/HomePage';
 
 function App() {
+  const [isLoggedIn, setLoggedIn] = useState(false);
+  const [showLogin, setShowLogin] = useState(true);
+
+  const handleLogin = () => {
+    setLoggedIn(true);
+  };
+
+  const toggleAuthPage = () => {
+    setShowLogin(!showLogin);
+  };
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Router>
+      <Routes>
+        <Route 
+          path="/auth" 
+          element={isLoggedIn ? <Navigate to="/" /> : <AuthPage onLogin={handleLogin} showLogin={showLogin} toggleAuthPage={toggleAuthPage} />} 
+        />
+        <Route 
+          path="/" 
+          element={isLoggedIn ? <HomePage /> : <Navigate to="/auth" />} 
+        />
+      </Routes>
+    </Router>
   );
 }
 
