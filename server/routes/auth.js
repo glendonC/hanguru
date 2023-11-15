@@ -8,22 +8,34 @@ const User = require('../models/User');
 router.post('/register', async (req, res) => {
   try {
     const hashedPassword = await bcrypt.hash(req.body.password, 10);
-    // create a new user instance and save it in the database
     const user = new User({
+      username: req.body.username,
       email: req.body.email,
       password: hashedPassword,
     });
     await user.save();
     res.status(201).send('User created');
-  } catch {
+  } catch (error) {
+    console.error('Error during registration:', error.message);
     res.status(400).send('Cannot register user');
   }
 });
 
 // Login route
-router.post('/login', passport.authenticate('local'), (req, res) => {
-  res.send('Logged in');
+router.post('/login', (req, res, next) => {
+  passport.authenticate('local', (err, user, info) => {
+    if (err) throw err;
+    if (!user) {
+      return res.status(401).send('No User Exists or Password Incorrect');
+    }    
+    else {
+      req.logIn(user, (err) => {
+        if (err) throw err;
+        res.send('Successfully Authenticated');
+        console.log(req.user);
+      });
+    }
+  })(req, res, next);
 });
 
-// Export the router
 module.exports = router;
