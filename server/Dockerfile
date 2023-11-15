@@ -15,7 +15,7 @@ RUN npm install
 COPY . .
 
 # Bind to all network interfaces so that it can be mapped to the host OS
-ENV PORT=8080
-EXPOSE 8080
+ENV PORT=8100
+EXPOSE 8100
 
 CMD ["npm", "start"]
