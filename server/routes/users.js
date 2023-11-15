@@ -1,22 +1,22 @@
 const express = require('express');
-const bcrypt = require('bcryptjs'); // You will use bcryptjs for hashing passwords
-const User = require('../models/User'); // Assuming you have a User model in the 'models' directory
+const bcrypt = require('bcryptjs');
+const User = require('../models/User');
 const router = express.Router();
 
-// POST route for user registration
+// POST route for User Registration
 router.post('/register', async (req, res) => {
     try {
       const hashedPassword = await bcrypt.hash(req.body.password, 10);
       const newUser = new User({
-        username: req.body.username, // make sure you're using the correct field names
+        username: req.body.username,
         password: hashedPassword,
       });
   
-      console.log("Attempting to save user:", newUser); // Log the user object
+      console.log("Attempting to save user:", newUser);
   
       const savedUser = await newUser.save();
   
-      console.log("User saved:", savedUser); // Log the saved user
+      console.log("User saved:", savedUser);
   
       res.status(201).send('User created');
     } catch (error) {
@@ -25,7 +25,7 @@ router.post('/register', async (req, res) => {
     }
   });
 
-// POST route for user login
+// POST route for User Login
 router.post('/login', async (req, res) => {
   try {
     // Find user by username

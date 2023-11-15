@@ -40,9 +40,9 @@ const userRoutes = require('./routes/users');
 app.use('/api/users', userRoutes);
 
 // Define the port to listen on
-const PORT = process.env.PORT || 8080;
+const PORT = process.env.PORT || 8100;
 
 // Start the server and listen on the specified port
 app.listen(PORT, '0.0.0.0', () => {
-  console.log('Server is running on port 8080');
+  console.log('Server is running on port PORT');
 });
