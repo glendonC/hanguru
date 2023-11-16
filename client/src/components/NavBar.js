@@ -15,6 +15,7 @@ import {
   useColorModeValue,
   Stack,
   useColorMode,
+  Center
 } from '@chakra-ui/react';
 import { HamburgerIcon, CloseIcon, MoonIcon, SunIcon } from '@chakra-ui/icons';
 import { Link } from 'react-router-dom';
@@ -65,8 +66,36 @@ export default function NavBar() {
             <Button onClick={toggleColorMode}>
               {colorMode === 'light' ? <MoonIcon /> : <SunIcon />}
             </Button>
-            {/* User Menu */}
-            {/* ... */}
+
+            {/* Profile Icon and Dropdown Menu */}
+            <Menu>
+              <MenuButton
+                as={Button}
+                rounded={'full'}
+                variant={'link'}
+                cursor={'pointer'}
+                minW={0}>
+                <Avatar
+                  size={'sm'}
+                  src={'https://avatars.dicebear.com/api/male/username.svg'}
+                />
+              </MenuButton>
+              <MenuList>
+                <Center>
+                  <Avatar
+                    size={'2xl'}
+                    src={'https://avatars.dicebear.com/api/male/username.svg'}
+                  />
+                </Center>
+                <Center>
+                  <p>Username</p>
+                </Center>
+                <MenuDivider />
+                <MenuItem>Your Servers</MenuItem>
+                <MenuItem>Account Settings</MenuItem>
+                <MenuItem>Logout</MenuItem>
+              </MenuList>
+            </Menu>
           </Flex>
         </Flex>
 
