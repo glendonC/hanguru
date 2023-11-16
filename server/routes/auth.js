@@ -14,14 +14,14 @@ router.post('/register', async (req, res) => {
       password: hashedPassword,
     });
     await user.save();
-    res.status(201).send('User created');
+    res.status(201).json({ message: 'User created', user: { username: user.username, email: user.email } });
   } catch (error) {
     console.error('Error during registration:', error.message);
-    res.status(400).send('Cannot register user');
+    res.status(400).json({ message: 'Cannot register user' });
   }
 });
 
-// Login route
+
 // Login route
 router.post('/login', (req, res, next) => {
   passport.authenticate('local', (err, user, info) => {
@@ -38,7 +38,6 @@ router.post('/login', (req, res, next) => {
           console.error('Login Error:', err);
           throw err;
         }
-        // Send the user object as JSON
         res.json({ message: 'Successfully Authenticated', user: user });
         console.log(req.user);
       });
