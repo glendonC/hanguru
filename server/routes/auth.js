@@ -22,16 +22,24 @@ router.post('/register', async (req, res) => {
 });
 
 // Login route
+// Login route
 router.post('/login', (req, res, next) => {
   passport.authenticate('local', (err, user, info) => {
-    if (err) throw err;
+    if (err) {
+      console.error('Login Error:', err);
+      throw err;
+    }
     if (!user) {
-      return res.status(401).send('No User Exists or Password Incorrect');
+      return res.status(401).json({ message: 'No User Exists or Password Incorrect' });
     }    
     else {
       req.logIn(user, (err) => {
-        if (err) throw err;
-        res.send('Successfully Authenticated');
+        if (err) {
+          console.error('Login Error:', err);
+          throw err;
+        }
+        // Send the user object as JSON
+        res.json({ message: 'Successfully Authenticated', user: user });
         console.log(req.user);
       });
     }
