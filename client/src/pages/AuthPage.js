@@ -1,6 +1,14 @@
 import React, { useState } from 'react';
 
+/**
+ * AuthPage component for handling user authentication.
+ * 
+ * @param {Function} onLogin - Callback function to execute on successful login.
+ * @param {boolean} showLogin - Boolean to determine whether to show the login form.
+ * @param {Function} toggleAuthPage - Function to toggle between login and sign-up forms.
+ */
 function AuthPage({ onLogin, showLogin, toggleAuthPage }) {
+  // State for input fields and error message
   const [isLogin, setIsLogin] = useState(true);
   const [usernameOrEmail, setUsernameOrEmail] = useState('');
   const [username, setUsername] = useState('');
@@ -8,9 +16,13 @@ function AuthPage({ onLogin, showLogin, toggleAuthPage }) {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   
+  /**
+   * Handles the login form submission.
+   * 
+   * @param {Event} event - The event object from form submission.
+   */
   const handleLogin = async (event) => {
     event.preventDefault();
-    console.log('Sending login request with:', { usernameOrEmail, password });
     try {
       const response = await fetch('http://localhost:8100/api/login', {
         method: 'POST',
@@ -18,25 +30,31 @@ function AuthPage({ onLogin, showLogin, toggleAuthPage }) {
         body: JSON.stringify({ usernameOrEmail, password }),
       });
       if (response.ok) {
-        onLogin();
+        const userData = await response.json();
+        onLogin(userData);
       } else {
         const errorData = await response.json();
-  setError(errorData.message || 'Failed to log in');
+        setError(errorData.message || 'Failed to log in');
       }
     } catch (err) {
+      console.error('Error:', err);
       setError('Server error');
     }
   };
   
-
+  /**
+   * Handles the sign-up form submission.
+   * 
+   * @param {Event} event - The event object from form submission.
+  */
   const handleSignUp = async (event) => {
     console.log("handleSignUp called");
     event.preventDefault();
     try {
-      const response = await fetch('http://localhost:8100/api/register', { // Updated URL
+      const response = await fetch('http://localhost:8100/api/register', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ username, email, password }), // Make sure these fields match your backend expectations
+        body: JSON.stringify({ username, email, password }),
       });
       if (response.ok) {
         setIsLogin(true);
@@ -49,7 +67,7 @@ function AuthPage({ onLogin, showLogin, toggleAuthPage }) {
   };
 
   
-  console.log('IsLogin State:', showLogin);
+  // Render the component UI
   return (
     <div>
       {showLogin ? (
