@@ -10,9 +10,11 @@ import AudioRecordingPage from './pages/AudioRecordingPage';
 function App() {
   const [isLoggedIn, setLoggedIn] = useState(false);
   const [showLogin, setShowLogin] = useState(true);
+  const [user, setUser] = useState(null);
 
-  const handleLogin = () => {
+  const handleLogin = (userData) => {
     setLoggedIn(true);
+    setUser(userData);
   };
 
   const toggleAuthPage = () => {
@@ -22,7 +24,7 @@ function App() {
   return (
     <Router>
       {/* Show NavBar only when logged in */}
-      {isLoggedIn && <NavBar />}
+      {isLoggedIn && <NavBar user={user} />}
 
       <Routes>
         <Route 

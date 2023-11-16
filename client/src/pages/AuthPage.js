@@ -23,7 +23,6 @@ function AuthPage({ onLogin, showLogin, toggleAuthPage }) {
    */
   const handleLogin = async (event) => {
     event.preventDefault();
-    console.log('Sending login request with:', { usernameOrEmail, password });
     try {
       const response = await fetch('http://localhost:8100/api/login', {
         method: 'POST',
@@ -31,12 +30,14 @@ function AuthPage({ onLogin, showLogin, toggleAuthPage }) {
         body: JSON.stringify({ usernameOrEmail, password }),
       });
       if (response.ok) {
-        onLogin();
+        const userData = await response.json();
+        onLogin(userData);
       } else {
         const errorData = await response.json();
-  setError(errorData.message || 'Failed to log in');
+        setError(errorData.message || 'Failed to log in');
       }
     } catch (err) {
+      console.error('Error:', err);
       setError('Server error');
     }
   };

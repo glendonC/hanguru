@@ -39,10 +39,11 @@ const NavLink = ({ children, to }) => (
   </Link>
 );
 
-export default function NavBar() {
+export default function NavBar({ user }) {
   const { colorMode, toggleColorMode } = useColorMode();
   const { isOpen, onOpen, onClose } = useDisclosure();
 
+  // console.log(user)
   return (
     <>
       <Box bg={useColorModeValue('gray.100', 'gray.900')} px={4}>
@@ -88,7 +89,7 @@ export default function NavBar() {
                   />
                 </Center>
                 <Center>
-                  <p>Username</p>
+                    <p>{user?.user?.username || 'Guest'}</p>
                 </Center>
                 <MenuDivider />
                 <MenuItem>Your Servers</MenuItem>
