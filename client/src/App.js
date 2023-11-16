@@ -21,18 +21,20 @@ function App() {
 
   return (
     <Router>
-      <NavBar />
+      {/* Show NavBar only when logged in */}
+      {isLoggedIn && <NavBar />}
+
       <Routes>
         <Route 
           path="/auth" 
-          element={isLoggedIn ? <Navigate to="/" /> : <AuthPage onLogin={handleLogin} showLogin={showLogin} toggleAuthPage={toggleAuthPage} />} 
+          element={!isLoggedIn ? <AuthPage onLogin={handleLogin} showLogin={showLogin} toggleAuthPage={toggleAuthPage} /> : <Navigate to="/" />} 
         />
         <Route 
           path="/" 
           element={isLoggedIn ? <HomePage /> : <Navigate to="/auth" />} 
         />
 
-        {/* New Routes */}
+        {/* Protected Routes */}
         <Route 
           path="/vocabulary" 
           element={isLoggedIn ? <VocabularyPage /> : <Navigate to="/auth" />} 
