@@ -1,4 +1,17 @@
 import React, { useState } from 'react';
+import {
+  Box,
+  Button,
+  Container,
+  FormControl,
+  FormLabel,
+  Input,
+  Stack,
+  Text,
+  useColorModeValue,
+  Link as ChakraLink
+} from '@chakra-ui/react';
+
 
 /**
  * AuthPage component for handling user authentication.
@@ -16,25 +29,30 @@ function AuthPage({ onLogin, showLogin, toggleAuthPage }) {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   
-  /**
-   * Handles the login form submission.
-   * 
-   * @param {Event} event - The event object from form submission.
-   */
-  const handleLogin = async (event) => {
+  const handleToggle = () => {
+    setIsLogin(!isLogin); // Toggle between login and sign-up
+    toggleAuthPage(); // Call the provided toggle function
+  };
+
+  const handleSubmit = async (event) => {
     event.preventDefault();
-    try {
-      const response = await fetch('http://localhost:8100/api/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ usernameOrEmail, password }),
-      });
+    const endpoint = isLogin ? 'login' : 'register';
+
+    const formData = isLogin
+      ? { usernameOrEmail, password }
+      : { username, email, password };
+      try {
+        const response = await fetch(`http://localhost:8100/api/${endpoint}`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(formData),
+        });
       if (response.ok) {
         const userData = await response.json();
         onLogin(userData);
       } else {
         const errorData = await response.json();
-        setError(errorData.message || 'Failed to log in');
+        setError(errorData.message || 'Failed to authenticate');
       }
     } catch (err) {
       console.error('Error:', err);
@@ -42,60 +60,77 @@ function AuthPage({ onLogin, showLogin, toggleAuthPage }) {
     }
   };
   
-  /**
-   * Handles the sign-up form submission.
-   * 
-   * @param {Event} event - The event object from form submission.
-  */
-  const handleSignUp = async (event) => {
-    console.log("handleSignUp called");
-    event.preventDefault();
-    try {
-      const response = await fetch('http://localhost:8100/api/register', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ username, email, password }),
-      });
-      if (response.ok) {
-        setIsLogin(true);
-      } else {
-        setError('Failed to register');
-      }
-    } catch (err) {
-      setError('Server error');
-    }
-  };
-
-  
   // Render the component UI
   return (
-    <div>
-      {showLogin ? (
-        // Login Form
-        <form onSubmit={handleLogin}>
-          <input
-            type="text"
-            placeholder="Username or Email"
-            value={usernameOrEmail}
-            onChange={(e) => setUsernameOrEmail(e.target.value)}
-          />
-          <input type="password" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} />
-          <button type="submit">Login</button>
-          <button type="button" onClick={(e) => { e.preventDefault(); toggleAuthPage(); }}>Switch to Sign Up</button>
+    <Container centerContent>
+      <Box
+        p={8}
+        maxWidth="400px"
+        borderWidth={1}
+        borderRadius={8}
+        boxShadow="lg"
+        bg={useColorModeValue('gray.50', 'gray.700')}
+      >
+        <form onSubmit={handleSubmit}>
+          <Stack spacing={4}>
+            {showLogin ? (
+              <>
+                <FormControl id="usernameOrEmail">
+                  <FormLabel>Username or Email</FormLabel>
+                  <Input
+                    type="text"
+                    value={usernameOrEmail}
+                    onChange={(e) => setUsernameOrEmail(e.target.value)}
+                  />
+                </FormControl>
+                <FormControl id="password">
+                  <FormLabel>Password</FormLabel>
+                  <Input
+                    type="password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                  />
+                </FormControl>
+              </>
+            ) : (
+              <>
+                <FormControl id="username">
+                  <FormLabel>Username</FormLabel>
+                  <Input
+                    type="text"
+                    value={username}
+                    onChange={(e) => setUsername(e.target.value)}
+                  />
+                </FormControl>
+                <FormControl id="email">
+                  <FormLabel>Email</FormLabel>
+                  <Input
+                    type="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                  />
+                </FormControl>
+                <FormControl id="password">
+                  <FormLabel>Password</FormLabel>
+                  <Input
+                    type="password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                  />
+                </FormControl>
+              </>
+            )}
+            {error && <Text color="red.500">{error}</Text>}
+            <Button type="submit" colorScheme="blue" width="full">
+              {showLogin ? 'Login' : 'Sign Up'}
+            </Button>
+            <ChakraLink color="blue.500" onClick={handleToggle}>
+              {isLogin ? 'Switch to Sign Up' : 'Switch to Login'}
+            </ChakraLink>
+          </Stack>
         </form>
-      ) : (
-        // Sign Up Form
-        <form onSubmit={handleSignUp}>
-          <input type="text" placeholder="Username" value={username} onChange={(e) => setUsername(e.target.value)} />
-          <input type="email" placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)} />
-          <input type="password" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} />
-          <button type="submit">Sign Up</button>
-          <button type="button" onClick={(e) => { e.preventDefault(); toggleAuthPage(); }}>Switch to Login</button>
-
-        </form>
-      )}
-      {error && <p>{error}</p>}
-    </div>
+      </Box>
+    </Container>
   );
 }
 
