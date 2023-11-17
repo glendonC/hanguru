@@ -13,6 +13,8 @@ services:
       - /usr/src/app/node_modules
     environment:
       - MONGO_URI=mongodb://mongo:27017/hanguru
+    env_file: 
+      - ./server/.env
     depends_on:
       - mongo
 
