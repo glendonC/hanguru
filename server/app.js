@@ -38,6 +38,7 @@ app.use('/api', authRoutes);
 app.use('/api', translateRoutes);
 app.use('/api/vocabulary', vocabularyRoutes);
 
+
 // Define the port to listen on
 const PORT = process.env.PORT || 8100;
 
