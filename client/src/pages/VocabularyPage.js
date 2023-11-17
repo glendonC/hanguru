@@ -66,6 +66,17 @@ const VocabularyPage = () => {
 
   // Handles addition of a new vocabulary word
   const handleAddVocabulary = async () => {
+    if (!currentSet) {
+      toast({
+        title: 'No Set Selected',
+        description: 'Please select a set before adding vocabulary.',
+        status: 'warning',
+        duration: 5000,
+        isClosable: true,
+      });
+      return;
+    }
+  
     if (!koreanWord || !englishDefinition) {
       toast({
         title: 'Missing Information',
@@ -76,7 +87,7 @@ const VocabularyPage = () => {
       });
       return;
     }
-  
+
     try {
         await axios.post('http://localhost:8100/api/vocabulary/add', {
           korean: koreanWord,
@@ -254,50 +265,73 @@ const VocabularyPage = () => {
   return (
     <Box p={5}>
       <VStack spacing={4}>
-        <HStack spacing={3}>
-          <Input 
-            placeholder="Enter Korean word" 
-            value={koreanWord}
-            onChange={(e) => setKoreanWord(e.target.value)}
-          />
-          <Button onClick={handleTranslate}>Translate</Button>
-        </HStack>
-        <Input 
-          placeholder="English Definition" 
-          value={englishDefinition}
-          onChange={(e) => setEnglishDefinition(e.target.value)}
-        />
-        <Select placeholder="Select set" value={currentSet} onChange={(e) => setCurrentSet(e.target.value)}>
-          {vocabularySets.map((set) => (
-            <option key={set._id} value={set._id}>{set.setName}</option>
-          ))}
-        </Select>
-        <Text>Currently selected set: {getCurrentSetName()}</Text> {}
-
-        <HStack spacing={3}>
-          <Input 
-            placeholder="New set name" 
-            value={newSetName}
-            onChange={(e) => setNewSetName(e.target.value)}
-          />
-          <Button onClick={handleAddSet}>Create New Set</Button>
-        </HStack>
-        <Button colorScheme="blue" onClick={handleAddVocabulary}>
-          Add to Vocabulary
-        </Button>
-        {renderEditForm()}
-        <Select placeholder="View set" onChange={(e) => handleSetSelection(e.target.value)}>
-          {vocabularySets.map((set) => (
-            <option key={set._id} value={set._id}>{set.setName}</option>
-          ))}
-        </Select>
-        {selectedSetItems.map((item) => (
-          <HStack key={item._id} spacing={3}>
-            <Text>{item.korean} - {item.english}</Text>
-            <Button colorScheme="blue" size="sm" onClick={() => handleEditItem(item)}>Edit</Button>
-            <Button colorScheme="red" size="sm" onClick={() => handleDeleteItem(item._id)}>Delete</Button>
-          </HStack>
+        <Box>
+      <Text fontSize="lg" fontWeight="bold">Add New Vocabulary Word</Text>
+      <Select 
+        mt={2} 
+        placeholder="Select set" 
+        value={currentSet} 
+        onChange={(e) => setCurrentSet(e.target.value)}
+      >
+        {vocabularySets.map((set) => (
+          <option key={set._id} value={set._id}>{set.setName}</option>
         ))}
+      </Select>
+      <HStack spacing={3} mt={2}>
+        <Input 
+          placeholder="Enter Korean word" 
+          value={koreanWord}
+          onChange={(e) => setKoreanWord(e.target.value)}
+          disabled={!currentSet}
+        />
+        <Button onClick={handleTranslate} disabled={!currentSet}>Translate</Button>
+      </HStack>
+      <Input 
+        mt={2}
+        placeholder="English Definition" 
+        value={englishDefinition}
+        onChange={(e) => setEnglishDefinition(e.target.value)}
+        disabled={!currentSet}
+      />
+      <Button mt={2} colorScheme="blue" onClick={handleAddVocabulary} disabled={!currentSet}>
+        Add to Vocabulary
+      </Button>
+    </Box>
+
+        <Box>
+          <Text fontSize="lg" fontWeight="bold">Vocabulary Sets</Text>
+          <HStack spacing={3} mt={2}>
+            <Input 
+              placeholder="New set name" 
+              value={newSetName}
+              onChange={(e) => setNewSetName(e.target.value)}
+            />
+            <Button onClick={handleAddSet}>Create New Set</Button>
+          </HStack>
+          <Select mt={2} placeholder="Select set" value={currentSet} onChange={(e) => setCurrentSet(e.target.value)}>
+            {vocabularySets.map((set) => (
+              <option key={set._id} value={set._id}>{set.setName}</option>
+            ))}
+          </Select>
+          <Text mt={2}>Currently selected set: {getCurrentSetName()}</Text>
+          <Select mt={2} placeholder="View set" onChange={(e) => handleSetSelection(e.target.value)}>
+            {vocabularySets.map((set) => (
+              <option key={set._id} value={set._id}>{set.setName}</option>
+            ))}
+          </Select>
+        </Box>
+
+        <Box>
+          <Text fontSize="lg" fontWeight="bold">Manage Vocabulary Words</Text>
+          {selectedSetItems.map((item) => (
+            <HStack key={item._id} spacing={3} mt={2}>
+              <Text>{item.korean} - {item.english}</Text>
+              <Button colorScheme="blue" size="sm" onClick={() => handleEditItem(item)}>Edit</Button>
+              <Button colorScheme="red" size="sm" onClick={() => handleDeleteItem(item._id)}>Delete</Button>
+            </HStack>
+          ))}
+          {renderEditForm()}
+        </Box>
       </VStack>
     </Box>
   );
