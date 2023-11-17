@@ -5,6 +5,7 @@ services:
     build: 
       context: ./server
       dockerfile: Dockerfile
+    command: npx nodemon -L --watch . server.js 
     ports:
       - '8100:8100'
     volumes:

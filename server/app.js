@@ -8,6 +8,7 @@ const cors = require('cors');              // Middleware for enabling Cross-Orig
 const app = express();
 require('./passport-config')(passport);
 const translateRoutes = require('./routes/translate');
+const vocabularyRoutes = require('./routes/vocabulary');
 const bcrypt = require('bcryptjs');
 
 
@@ -35,6 +36,8 @@ const authRoutes = require('./routes/auth');
 app.use('/api', authRoutes);
 
 app.use('/api', translateRoutes);
+app.use('/api/vocabulary', vocabularyRoutes);
+
 
 // Define the port to listen on
 const PORT = process.env.PORT || 8100;

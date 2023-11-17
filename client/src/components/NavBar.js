@@ -21,6 +21,7 @@ import { HamburgerIcon, CloseIcon, MoonIcon, SunIcon } from '@chakra-ui/icons';
 import { Link } from 'react-router-dom';
 
 const navLinks = [
+  { name: 'Home', path: '/' },
   { name: 'Vocabulary', path: '/vocabulary' },
   { name: 'Exercises', path: '/exercises' },
   { name: 'Audio Recording', path: '/audio-recording' }
