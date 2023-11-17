@@ -3,18 +3,21 @@ import { Box, Button, Input, VStack, HStack, Select, useToast, Text } from '@cha
 import axios from 'axios';
 
 const VocabularyPage = () => {
+  // State to store inputs and fetched data
   const [koreanWord, setKoreanWord] = useState('');
   const [englishDefinition, setEnglishDefinition] = useState('');
   const [currentSet, setCurrentSet] = useState('');
   const [newSetName, setNewSetName] = useState('');
   const [vocabularySets, setVocabularySets] = useState([]);
-  const toast = useToast();
   const [selectedSetItems, setSelectedSetItems] = useState([]);
   const [editingItem, setEditingItem] = useState(null);
   const [editedKorean, setEditedKorean] = useState('');
   const [editedEnglish, setEditedEnglish] = useState('');
 
+  // Toast for displaying messages
+  const toast = useToast();
 
+  // Fetches vocabulary sets on component mount
   useEffect(() => {
     const fetchSets = async () => {
       try {
@@ -35,12 +38,13 @@ const VocabularyPage = () => {
   }, []);
 
   
-
+  // Returns the name of the currently selected set
   const getCurrentSetName = () => {
     const currentSetObj = vocabularySets.find(set => set._id === currentSet);
     return currentSetObj ? currentSetObj.setName : 'No set selected';
   };
 
+  // Handles translation of the input Korean word
   const handleTranslate = async () => {
     try {
       const response = await axios.post('http://localhost:8100/api/translate', {
@@ -60,6 +64,7 @@ const VocabularyPage = () => {
     }
   };
 
+  // Handles addition of a new vocabulary word
   const handleAddVocabulary = async () => {
     if (!koreanWord || !englishDefinition) {
       toast({
@@ -100,6 +105,7 @@ const VocabularyPage = () => {
       }
   };
 
+  // Handles creation of a new vocabulary set
   const handleAddSet = async () => {
     if (!newSetName) {
       toast({
@@ -128,6 +134,7 @@ const VocabularyPage = () => {
     }
   };
 
+  // Selects a set to view its items
   const handleSetSelection = async (setId) => {
     console.log("Set ID: ", setId)
     if (!setId) {
@@ -154,15 +161,16 @@ const VocabularyPage = () => {
         isClosable: true,
       });
     }
-    
   };
-  
+
+  // Sets up editing for a selected vocabulary item
   const handleEditItem = (item) => {
     setEditingItem(item);
     setEditedKorean(item.korean);
     setEditedEnglish(item.english);
   };
 
+  // Renders the inline form for editing an item
   const renderEditForm = () => {
     if (!editingItem) return null;
 
@@ -184,6 +192,7 @@ const VocabularyPage = () => {
     );
   };
 
+  // Submits the edited vocabulary item
   const submitEdit = async () => {
     try {
       const response = await axios.put(`http://localhost:8100/api/vocabulary/item/edit/${editingItem._id}`, {
@@ -218,7 +227,7 @@ const VocabularyPage = () => {
     }
   };
   
-
+  // Handles the deletion of a vocabulary item
   const handleDeleteItem = async (itemId) => {
     try {
       await axios.delete(`http://localhost:8100/api/vocabulary/item/delete/${itemId}`);
@@ -241,6 +250,7 @@ const VocabularyPage = () => {
     }
   };
   
+  // Renders the main component UI
   return (
     <Box p={5}>
       <VStack spacing={4}>

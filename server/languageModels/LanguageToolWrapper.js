@@ -1,6 +1,8 @@
 const LanguageModelInterface = require('./LanguageModelInterface');
 const axios = require('axios');
 
+// This class provides a wrapper around the LanguageTool API
+// It extends LanguageModelInterface and implements grammar checking functionality
 class LanguageToolWrapper extends LanguageModelInterface {
     constructor() {
         super();
