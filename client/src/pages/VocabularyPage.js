@@ -9,6 +9,11 @@ const VocabularyPage = () => {
   const [newSetName, setNewSetName] = useState('');
   const [vocabularySets, setVocabularySets] = useState([]);
   const toast = useToast();
+  const [selectedSetItems, setSelectedSetItems] = useState([]);
+  const [editingItem, setEditingItem] = useState(null);
+  const [editedKorean, setEditedKorean] = useState('');
+  const [editedEnglish, setEditedEnglish] = useState('');
+
 
   useEffect(() => {
     const fetchSets = async () => {
@@ -29,6 +34,7 @@ const VocabularyPage = () => {
     fetchSets();
   }, []);
 
+  
 
   const getCurrentSetName = () => {
     const currentSetObj = vocabularySets.find(set => set._id === currentSet);
@@ -121,6 +127,119 @@ const VocabularyPage = () => {
       });
     }
   };
+
+  const handleSetSelection = async (setId) => {
+    console.log("Set ID: ", setId)
+    if (!setId) {
+      toast({
+        title: 'Error',
+        description: 'No set selected.',
+        status: 'error',
+        duration: 5000,
+        isClosable: true,
+      });
+      return;
+    }
+  
+    try {
+      const response = await axios.get(`http://localhost:8100/api/vocabulary/set/${setId}/items`);
+      setSelectedSetItems(response.data);
+    } catch (error) {
+      console.error("Error fetching set items:", error); // Add this line for detailed error logging
+      toast({
+        title: 'Error',
+        description: 'Failed to fetch set items.',
+        status: 'error',
+        duration: 5000,
+        isClosable: true,
+      });
+    }
+    
+  };
+  
+  const handleEditItem = (item) => {
+    setEditingItem(item);
+    setEditedKorean(item.korean);
+    setEditedEnglish(item.english);
+  };
+
+  const renderEditForm = () => {
+    if (!editingItem) return null;
+
+    return (
+      <Box>
+        <HStack spacing={3}>
+          <Input 
+            value={editedKorean} 
+            onChange={(e) => setEditedKorean(e.target.value)}
+          />
+          <Input 
+            value={editedEnglish} 
+            onChange={(e) => setEditedEnglish(e.target.value)}
+          />
+          <Button colorScheme="blue" onClick={() => submitEdit()}>Submit</Button>
+          <Button colorScheme="red" onClick={() => setEditingItem(null)}>Cancel</Button>
+        </HStack>
+      </Box>
+    );
+  };
+
+  const submitEdit = async () => {
+    try {
+      const response = await axios.put(`http://localhost:8100/api/vocabulary/item/edit/${editingItem._id}`, {
+        korean: editedKorean,
+        english: editedEnglish
+      });
+  
+      const updatedItems = selectedSetItems.map(item => 
+        item._id === editingItem._id ? response.data : item
+      );
+      setSelectedSetItems(updatedItems);
+  
+      setEditingItem(null);
+      setEditedKorean('');
+      setEditedEnglish('');
+  
+      toast({
+        title: 'Success',
+        description: 'Vocabulary updated successfully.',
+        status: 'success',
+        duration: 5000,
+        isClosable: true,
+      });
+    } catch (error) {
+      toast({
+        title: 'Error',
+        description: 'Failed to update vocabulary.',
+        status: 'error',
+        duration: 5000,
+        isClosable: true,
+      });
+    }
+  };
+  
+
+  const handleDeleteItem = async (itemId) => {
+    try {
+      await axios.delete(`http://localhost:8100/api/vocabulary/item/delete/${itemId}`);
+      setSelectedSetItems(selectedSetItems.filter(item => item._id !== itemId));
+      toast({
+        title: 'Success',
+        description: 'Item deleted successfully.',
+        status: 'success',
+        duration: 5000,
+        isClosable: true,
+      });
+    } catch (error) {
+      toast({
+        title: 'Error',
+        description: 'Failed to delete item.',
+        status: 'error',
+        duration: 5000,
+        isClosable: true,
+      });
+    }
+  };
   
   return (
     <Box p={5}>
@@ -156,7 +275,19 @@ const VocabularyPage = () => {
         <Button colorScheme="blue" onClick={handleAddVocabulary}>
           Add to Vocabulary
         </Button>
-        {}
+        {renderEditForm()}
+        <Select placeholder="View set" onChange={(e) => handleSetSelection(e.target.value)}>
+          {vocabularySets.map((set) => (
+            <option key={set._id} value={set._id}>{set.setName}</option>
+          ))}
+        </Select>
+        {selectedSetItems.map((item) => (
+          <HStack key={item._id} spacing={3}>
+            <Text>{item.korean} - {item.english}</Text>
+            <Button colorScheme="blue" size="sm" onClick={() => handleEditItem(item)}>Edit</Button>
+            <Button colorScheme="red" size="sm" onClick={() => handleDeleteItem(item._id)}>Delete</Button>
+          </HStack>
+        ))}
       </VStack>
     </Box>
   );
