@@ -92,7 +92,7 @@ export default function NavBar({ user }) {
                     <p>{user?.user?.username || 'Guest'}</p>
                 </Center>
                 <MenuDivider />
-                <MenuItem>Your Servers</MenuItem>
+                <MenuItem>Progress Checker</MenuItem>
                 <MenuItem>Account Settings</MenuItem>
                 <MenuItem>Logout</MenuItem>
               </MenuList>

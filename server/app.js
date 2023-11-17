@@ -1,12 +1,13 @@
 // Import required packages
+require('dotenv').config();
 const express = require('express');        // Web framework for Node.js
 const mongoose = require('mongoose');      // MongoDB object modeling tool
 const passport = require('passport');      // Middleware for handling user authentication
 const session = require('express-session');// Middleware for handling sessions
 const cors = require('cors');              // Middleware for enabling Cross-Origin Resource Sharing
 const app = express();
-require('dotenv').config();
 require('./passport-config')(passport);
+const translateRoutes = require('./routes/translate');
 const bcrypt = require('bcryptjs');
 
 
@@ -32,6 +33,8 @@ app.get('/', (req, res) => {
 
 const authRoutes = require('./routes/auth');
 app.use('/api', authRoutes);
+
+app.use('/api', translateRoutes);
 
 // Define the port to listen on
 const PORT = process.env.PORT || 8100;
