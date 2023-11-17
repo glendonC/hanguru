@@ -1,5 +1,3 @@
-// testTranslate.js
-
 const GoogleTranslateWrapper = require('./languageModels/GoogleTranslateWrapper');
 const googleTranslate = new GoogleTranslateWrapper(process.env.GOOGLE_API_KEY);
 
