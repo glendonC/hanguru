@@ -1,16 +1,17 @@
 import React, { useState, useEffect } from 'react';
-import { Box, VStack, Select, Button, Text, CheckboxGroup, Checkbox, Stack } from '@chakra-ui/react';
+import { Box, VStack, Select, Button, Text, Checkbox, Input } from '@chakra-ui/react';
 import axios from 'axios';
 
 const ExercisesPage = () => {
   const [vocabularySets, setVocabularySets] = useState([]);
-  const [currentSet, setCurrentSet] = useState('');
-  const [selectedWord, setSelectedWord] = useState('');
-  const [generatedSentence, setGeneratedSentence] = useState('');
-  const [translatedSentence, setTranslatedSentence] = useState('');
   const [setWords, setSetWords] = useState([]);
   const [selectedWords, setSelectedWords] = useState([]);
+  const [userInput, setUserInput] = useState('');
+  const [feedback, setFeedback] = useState('');
+  const [generatedQuestion, setGeneratedQuestion] = useState('');
+  const [questionTranslation, setQuestionTranslation] = useState('');
 
+  // Fetches the vocabulary sets when the component mounts
   useEffect(() => {
     const fetchSets = async () => {
       try {
@@ -23,13 +24,9 @@ const ExercisesPage = () => {
     fetchSets();
   }, []);
 
+  // Fetches words from a selected vocabulary set
   const handleSetSelection = async (setId) => {
-    setSelectedWord('');
-    setGeneratedSentence('');
-    setTranslatedSentence('');
     setSelectedWords([]);
-  
-
     try {
       const response = await axios.get(`http://localhost:8100/api/vocabulary/set/${setId}/items`);
       setSetWords(response.data);
@@ -38,74 +35,69 @@ const ExercisesPage = () => {
     }
   };
 
+  // Updates the selected words state based on user selection
   const handleWordSelection = (word) => {
-    setSelectedWords((prevSelectedWords) =>
-      prevSelectedWords.includes(word)
-        ? prevSelectedWords.filter(w => w !== word)
-        : [...prevSelectedWords, word]
+    setSelectedWords(prevSelectedWords =>
+      prevSelectedWords.includes(word) ? prevSelectedWords.filter(w => w !== word) : [...prevSelectedWords, word]
     );
   };
 
-  const generateSentence = async () => {
-    if (selectedWords.length === 0) {
-        return;
-    }
-
-    const prompt = `Create a sentence in Korean using the words ${selectedWords.join(', ')}: `;
-
+  // Generates a question using GPT-3 based on the selected words
+  const generateQuestion = async () => {
     try {
-        const response = await axios.post('http://localhost:8100/api/generate-sentence', { prompt });
-        // Directly access the sentence from the response
-        const sentence = response.data.sentence;
-        setGeneratedSentence(sentence);
-    } catch (error) {
-        console.error('Error generating sentence:', error);
-    }
-};
-
-
-
-
-  const translateSentence = async () => {
-    try {
-      const response = await axios.post('http://localhost:8100/api/translate', {
-        text: generatedSentence,
-        sourceLang: 'ko',
-        targetLang: 'en'
+      const response = await axios.post('http://localhost:8100/api/generate-sentence', {
+        vocab: selectedWords.join(', '),
       });
-
-      const translation = response.data.translation;
-      setTranslatedSentence(translation);
+      setGeneratedQuestion(response.data.question || 'No question provided');
+      setQuestionTranslation(response.data.translation || 'No translation available');
     } catch (error) {
-      console.error('Error translating sentence:', error);
+      console.error('Error generating question', error);
+    }
+  };
+
+  // Checks the user's sentence for correctness and naturalness using GPT model in gpt.js
+  const checkUserAnswer = async () => {
+    try {
+      const response = await axios.post('http://localhost:8100/api/check-answer', {
+        userSentence: userInput,
+        question: generatedQuestion,
+        vocab: selectedWords.join(', ')
+      });
+      setFeedback(response.data.feedback);
+    } catch (error) {
+      console.error('Error checking answer:', error);
+      setFeedback('Error checking answer.');
     }
   };
 
   return (
-      <Box p={5}>
-        <VStack spacing={4}>
-          <Select placeholder="Select set" onChange={(e) => handleSetSelection(e.target.value)}>
-            {vocabularySets.map((set) => (
-              <option key={set._id} value={set._id}>{set.setName}</option>
-            ))}
-          </Select>
-          {setWords.map((word) => (
-            <Checkbox 
-              key={word._id} 
-              isChecked={selectedWords.includes(word.korean)}
-              onChange={() => handleWordSelection(word.korean)}
-            >
-              {word.korean}
-            </Checkbox>
+    <Box p={5}>
+      <VStack spacing={4}>
+        <Select placeholder="Select set" onChange={e => handleSetSelection(e.target.value)}>
+          {vocabularySets.map(set => (
+            <option key={set._id} value={set._id}>{set.setName}</option>
           ))}
-          <Button colorScheme="blue" onClick={generateSentence} disabled={selectedWords.length === 0}>
-            Generate Sentence
-          </Button>
-        {generatedSentence && <Text mt={2}>Generated Sentence (Korean): {generatedSentence}</Text>}
-        <Button colorScheme="green" onClick={translateSentence} disabled={!generatedSentence}>
-          Translate Sentence
+        </Select>
+
+        {setWords.map(word => (
+          <Checkbox key={word._id} isChecked={selectedWords.includes(word.korean)} onChange={() => handleWordSelection(word.korean)}>
+            {word.korean}
+          </Checkbox>
+        ))}
+
+        <Button colorScheme="blue" onClick={generateQuestion} disabled={selectedWords.length === 0}>
+          Generate Question
         </Button>
-        {translatedSentence && <Text mt={2}>Translated Sentence (English): {translatedSentence}</Text>}
+
+        {generatedQuestion && (
+          <>
+            <Text mt={2}>Question (Korean): {generatedQuestion}</Text>
+            <Text mt={2}>Translation (English): {questionTranslation}</Text>
+            <Input placeholder="Type your answer here" value={userInput} onChange={e => setUserInput(e.target.value)} />
+            <Button mt={2} colorScheme="teal" onClick={checkUserAnswer}>Get Feedback</Button>
+            {feedback && <Text mt={2}>{feedback}</Text>}
+          </>
+        )}
       </VStack>
     </Box>
   );

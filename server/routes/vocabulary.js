@@ -3,6 +3,19 @@ const router = express.Router();
 const VocabularyItem = require('../models/VocabularyItem');
 const VocabularySet = require('../models/VocabularySet');
 
+/**
+ * POST /add
+ * Adds a new vocabulary item to the database and optionally to a vocabulary set
+ * 
+ * Request body:
+ * - korean: The Korean word or phrase
+ * - english: The English translation
+ * - set: The ID of the vocabulary set to which this item belongs
+ * 
+ * Response:
+ * - On success: Returns the created VocabularyItem
+ * - On error: Returns a 500 status with an error message
+ */
 router.post('/add', async (req, res) => {
   const { korean, english, set } = req.body;
   try {
@@ -19,6 +32,19 @@ router.post('/add', async (req, res) => {
   }
 });
 
+/**
+ * POST /add
+ * Adds a new vocabulary item to the database and optionally to a vocabulary set
+ * 
+ * Request body:
+ * - korean: The Korean word or phrase
+ * - english: The English translation
+ * - set: The ID of the vocabulary set to which this item belongs
+ * 
+ * Response:
+ * - On success: Returns the created VocabularyItem
+ * - On error: Returns a 500 status with an error message
+ */
 router.get('/sets', async (req, res) => {
     try {
       const sets = await VocabularySet.find({});
@@ -28,6 +54,17 @@ router.get('/sets', async (req, res) => {
     }
 });
 
+/**
+ * POST /set/add
+ * Adds a new vocabulary set
+ * 
+ * Request body:
+ * - name: The name of the new vocabulary set
+ * 
+ * Response:
+ * - On success: Returns the created VocabularySet
+ * - On error: Returns a 500 status with an error message
+ */
 router.post('/set/add', async (req, res) => {
     const { name } = req.body;
     try {
@@ -39,6 +76,17 @@ router.post('/set/add', async (req, res) => {
     }
 });
 
+/**
+ * GET /set/:setId/items
+ * Retrieves all vocabulary items within a specific set
+ * 
+ * URL params:
+ * - setId: The ID of the vocabulary set
+ * 
+ * Response:
+ * - On success: Returns an array of VocabularyItem objects belonging to the set
+ * - On error: Returns a 500 status with an error message
+ */
 router.get('/set/:setId/items', async (req, res) => {
   try {
     const { setId } = req.params;
@@ -49,6 +97,21 @@ router.get('/set/:setId/items', async (req, res) => {
   }
 });
 
+/**
+ * PUT /item/edit/:itemId
+ * Updates a specific vocabulary item
+ * 
+ * URL params:
+ * - itemId: The ID of the vocabulary item to update
+ * 
+ * Request body:
+ * - korean: Updated Korean word or phrase
+ * - english: Updated English translation
+ * 
+ * Response:
+ * - On success: Returns the updated VocabularyItem
+ * - On error: Returns a 500 status with an error message
+ */
 router.put('/item/edit/:itemId', async (req, res) => {
   const { itemId } = req.params;
   const { korean, english } = req.body;
@@ -60,6 +123,17 @@ router.put('/item/edit/:itemId', async (req, res) => {
   }
 });
 
+/**
+ * DELETE /item/delete/:itemId
+ * Deletes a specific vocabulary item and removes it from any sets it belongs to
+ * 
+ * URL params:
+ * - itemId: The ID of the vocabulary item to delete
+ * 
+ * Response:
+ * - On success: Returns a success message
+ * - On error: Returns a 500 status with an error message
+ */
 router.delete('/item/delete/:itemId', async (req, res) => {
   const { itemId } = req.params;
   try {
@@ -76,8 +150,5 @@ router.delete('/item/delete/:itemId', async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 });
-
-
-
 
 module.exports = router;
