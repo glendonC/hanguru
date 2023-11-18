@@ -11,6 +11,7 @@ const ExercisesPage = () => {
   const [generatedQuestion, setGeneratedQuestion] = useState('');
   const [questionTranslation, setQuestionTranslation] = useState('');
 
+  // Fetches the vocabulary sets when the component mounts
   useEffect(() => {
     const fetchSets = async () => {
       try {
@@ -23,6 +24,7 @@ const ExercisesPage = () => {
     fetchSets();
   }, []);
 
+  // Fetches words from a selected vocabulary set
   const handleSetSelection = async (setId) => {
     setSelectedWords([]);
     try {
@@ -33,12 +35,14 @@ const ExercisesPage = () => {
     }
   };
 
+  // Updates the selected words state based on user selection
   const handleWordSelection = (word) => {
     setSelectedWords(prevSelectedWords =>
       prevSelectedWords.includes(word) ? prevSelectedWords.filter(w => w !== word) : [...prevSelectedWords, word]
     );
   };
 
+  // Generates a question using GPT-3 based on the selected words
   const generateQuestion = async () => {
     try {
       const response = await axios.post('http://localhost:8100/api/generate-sentence', {
@@ -51,6 +55,7 @@ const ExercisesPage = () => {
     }
   };
 
+  // Checks the user's sentence for correctness and naturalness using GPT model in gpt.js
   const checkUserAnswer = async () => {
     try {
       const response = await axios.post('http://localhost:8100/api/check-answer', {

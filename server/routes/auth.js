@@ -4,7 +4,22 @@ const bcrypt = require('bcryptjs');
 const passport = require('passport');
 const User = require('../models/User');
 
-// Register route
+/**
+ * POST /register
+ * This endpoint handles user registration. It receives user data, encrypts the password, 
+ * and saves the new user to the database
+ * 
+ * Request body:
+ * - username: The username of the new user
+ * - email: The email address of the new user
+ * - password: The password of the new user
+ * 
+ * Response:
+ * - On success: 201 status with a message 'User created' and user details (username and email)
+ * - On error: 400 status with a message 'Cannot register user'
+ * 
+ * The password is hashed using bcrypt before storing it in the database
+ */
 router.post('/register', async (req, res) => {
   try {
     const hashedPassword = await bcrypt.hash(req.body.password, 10);
@@ -22,7 +37,21 @@ router.post('/register', async (req, res) => {
 });
 
 
-// Login route
+/**
+ * POST /login
+ * This endpoint handles user login using Passport's local strategy
+ * It authenticates the user based on the provided username and password
+ * 
+ * Request body:
+ * - Contains the username and password entered by the user
+ * 
+ * Response:
+ * - On successful authentication: The user object with a message 'Successfully Authenticated'.
+ * - On failure: 401 status with a message 'No User Exists or Password Incorrect'
+ * 
+ * Uses Passport for authentication. Passport utilizes a 'local' strategy to validate the user credentials
+ * In case of errors during the login process, appropriate messages are returned to the client
+ */
 router.post('/login', (req, res, next) => {
   passport.authenticate('local', (err, user, info) => {
     if (err) {
