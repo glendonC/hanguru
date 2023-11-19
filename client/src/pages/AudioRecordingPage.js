@@ -1,9 +1,12 @@
 import React, { useState } from 'react';
+import { Button, Box, List, ListItem, ListIcon, Audio, VStack } from '@chakra-ui/react';
+import { DeleteIcon } from '@chakra-ui/icons';
 
 const AudioRecordingPage = () => {
   const [recording, setRecording] = useState(false);
   const [audioURL, setAudioURL] = useState('');
   const [mediaRecorder, setMediaRecorder] = useState(null);
+  const [uploadedFiles, setUploadedFiles] = useState([]);
 
   const startRecording = async () => {
     const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
@@ -38,18 +41,21 @@ const AudioRecordingPage = () => {
     const formData = new FormData();
     formData.append('file', audioBlob, 'audio-recording.wav');
 
-    const response = await fetch('http://localhost:8100/api/upload', {
-      method: 'POST',
-      body: formData,
-    });
+    try {
+      const response = await fetch('http://localhost:8100/api/upload', {
+        method: 'POST',
+        body: formData,
+      });
 
-    if (response.ok) {
-      const data = await response.json();
-      // Handle success - maybe display a success message to the user
-      console.log('Upload successful:', data.message);
-    } else {
-      // Handle error - inform the user that the upload failed
-      console.error('Upload failed');
+      if (response.ok) {
+        const data = await response.json();
+        setUploadedFiles([...uploadedFiles, data.fileName]); // Assuming the server responds with the fileName
+        console.log('Upload successful:', data.message);
+      } else {
+        console.error('Upload failed');
+      }
+    } catch (error) {
+      console.error('Error:', error);
     }
   };
 
@@ -60,8 +66,8 @@ const AudioRecordingPage = () => {
       });
 
       if (response.ok) {
+        setUploadedFiles(uploadedFiles.filter(file => file !== fileName));
         console.log('Audio deleted successfully');
-        // Update the state or UI to reflect the deletion
       } else {
         console.error('Failed to delete audio');
       }
@@ -71,16 +77,33 @@ const AudioRecordingPage = () => {
   };
 
   return (
-    <div>
-      <button onClick={recording ? stopRecording : startRecording}>
-        {recording ? 'Stop Recording' : 'Start Recording'}
-      </button>
-      <button onClick={() => deleteAudio('your-audio-file-name.wav')}>
-        Delete Audio
-      </button>
-      {audioURL && <audio src={audioURL} controls />}
-    </div>
+    <VStack spacing={4} align="stretch">
+      <Box>
+        <Button colorScheme="blue" onClick={recording ? stopRecording : startRecording}>
+          {recording ? 'Stop Recording' : 'Start Recording'}
+        </Button>
+      </Box>
+  
+      {audioURL && (
+        <Box>
+          <audio src={audioURL} controls />
+        </Box>
+      )}
+  
+      <List spacing={3}>
+      {uploadedFiles.map((file, index) => (
+      <ListItem key={index} d="flex" alignItems="center" justifyContent="space-between">
+        <Box flex="1">{file}</Box>
+        <Button colorScheme="red" size="sm" onClick={() => deleteAudio(file)}>
+          <ListIcon as={DeleteIcon} color="red.500" />
+          Delete
+        </Button>
+      </ListItem>
+      ))}
+      </List>
+    </VStack>
   );
+  
 };
 
 export default AudioRecordingPage;

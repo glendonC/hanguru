@@ -7,14 +7,18 @@ const { Storage } = require('@google-cloud/storage');
 const storage = new Storage({ keyFilename: process.env.GOOGLE_APPLICATION_CREDENTIALS });
 const bucketName = process.env.GCS_BUCKET_NAME;
 router.post('/', upload.single('file'), async (req, res) => {
-    const file = req.file;
-    try {
-      await uploadToGoogleCloud(file);
-      res.json({ message: 'File uploaded successfully to Google Cloud Storage.' });
-    } catch (error) {
-      res.status(500).json({ message: 'Error uploading to Google Cloud Storage', error });
-    }
+  const file = req.file;
+  try {
+    await uploadToGoogleCloud(file);
+    res.json({ 
+      message: 'File uploaded successfully to Google Cloud Storage.',
+      fileName: file.filename // Include the filename in the response
+    });
+  } catch (error) {
+    res.status(500).json({ message: 'Error uploading to Google Cloud Storage', error });
+  }
 });
+
 
 router.delete('/delete/:fileName', async (req, res) => {
     try {
