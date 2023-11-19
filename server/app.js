@@ -9,6 +9,7 @@ const app = express();
 require('./passport-config')(passport);
 const translateRoutes = require('./routes/translate');
 const vocabularyRoutes = require('./routes/vocabulary');
+const uploadRoutes = require('./routes/upload');
 const gptRoute = require('./routes/gpt');
 const bcrypt = require('bcryptjs');
 
@@ -42,6 +43,7 @@ app.use('/api', authRoutes);
 app.use('/api', translateRoutes);
 app.use('/api/vocabulary', vocabularyRoutes);
 app.use('/api', gptRoute);
+app.use('/api/upload', uploadRoutes);
 
 
 // Define the port to listen on

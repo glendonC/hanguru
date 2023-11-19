@@ -36,9 +36,9 @@ const AudioRecordingPage = () => {
 
   const uploadAudio = async (audioBlob) => {
     const formData = new FormData();
-    formData.append('file', audioBlob);
+    formData.append('file', audioBlob, 'audio-recording.wav');
 
-    const response = await fetch('http://localhost:8100/upload', {
+    const response = await fetch('http://localhost:8100/api/upload', {
       method: 'POST',
       body: formData,
     });
@@ -55,7 +55,7 @@ const AudioRecordingPage = () => {
 
   const deleteAudio = async (fileName) => {
     try {
-      const response = await fetch(`http://localhost:8100/upload/delete/${fileName}`, {
+      const response = await fetch(`http://localhost:8100/api/upload/delete/${fileName}`, {
         method: 'DELETE',
       });
 
