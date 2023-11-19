@@ -185,6 +185,14 @@ const AudioRecordingPage = () => {
     }
   };
 
+  const handleVoiceChange = async (newVoice) => {
+    setSelectedVoice(newVoice);
+    if (generatedText) {
+      await fetchSpeechAudio(generatedText);
+    }
+  };
+  
+
   return (
     <VStack spacing={6} align="stretch">
       {/* Vocabulary and Complexity Selection */}
@@ -222,11 +230,12 @@ const AudioRecordingPage = () => {
       {isLoading && <p>Loading...</p>}
       {error && <p>Error: {error}</p>}
 
-      <Select placeholder="Select Voice" onChange={e => setSelectedVoice(e.target.value)}>
+      <Select placeholder="Select Voice" onChange={e => handleVoiceChange(e.target.value)}>
         {voices.map(voice => (
           <option key={voice.name} value={voice.name}>{voice.name}</option>
         ))}
       </Select>
+
 
       {/* Custom Audio Controls */}
       <audio id="myAudio" src={speechAudioUrl} />
