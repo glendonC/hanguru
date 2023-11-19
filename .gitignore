@@ -14,3 +14,5 @@ logs
 # Dependency directories
 node_modules/
 data/
+
+server/service-account.json
