@@ -53,10 +53,30 @@ const AudioRecordingPage = () => {
     }
   };
 
+  const deleteAudio = async (fileName) => {
+    try {
+      const response = await fetch(`http://localhost:8100/upload/delete/${fileName}`, {
+        method: 'DELETE',
+      });
+
+      if (response.ok) {
+        console.log('Audio deleted successfully');
+        // Update the state or UI to reflect the deletion
+      } else {
+        console.error('Failed to delete audio');
+      }
+    } catch (error) {
+      console.error('Error:', error);
+    }
+  };
+
   return (
     <div>
       <button onClick={recording ? stopRecording : startRecording}>
         {recording ? 'Stop Recording' : 'Start Recording'}
+      </button>
+      <button onClick={() => deleteAudio('your-audio-file-name.wav')}>
+        Delete Audio
       </button>
       {audioURL && <audio src={audioURL} controls />}
     </div>
