@@ -1,5 +1,23 @@
 import React, { useState, useEffect } from 'react';
-import { Button, Box, List, ListItem, ListIcon, Audio, Select, VStack, Checkbox  } from '@chakra-ui/react';
+import {
+  Button,
+  Box,
+  List,
+  ListItem,
+  ListIcon,
+  Select,
+  VStack,
+  Checkbox,
+  Slider,
+  SliderTrack,
+  SliderFilledTrack,
+  SliderThumb,
+  HStack,
+  Icon,
+  Text
+} from '@chakra-ui/react';
+import { FaPlay, FaPause } from 'react-icons/fa';
+
 import { DeleteIcon } from '@chakra-ui/icons';
 import axios from 'axios';
 
@@ -21,6 +39,16 @@ const AudioRecordingPage = () => {
 
   const [selectedVoice, setSelectedVoice] = useState('');
   const [voices, setVoices] = useState([]);
+
+  const [audioRef, setAudioRef] = useState(new Audio());
+
+
+  useEffect(() => {
+    if (speechAudioUrl) {
+      const newAudio = new Audio(speechAudioUrl);
+      setAudioRef(newAudio);
+    }
+  }, [speechAudioUrl]);
 
   useEffect(() => {
     const fetchSets = async () => {
@@ -128,14 +156,27 @@ const AudioRecordingPage = () => {
     }
   };
 
-  const customPlay = () => {
-    document.getElementById('myAudio').play();
+  const handlePlay = () => {
+    audioRef.play();
   };
-
-  const customPause = () => {
-    document.getElementById('myAudio').pause();
+  
+  const handlePause = () => {
+    audioRef.pause();
   };
-
+  
+  const handleVolumeChange = (val) => {
+    const newVolume = parseFloat(val);
+    if (!isNaN(newVolume)) {
+      audioRef.volume = newVolume;
+    }
+  };
+  
+  
+  
+  const handleSpeedChange = (val) => {
+    audioRef.playbackRate = parseFloat(val);
+  };
+  
 
   const fetchSpeechAudio = async (text) => {
     setIsLoading(true);
@@ -226,7 +267,6 @@ const AudioRecordingPage = () => {
           </Box>
         )}
       </Box>
-
       {isLoading && <p>Loading...</p>}
       {error && <p>Error: {error}</p>}
 
@@ -238,10 +278,31 @@ const AudioRecordingPage = () => {
 
 
       {/* Custom Audio Controls */}
-      <audio id="myAudio" src={speechAudioUrl} />
-      <Button onClick={customPlay}>Play</Button>
-      <Button onClick={customPause}>Pause</Button>
-      
+      <HStack spacing={4} alignItems="center">
+        <Button onClick={handlePlay}>Play</Button>
+        <Button onClick={handlePause}>Pause</Button>
+
+        <VStack align="start">
+          <Text>Volume</Text>
+          <Slider defaultValue={1} min={0} max={1} step={0.1} onChange={handleVolumeChange}>
+            <SliderTrack>
+              <SliderFilledTrack />
+            </SliderTrack>
+            <SliderThumb />
+          </Slider>
+        </VStack>
+
+        <VStack align="start">
+          <Text>Speed</Text>
+          <Slider defaultValue={1} min={0.5} max={2} step={0.1} onChange={handleSpeedChange}>
+            <SliderTrack>
+              <SliderFilledTrack />
+            </SliderTrack>
+            <SliderThumb />
+          </Slider>
+        </VStack>
+      </HStack>
+
       {/* Audio Recording Section */}
       <Box>
         <Button colorScheme="blue" onClick={recording ? stopRecording : startRecording}>
