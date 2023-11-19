@@ -1,5 +1,23 @@
 import React, { useState, useEffect } from 'react';
-import { Button, Box, List, ListItem, ListIcon, Audio, Select, VStack, Checkbox  } from '@chakra-ui/react';
+import {
+  Button,
+  Box,
+  List,
+  ListItem,
+  ListIcon,
+  Select,
+  VStack,
+  Checkbox,
+  Slider,
+  SliderTrack,
+  SliderFilledTrack,
+  SliderThumb,
+  HStack,
+  Icon,
+  Text
+} from '@chakra-ui/react';
+import { FaPlay, FaPause } from 'react-icons/fa';
+
 import { DeleteIcon } from '@chakra-ui/icons';
 import axios from 'axios';
 
@@ -19,6 +37,19 @@ const AudioRecordingPage = () => {
   const [setWords, setSetWords] = useState([]);
   const [selectedWords, setSelectedWords] = useState([]);
 
+  const [selectedVoice, setSelectedVoice] = useState('');
+  const [voices, setVoices] = useState([]);
+
+  const [audioRef, setAudioRef] = useState(new Audio());
+
+
+  useEffect(() => {
+    if (speechAudioUrl) {
+      const newAudio = new Audio(speechAudioUrl);
+      setAudioRef(newAudio);
+    }
+  }, [speechAudioUrl]);
+
   useEffect(() => {
     const fetchSets = async () => {
       try {
@@ -29,6 +60,18 @@ const AudioRecordingPage = () => {
       }
     };
     fetchSets();
+  }, []);
+
+  useEffect(() => {
+    const fetchVoices = async () => {
+      try {
+        const response = await axios.get('http://localhost:8100/api/text-to-speech/voices');
+        setVoices(response.data.voices);
+      } catch (error) {
+        console.error('Error fetching voices:', error);
+      }
+    };
+    fetchVoices();
   }, []);
 
   const handleSetSelection = async (setId) => {
@@ -113,6 +156,27 @@ const AudioRecordingPage = () => {
     }
   };
 
+  const handlePlay = () => {
+    audioRef.play();
+  };
+  
+  const handlePause = () => {
+    audioRef.pause();
+  };
+  
+  const handleVolumeChange = (val) => {
+    const newVolume = parseFloat(val);
+    if (!isNaN(newVolume)) {
+      audioRef.volume = newVolume;
+    }
+  };
+  
+  
+  
+  const handleSpeedChange = (val) => {
+    audioRef.playbackRate = parseFloat(val);
+  };
+  
 
   const fetchSpeechAudio = async (text) => {
     setIsLoading(true);
@@ -122,7 +186,7 @@ const AudioRecordingPage = () => {
       const response = await fetch('http://localhost:8100/api/text-to-speech', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ text }),
+        body: JSON.stringify({ text, voice: selectedVoice }),
       });
   
       if (response.ok) {
@@ -162,6 +226,14 @@ const AudioRecordingPage = () => {
     }
   };
 
+  const handleVoiceChange = async (newVoice) => {
+    setSelectedVoice(newVoice);
+    if (generatedText) {
+      await fetchSpeechAudio(generatedText);
+    }
+  };
+  
+
   return (
     <VStack spacing={6} align="stretch">
       {/* Vocabulary and Complexity Selection */}
@@ -195,11 +267,42 @@ const AudioRecordingPage = () => {
           </Box>
         )}
       </Box>
-
       {isLoading && <p>Loading...</p>}
-{error && <p>Error: {error}</p>}
+      {error && <p>Error: {error}</p>}
 
-  
+      <Select placeholder="Select Voice" onChange={e => handleVoiceChange(e.target.value)}>
+        {voices.map(voice => (
+          <option key={voice.name} value={voice.name}>{voice.name}</option>
+        ))}
+      </Select>
+
+
+      {/* Custom Audio Controls */}
+      <HStack spacing={4} alignItems="center">
+        <Button onClick={handlePlay}>Play</Button>
+        <Button onClick={handlePause}>Pause</Button>
+
+        <VStack align="start">
+          <Text>Volume</Text>
+          <Slider defaultValue={1} min={0} max={1} step={0.1} onChange={handleVolumeChange}>
+            <SliderTrack>
+              <SliderFilledTrack />
+            </SliderTrack>
+            <SliderThumb />
+          </Slider>
+        </VStack>
+
+        <VStack align="start">
+          <Text>Speed</Text>
+          <Slider defaultValue={1} min={0.5} max={2} step={0.1} onChange={handleSpeedChange}>
+            <SliderTrack>
+              <SliderFilledTrack />
+            </SliderTrack>
+            <SliderThumb />
+          </Slider>
+        </VStack>
+      </HStack>
+
       {/* Audio Recording Section */}
       <Box>
         <Button colorScheme="blue" onClick={recording ? stopRecording : startRecording}>
