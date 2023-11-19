@@ -12,13 +12,12 @@ router.post('/', upload.single('file'), async (req, res) => {
     await uploadToGoogleCloud(file);
     res.json({ 
       message: 'File uploaded successfully to Google Cloud Storage.',
-      fileName: file.filename // Include the filename in the response
+      fileName: file.filename
     });
   } catch (error) {
     res.status(500).json({ message: 'Error uploading to Google Cloud Storage', error });
   }
 });
-
 
 router.delete('/delete/:fileName', async (req, res) => {
     try {

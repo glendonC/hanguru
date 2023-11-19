@@ -22,8 +22,6 @@ const AudioRecordingPage = () => {
       const url = URL.createObjectURL(audioBlob);
       setAudioURL(url);
       audioChunks = [];
-
-      // Here, you would upload the Blob to the server
       uploadAudio(audioBlob);
     };
 
@@ -49,7 +47,7 @@ const AudioRecordingPage = () => {
 
       if (response.ok) {
         const data = await response.json();
-        setUploadedFiles([...uploadedFiles, data.fileName]); // Assuming the server responds with the fileName
+        setUploadedFiles([...uploadedFiles, data.fileName]);
         console.log('Upload successful:', data.message);
       } else {
         console.error('Upload failed');
