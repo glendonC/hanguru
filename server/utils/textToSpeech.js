@@ -2,10 +2,10 @@ const textToSpeech = require('@google-cloud/text-to-speech');
 
 const client = new textToSpeech.TextToSpeechClient();
 
-async function generateSpeech(text, languageCode = 'ko-KR') {
+async function generateSpeech(text, voiceName) {
   const request = {
     input: { text: text },
-    voice: { languageCode: languageCode, ssmlGender: 'FEMALE' },
+    voice: { languageCode: 'ko-KR', name: voiceName },
     audioConfig: { audioEncoding: 'MP3' },
   };
 

@@ -19,6 +19,9 @@ const AudioRecordingPage = () => {
   const [setWords, setSetWords] = useState([]);
   const [selectedWords, setSelectedWords] = useState([]);
 
+  const [selectedVoice, setSelectedVoice] = useState('');
+  const [voices, setVoices] = useState([]);
+
   useEffect(() => {
     const fetchSets = async () => {
       try {
@@ -29,6 +32,18 @@ const AudioRecordingPage = () => {
       }
     };
     fetchSets();
+  }, []);
+
+  useEffect(() => {
+    const fetchVoices = async () => {
+      try {
+        const response = await axios.get('http://localhost:8100/api/text-to-speech/voices');
+        setVoices(response.data.voices);
+      } catch (error) {
+        console.error('Error fetching voices:', error);
+      }
+    };
+    fetchVoices();
   }, []);
 
   const handleSetSelection = async (setId) => {
@@ -113,6 +128,14 @@ const AudioRecordingPage = () => {
     }
   };
 
+  const customPlay = () => {
+    document.getElementById('myAudio').play();
+  };
+
+  const customPause = () => {
+    document.getElementById('myAudio').pause();
+  };
+
 
   const fetchSpeechAudio = async (text) => {
     setIsLoading(true);
@@ -122,7 +145,7 @@ const AudioRecordingPage = () => {
       const response = await fetch('http://localhost:8100/api/text-to-speech', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ text }),
+        body: JSON.stringify({ text, voice: selectedVoice }),
       });
   
       if (response.ok) {
@@ -197,9 +220,19 @@ const AudioRecordingPage = () => {
       </Box>
 
       {isLoading && <p>Loading...</p>}
-{error && <p>Error: {error}</p>}
+      {error && <p>Error: {error}</p>}
 
-  
+      <Select placeholder="Select Voice" onChange={e => setSelectedVoice(e.target.value)}>
+        {voices.map(voice => (
+          <option key={voice.name} value={voice.name}>{voice.name}</option>
+        ))}
+      </Select>
+
+      {/* Custom Audio Controls */}
+      <audio id="myAudio" src={speechAudioUrl} />
+      <Button onClick={customPlay}>Play</Button>
+      <Button onClick={customPause}>Pause</Button>
+      
       {/* Audio Recording Section */}
       <Box>
         <Button colorScheme="blue" onClick={recording ? stopRecording : startRecording}>
