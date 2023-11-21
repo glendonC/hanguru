@@ -40,6 +40,20 @@ const NavLink = ({ children, to }) => (
   </Link>
 );
 
+const handleLogout = async () => {
+  try {
+    const response = await fetch('http://localhost:8100/api/logout', { method: 'POST' });
+    if (response.ok) {
+      window.location.href = '/';
+    } else {
+      console.error('Logout failed');
+    }
+  } catch (error) {
+    console.error('Error:', error);
+  }
+};
+
+
 export default function NavBar({ user }) {
   const { colorMode, toggleColorMode } = useColorMode();
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -95,7 +109,7 @@ export default function NavBar({ user }) {
                 <MenuDivider />
                 <MenuItem>Progress Checker</MenuItem>
                 <MenuItem>Account Settings</MenuItem>
-                <MenuItem>Logout</MenuItem>
+                <MenuItem onClick={handleLogout}>Logout</MenuItem>
               </MenuList>
             </Menu>
           </Flex>
