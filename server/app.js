@@ -12,6 +12,7 @@ const vocabularyRoutes = require('./routes/vocabulary');
 const uploadRoutes = require('./routes/upload');
 const gptRoute = require('./routes/gpt');
 const textToSpeechRoute = require('./routes/textToSpeechRoute');
+const userSettingsRoutes = require('./routes/userSettings');
 const bcrypt = require('bcryptjs');
 
 
@@ -46,6 +47,7 @@ app.use('/api/vocabulary', vocabularyRoutes);
 app.use('/api', gptRoute);
 app.use('/api/upload', uploadRoutes);
 app.use('/api', textToSpeechRoute);
+app.use('/api/user', userSettingsRoutes);
 
 
 // Define the port to listen on
