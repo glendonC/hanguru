@@ -89,5 +89,45 @@ router.post('/check-answer', async (req, res) => {
     }
 });
 
+router.post('/generate-text', async (req, res) => {
+    const { vocab, complexity } = req.body;
+
+    let complexityPhrase;
+    switch (complexity) {
+        case 'easy':
+            complexityPhrase = 'Create a simple and easy to understand sentence';
+            break;
+        case 'medium':
+            complexityPhrase = 'Create a moderately complex sentence';
+            break;
+        case 'hard':
+            complexityPhrase = 'Create a complex and intricate sentence';
+            break;
+        default:
+            complexityPhrase = 'Create a sentence';
+    }
+
+    const prompt = `${complexityPhrase} using the Korean vocabulary word '${vocab}'.`;
+
+    try {
+        const response = await axios.post('https://api.openai.com/v1/chat/completions', {
+            model: "gpt-3.5-turbo",
+            messages: [{ role: "system", content: "You are a bilingual assistant fluent in Korean and English." }, { role: "user", content: prompt }],
+            max_tokens: 150
+        }, {
+            headers: {
+                'Authorization': `Bearer ${process.env.OPENAI_API_KEY}`
+            }
+        });
+
+        const generatedText = response.data.choices[0].message.content.trim() || 'No text generated';
+
+        res.json({ text: generatedText });
+    } catch (error) {
+        console.error('Error in OpenAI request:', error);
+        res.status(500).send('Error generating text');
+    }
+});
+
 
 module.exports = router;

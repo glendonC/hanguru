@@ -12,7 +12,10 @@ COPY package-lock.json ./
 # Install dependencies
 RUN npm install
 
-# Copy the rest of your app's source code
+# Copy the service account JSON file into the image
+COPY service-account.json /usr/src/app/service-account.json
+
+# Copy the rest of the app's source code
 COPY . .
 
 # Bind to all network interfaces so that it can be mapped to the host OS
