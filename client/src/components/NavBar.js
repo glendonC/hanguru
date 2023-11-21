@@ -18,13 +18,13 @@ import {
   Center
 } from '@chakra-ui/react';
 import { HamburgerIcon, CloseIcon, MoonIcon, SunIcon } from '@chakra-ui/icons';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 const navLinks = [
   { name: 'Home', path: '/' },
   { name: 'Vocabulary', path: '/vocabulary' },
   { name: 'Exercises', path: '/exercises' },
-  { name: 'Audio Recording', path: '/audio-recording' }
+  { name: 'Audio Recording', path: '/audio-recording' },
 ];
 
 const NavLink = ({ children, to }) => (
@@ -57,6 +57,11 @@ const handleLogout = async () => {
 export default function NavBar({ user }) {
   const { colorMode, toggleColorMode } = useColorMode();
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const navigate = useNavigate();
+  
+  const handleAccountSettingsClick = () => {
+    navigate('/account-settings');
+  };
 
   // console.log(user)
   return (
@@ -108,7 +113,7 @@ export default function NavBar({ user }) {
                 </Center>
                 <MenuDivider />
                 <MenuItem>Progress Checker</MenuItem>
-                <MenuItem>Account Settings</MenuItem>
+                <MenuItem onClick={handleAccountSettingsClick}>Account Settings</MenuItem>
                 <MenuItem onClick={handleLogout}>Logout</MenuItem>
               </MenuList>
             </Menu>

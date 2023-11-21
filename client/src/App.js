@@ -6,6 +6,7 @@ import HomePage from './pages/HomePage';
 import VocabularyPage from './pages/VocabularyPage';
 import ExercisesPage from './pages/ExercisesPage';
 import AudioRecordingPage from './pages/AudioRecordingPage';
+import AccountSettingsPage from './pages/AccountSettingsPage';
 
 function App() {
   const [isLoggedIn, setLoggedIn] = useState(false);
@@ -34,6 +35,10 @@ function App() {
         <Route 
           path="/" 
           element={isLoggedIn ? <HomePage /> : <Navigate to="/auth" />} 
+        />
+        <Route 
+          path="/account-settings" 
+          element={isLoggedIn ? <AccountSettingsPage /> : <Navigate to="/auth" />} 
         />
 
         {/* Protected Routes */}
