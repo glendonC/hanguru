@@ -32,9 +32,6 @@ mongoose.connect(process.env.MONGO_URI, { useNewUrlParser: true, useUnifiedTopol
 .then(() => console.log('MongoDB Connected to Hanguru Database'))
 .catch(err => console.error(err));
 
-console.log("Key: " +process.env.OPENAI_API_KEY);
-
-
 app.get('/', (req, res) => {
   res.send('Hello World!');
 });
