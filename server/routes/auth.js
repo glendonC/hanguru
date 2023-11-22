@@ -46,7 +46,7 @@ router.post('/register', async (req, res) => {
  * - Contains the username and password entered by the user
  * 
  * Response:
- * - On successful authentication: The user object with a message 'Successfully Authenticated'.
+ * - On successful authentication: The user object with a message 'Successfully Authenticated'
  * - On failure: 401 status with a message 'No User Exists or Password Incorrect'
  * 
  * Uses Passport for authentication. Passport utilizes a 'local' strategy to validate the user credentials

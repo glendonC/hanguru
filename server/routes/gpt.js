@@ -89,6 +89,25 @@ router.post('/check-answer', async (req, res) => {
     }
 });
 
+/**
+ * POST /generate-text
+ * This endpoint generates a sentence in Korean based on the provided vocabulary word and the desired complexity level (easy, medium, hard)
+ * It uses the OpenAI GPT-3.5-turbo model to create the sentence
+ * 
+ * Request body:
+ * - vocab: A string representing the Korean vocabulary word to be used in the sentence.
+ * - complexity: A string indicating the desired complexity of the sentence ('easy', 'medium', or 'hard').
+ * 
+ * Response:
+ * - text: The generated sentence in Korean. If no sentence is generated, a default message 'No text generated' is returned
+ * 
+ * This method adjusts the complexity of the sentence based on the 'complexity' parameter:
+ *  - 'easy': Generates a simple and easy to understand sentence
+ *  - 'medium': Generates a moderately complex sentence
+ *  - 'hard': Generates a complex and intricate sentence
+ * 
+ * In case of an error with the OpenAI API request, a 500 status code is sent with an error message
+ */
 router.post('/generate-text', async (req, res) => {
     const { vocab, complexity } = req.body;
 

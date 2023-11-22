@@ -6,6 +6,19 @@ const upload = multer({ dest: 'uploads/' });
 const { Storage } = require('@google-cloud/storage');
 const storage = new Storage({ keyFilename: process.env.GOOGLE_APPLICATION_CREDENTIALS });
 const bucketName = process.env.GCS_BUCKET_NAME;
+
+/**
+ * POST /
+ * This endpoint handles the upload of a file to Google Cloud Storage
+ * It uses 'multer' for handling multipart/form-data, specifically for file uploads
+ *
+ * Request:
+ * - The file to be uploaded should be sent as part of the form data with the key 'file'
+ * 
+ * Response:
+ * - On successful upload, it returns a JSON object with a success message and the filename
+ * - In case of an error during the upload process, it returns a 500 status code with an error message
+ */
 router.post('/', upload.single('file'), async (req, res) => {
   const file = req.file;
   try {
@@ -19,6 +32,18 @@ router.post('/', upload.single('file'), async (req, res) => {
   }
 });
 
+/**
+ * DELETE /delete/:fileName
+ * This endpoint deletes a specific file from Google Cloud Storage
+ * The file to be deleted is specified by the fileName parameter in the URL
+ *
+ * Request parameters:
+ * - fileName: The name of the file to be deleted from the Google Cloud Storage bucket
+ * 
+ * Response:
+ * - On successful deletion, it returns a JSON object with a success message.
+ * - If there's an error in the file deletion process, it returns a 500 status code with an error message
+ */
 router.delete('/delete/:fileName', async (req, res) => {
     try {
       const fileName = req.params.fileName;
