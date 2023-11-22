@@ -2,6 +2,41 @@ import React, { useState, useEffect } from 'react';
 import { Box, Button, Input, VStack, HStack, Select, useToast, Text } from '@chakra-ui/react';
 import axios from 'axios';
 
+/**
+ * VocabularyPage Component
+ * 
+ * This component is designed to manage vocabulary words and sets. It allows users to add new vocabulary words, 
+ * create new vocabulary sets, and edit or delete existing vocabulary
+ *
+ * State Management:
+ * - koreanWord, englishDefinition: States for managing the input of new vocabulary words and their English definitions
+ * - currentSet, newSetName: States for handling the current vocabulary set and the input for a new set name
+ * - vocabularySets: Stores the list of vocabulary sets fetched from the server
+ * - selectedSetItems: Holds the words in the currently selected vocabulary set
+ * - editingItem, editedKorean, editedEnglish: States for managing the edit process of a vocabulary word
+ * 
+ * Features:
+ * - Addition of new vocabulary words to a selected set
+ * - Creation of new vocabulary sets
+ * - Inline editing and deletion of vocabulary words
+ * - Translation feature to automatically translate Korean words to English
+ * - Display of vocabulary words in the selected set
+ * 
+ * API Interaction:
+ * - Communicates with a backend server for fetching, adding, editing, and deleting vocabulary words and sets
+ * 
+ * Handlers:
+ * - handleTranslate: Translates a Korean word to English
+ * - handleAddVocabulary: Adds a new vocabulary word to a set
+ * - handleAddSet: Creates a new vocabulary set
+ * - handleSetSelection: Selects a set and fetches its items
+ * - handleEditItem: Sets up editing for a selected vocabulary word
+ * - submitEdit: Submits the edited vocabulary word
+ * - handleDeleteItem: Deletes a selected vocabulary word
+ * 
+ * Error and Success Handling:
+ * - Displays toast notifications for errors and successful operations
+ */
 const VocabularyPage = () => {
   // State to store inputs and fetched data
   const [koreanWord, setKoreanWord] = useState('');

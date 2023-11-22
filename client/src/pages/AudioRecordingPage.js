@@ -21,6 +21,41 @@ import { FaPlay, FaPause } from 'react-icons/fa';
 import { DeleteIcon } from '@chakra-ui/icons';
 import axios from 'axios';
 
+/**
+ * AudioRecordingPage Component
+ * 
+ * This component provides a comprehensive interface for audio recording, managing vocabulary, 
+ * and text-to-speech functionality
+ *
+ * State Management:
+ * - It manages various states including recording status, audio URLs, media recorder, uploaded files,
+ *   text complexity, generated text, selected voice, loading and error states, vocabulary sets, and 
+ *   selected words
+ * - It also maintains a reference to an audio object for playback control
+ * 
+ * Features:
+ * - Vocabulary set and word selection for generating text
+ * - Complexity level selection for the generated text
+ * - Text-to-speech generation with voice selection
+ * - Audio recording functionality using the MediaRecorder API
+ * - Custom audio controls for playback, volume, and speed.
+ * - Display and management of uploaded audio file
+ * 
+ * API Interaction:
+ * - Communicates with backend APIs to fetch vocabulary sets, voices, and to handle text generation,
+ *   speech synthesis, and audio file management
+ * 
+ * Handlers:
+ * - Includes handlers for set and word selection, starting and stopping audio recording, uploading and 
+ *   deleting audio files, playing and pausing audio, and adjusting volume and speed of playback
+ * 
+ * Effect Hooks:
+ * - Utilizes useEffect hooks to fetch vocabulary sets and voices on component mount
+ * - Updates the audio player reference when the speech audio URL changes
+ * 
+ * Error Handling:
+ * - Implements error handling for API requests and displays appropriate messages.
+ */
 const AudioRecordingPage = () => {
   const [recording, setRecording] = useState(false);
   const [audioURL, setAudioURL] = useState('');
@@ -42,7 +77,7 @@ const AudioRecordingPage = () => {
 
   const [audioRef, setAudioRef] = useState(new Audio());
 
-
+  // Effect hook for updating audio player source
   useEffect(() => {
     if (speechAudioUrl) {
       const newAudio = new Audio(speechAudioUrl);
@@ -50,6 +85,7 @@ const AudioRecordingPage = () => {
     }
   }, [speechAudioUrl]);
 
+  // Effect hook for fetching vocabulary sets
   useEffect(() => {
     const fetchSets = async () => {
       try {
@@ -62,6 +98,7 @@ const AudioRecordingPage = () => {
     fetchSets();
   }, []);
 
+  // Effect hook for fetching available voices
   useEffect(() => {
     const fetchVoices = async () => {
       try {

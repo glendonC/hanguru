@@ -12,13 +12,32 @@ import {
   Link as ChakraLink
 } from '@chakra-ui/react';
 
-
 /**
- * AuthPage component for handling user authentication.
+ * AuthPage Component
  * 
- * @param {Function} onLogin - Callback function to execute on successful login.
- * @param {boolean} showLogin - Boolean to determine whether to show the login form.
- * @param {Function} toggleAuthPage - Function to toggle between login and sign-up forms.
+ * This component provides a user interface for authentication, allowing users to either log in or sign up 
+ *
+ * Props:
+ * - onLogin: A function that is called with the user data upon successful login or registration
+ * - showLogin: A boolean indicating whether to show the login form initially
+ * - toggleAuthPage: A function to toggle between the login and sign-up views
+ * 
+ * State Management:
+ * - isLogin: Boolean state to toggle between login and sign-up forms
+ * - usernameOrEmail, username, email, password: States to manage input field values
+ * - error: State to hold any error messages during the authentication process
+ * 
+ * Features:
+ * - Dynamic form that switches between login and sign-up based on the user's choice
+ * - Form input validation and error handling
+ * - Communicates with a backend server for user authentication
+ * 
+ * Handlers:
+ * - handleToggle: Toggles the form between login and sign-up modes
+ * - handleSubmit: Submits the form data for authentication and handles the response
+ * 
+ * Error Handling:
+ * - Displays error messages received from the server or on network failure
  */
 function AuthPage({ onLogin, showLogin, toggleAuthPage }) {
   // State for input fields and error message

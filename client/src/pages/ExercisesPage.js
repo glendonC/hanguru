@@ -2,6 +2,41 @@ import React, { useState, useEffect } from 'react';
 import { Box, VStack, Select, Button, Text, Checkbox, Input } from '@chakra-ui/react';
 import axios from 'axios';
 
+/**
+ * ExercisesPage Component
+ * 
+ * This component provides an interactive interface for language learning exercises, 
+ * specifically focusing on vocabulary practice
+ *
+ * State Management:
+ * - vocabularySets: Stores a list of vocabulary sets fetched from the server
+ * - setWords: Stores words from a selected vocabulary set
+ * - selectedWords: Manages the selection of words by the user for generating questions
+ * - userInput: Stores the user's input as an answer to the generated question
+ * - feedback: Holds feedback on the user's answer
+ * - generatedQuestion: Stores the question generated based on the selected vocabulary
+ * - questionTranslation: Holds the English translation of the generated question
+ * 
+ * Features:
+ * - Dynamically populated selection of vocabulary sets
+ * - Checkbox selection for vocabulary words
+ * - Generation of questions using selected vocabulary words via GPT-3
+ * - Input field for users to type answers to the generated questions
+ * - Feedback mechanism for evaluating the user's answers
+ * 
+ * API Interaction:
+ * - Communicates with a backend server for fetching vocabulary sets, generating questions,
+ *   and checking answers for correctness and naturalness
+ * 
+ * Handlers:
+ * - handleSetSelection: Fetches words based on the selected vocabulary set
+ * - handleWordSelection: Updates the selected words state
+ * - generateQuestion: Generates a question using the selected vocabulary words
+ * - checkUserAnswer: Submits the user's answer for evaluation and feedback
+ * 
+ * Error Handling:
+ * - Implements error handling for API requests and displays appropriate messages
+ */
 const ExercisesPage = () => {
   const [vocabularySets, setVocabularySets] = useState([]);
   const [setWords, setSetWords] = useState([]);
