@@ -152,6 +152,7 @@ const AudioRecordingPage = () => {
       const audioBlob = new Blob(audioChunksRef.current, { type: 'audio/wav' });
       const url = URL.createObjectURL(audioBlob);
       setAudioURL(url);
+      await uploadAudio(audioBlob);
       await uploadAndTranscribeAudio(audioBlob);
       audioChunksRef.current = [];
     };
