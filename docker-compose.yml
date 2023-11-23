@@ -13,6 +13,10 @@ services:
       - /usr/src/app/node_modules
     environment:
       - MONGO_URI=mongodb://mongo:27017/hanguru
+      - GCS_SERVICE_ACCOUNT=/usr/src/app/gcs-service-account.json
+      - SPEECH_TO_TEXT_SERVICE_ACCOUNT=/usr/src/app/speech-to-text-service-account.json
+      - GOOGLE_APPLICATION_CREDENTIALS=/usr/src/app/text-to-speech-service-account.json
+      - GCS_BUCKET_NAME=hanguru-audio-bucket
     env_file: 
       - ./server/.env
     depends_on:

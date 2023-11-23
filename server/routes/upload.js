@@ -4,7 +4,7 @@ const router = express.Router();
 const { uploadToGoogleCloud } = require('../utils/googleCloudStorage');
 const upload = multer({ dest: 'uploads/' });
 const { Storage } = require('@google-cloud/storage');
-const storage = new Storage({ keyFilename: process.env.GOOGLE_APPLICATION_CREDENTIALS });
+const storage = new Storage({ keyFilename: process.env.GCS_SERVICE_ACCOUNT });
 const bucketName = process.env.GCS_BUCKET_NAME;
 
 /**

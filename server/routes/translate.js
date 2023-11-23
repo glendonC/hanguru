@@ -22,6 +22,7 @@ const googleTranslate = new GoogleTranslateWrapper(process.env.GOOGLE_API_KEY);
  */
 router.post('/translate', async (req, res) => {
     const { text, sourceLang, targetLang } = req.body;
+    console.log(req.body);
     try {
         const translation = await googleTranslate.translate(text, sourceLang, targetLang);
         res.json({ translation });

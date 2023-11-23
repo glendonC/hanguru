@@ -47,7 +47,7 @@ function HomePage() {
       const response = await axios.post('http://localhost:8100/api/translate', {
         text: textToTranslate,
         sourceLang: 'en',
-        targetLang: 'kor'
+        targetLang: 'ko'
       });
       setTranslation(response.data.translation);
     } catch (error) {
@@ -65,7 +65,7 @@ function HomePage() {
     <Box p={5}>
       <VStack spacing={4}>
         <FormControl>
-          <FormLabel>Korean:</FormLabel>
+          <FormLabel>English:</FormLabel>
           <Textarea 
             value={textToTranslate}
             onChange={(e) => setTextToTranslate(e.target.value)}
@@ -75,7 +75,7 @@ function HomePage() {
           Translate
         </Button>
         <FormControl>
-          <FormLabel>English:</FormLabel>
+          <FormLabel>Korean:</FormLabel>
           <Textarea isReadOnly value={translation} />
         </FormControl>
       </VStack>

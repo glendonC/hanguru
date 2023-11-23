@@ -7,13 +7,14 @@ WORKDIR /usr/src/app
 # Install app dependencies by copying
 # package.json and package-lock.json
 COPY package*.json ./
-COPY package-lock.json ./
 
 # Install dependencies
 RUN npm install
 
 # Copy the service account JSON file into the image
-COPY service-account.json /usr/src/app/service-account.json
+COPY gcs-service-account.json /usr/src/app/gcs-service-account.json
+COPY speech-to-text-service-account.json /usr/src/app/speech-to-text-service-account.json
+COPY text-to-speech-service-account.json /usr/src/app/text-to-speech-service-account.json
 
 # Copy the rest of the app's source code
 COPY . .
