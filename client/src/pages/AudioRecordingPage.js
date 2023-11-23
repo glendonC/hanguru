@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import {
   Button,
   Box,
@@ -14,7 +14,8 @@ import {
   SliderThumb,
   HStack,
   Icon,
-  Text
+  Text,
+  Textarea
 } from '@chakra-ui/react';
 import { FaPlay, FaPause } from 'react-icons/fa';
 
@@ -76,6 +77,9 @@ const AudioRecordingPage = () => {
   const [voices, setVoices] = useState([]);
 
   const [audioRef, setAudioRef] = useState(new Audio());
+  const [transcribedText, setTranscribedText] = useState('');
+  const audioChunksRef = useRef([]);
+
 
   // Effect hook for updating audio player source
   useEffect(() => {
@@ -130,29 +134,29 @@ const AudioRecordingPage = () => {
   const startRecording = async () => {
     const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
     const recorder = new MediaRecorder(stream);
-    let audioChunks = [];
-
+    audioChunksRef.current = []; // Reset the audio chunks
+  
     recorder.ondataavailable = event => {
-      audioChunks.push(event.data);
+      audioChunksRef.current.push(event.data);
     };
-
-    recorder.onstop = async () => {
-      const audioBlob = new Blob(audioChunks, { type: 'audio/wav' });
-      const url = URL.createObjectURL(audioBlob);
-      setAudioURL(url);
-      audioChunks = [];
-      uploadAudio(audioBlob);
-    };
-
+  
     recorder.start();
     setMediaRecorder(recorder);
     setRecording(true);
   };
-
+  
   const stopRecording = () => {
     mediaRecorder.stop();
     setRecording(false);
+    mediaRecorder.onstop = async () => {
+      const audioBlob = new Blob(audioChunksRef.current, { type: 'audio/wav' });
+      const url = URL.createObjectURL(audioBlob);
+      setAudioURL(url);
+      await uploadAndTranscribeAudio(audioBlob);
+      audioChunksRef.current = [];
+    };
   };
+  
 
   const uploadAudio = async (audioBlob) => {
     const formData = new FormData();
@@ -269,6 +273,30 @@ const AudioRecordingPage = () => {
       await fetchSpeechAudio(generatedText);
     }
   };
+
+
+  
+  const uploadAndTranscribeAudio = async (audioBlob) => {
+    const formData = new FormData();
+    formData.append('audio', audioBlob, 'audio-recording.wav');
+  
+    try {
+      const response = await axios.post('http://localhost:8100/api/speech-to-text/transcribe', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+  
+      if (response.data && response.data.transcription) {
+        console.log('Transcription:', response.data.transcription);
+        setTranscribedText(response.data.transcription); // Update the transcribed text state
+      }
+    } catch (error) {
+      console.error('Error in transcription:', error);
+      // Handle error
+    }
+  };
+  
   
 
   return (
@@ -347,7 +375,12 @@ const AudioRecordingPage = () => {
         </Button>
         {audioURL && <audio src={audioURL} controls aria-label="Recorded Audio" />}
       </Box>
-  
+      
+      <Box>
+        <Text mt={4} fontWeight="bold">Transcribed Text:</Text>
+        <Textarea value={transcribedText} readOnly />
+      </Box>
+
       {/* Uploaded Files List */}
       <List spacing={3}>
         {uploadedFiles.map((file, index) => (
