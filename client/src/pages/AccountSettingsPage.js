@@ -21,12 +21,38 @@ function AccountSettingsPage() {
       const response = await fetch('http://localhost:8100/api/user/change-username', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ newUsername: username })
+        body: JSON.stringify({ newUsername: username }),
+        credentials: 'include'
       });
   
-      // Handle response
+      let message;
+      if (response.headers.get("Content-Type").includes("application/json")) {
+        const responseData = await response.json();
+        message = responseData.message;
+      } else {
+        message = await response.text();
+      }
+  
+      if (response.ok) {
+        toast({
+          title: "Username Updated",
+          description: message,
+          status: "success",
+          duration: 5000,
+          isClosable: true,
+        });
+      } else {
+        throw new Error(message || 'Failed to update username');
+      }
     } catch (error) {
       console.error('Error:', error);
+      toast({
+        title: "Error",
+        description: error.message,
+        status: "error",
+        duration: 5000,
+        isClosable: true,
+      });
     }
   };
   
@@ -36,15 +62,41 @@ function AccountSettingsPage() {
       const response = await fetch('http://localhost:8100/api/user/change-password', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ newPassword: password })
+        body: JSON.stringify({ newPassword: password }),
+        credentials: 'include'
       });
   
-      // Handle response
+      let message;
+      if (response.headers.get("Content-Type").includes("application/json")) {
+        const responseData = await response.json();
+        message = responseData.message;
+      } else {
+        message = await response.text();
+      }
+  
+      if (response.ok) {
+        toast({
+          title: "Password Updated",
+          description: message,
+          status: "success",
+          duration: 5000,
+          isClosable: true,
+        });
+      } else {
+        throw new Error(message || 'Failed to update password');
+      }
     } catch (error) {
       console.error('Error:', error);
+      toast({
+        title: "Error",
+        description: error.message,
+        status: "error",
+        duration: 5000,
+        isClosable: true,
+      });
     }
   };
-
+  
   return (
     <Box p={8} maxWidth="500px" mx="auto">
       <Heading as="h2" mb={6}>

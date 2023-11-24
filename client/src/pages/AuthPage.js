@@ -56,16 +56,17 @@ function AuthPage({ onLogin, showLogin, toggleAuthPage }) {
   const handleSubmit = async (event) => {
     event.preventDefault();
     const endpoint = isLogin ? 'login' : 'register';
-
+  
     const formData = isLogin
       ? { usernameOrEmail, password }
       : { username, email, password };
-      try {
-        const response = await fetch(`http://localhost:8100/api/${endpoint}`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(formData),
-        });
+    try {
+      const response = await fetch(`http://localhost:8100/api/${endpoint}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formData),
+        credentials: 'include'
+      });
       if (response.ok) {
         const userData = await response.json();
         onLogin(userData);
@@ -78,6 +79,7 @@ function AuthPage({ onLogin, showLogin, toggleAuthPage }) {
       setError('Server error');
     }
   };
+  
   
   // Render the component UI
   return (
