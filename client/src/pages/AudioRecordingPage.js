@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import {
   Button,
   Box,
@@ -13,8 +13,9 @@ import {
   SliderFilledTrack,
   SliderThumb,
   HStack,
-  Icon,
-  Text
+  Input,
+  Text,
+  Textarea
 } from '@chakra-ui/react';
 import { FaPlay, FaPause } from 'react-icons/fa';
 
@@ -61,9 +62,10 @@ const AudioRecordingPage = () => {
   const [audioURL, setAudioURL] = useState('');
   const [mediaRecorder, setMediaRecorder] = useState(null);
   const [uploadedFiles, setUploadedFiles] = useState([]);
-  const [complexity, setComplexity] = useState('easy');
+  const [complexity, setComplexity] = useState(null);
+  const [selectedVoice, setSelectedVoice] = useState(null);
+  const [generatedText, setGeneratedText] = useState(null);
 
-  const [generatedText, setGeneratedText] = useState('');
   const [speechAudioUrl, setSpeechAudioUrl] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
@@ -72,10 +74,25 @@ const AudioRecordingPage = () => {
   const [setWords, setSetWords] = useState([]);
   const [selectedWords, setSelectedWords] = useState([]);
 
-  const [selectedVoice, setSelectedVoice] = useState('');
   const [voices, setVoices] = useState([]);
 
   const [audioRef, setAudioRef] = useState(new Audio());
+  const [transcribedText, setTranscribedText] = useState('');
+  const audioChunksRef = useRef([]);
+
+  const [customFileName, setCustomFileName] = useState('');
+
+  const [customRecordingName, setCustomRecordingName] = useState('');
+
+  const [recordings, setRecordings] = useState([]);
+  const [selectedRecording, setSelectedRecording] = useState(null);
+  const [isReadyToRecord, setIsReadyToRecord] = useState(false);
+
+  // Effect hook to force users to fill requirements before recording
+  useEffect(() => {
+    const readyToRecord = vocabularySets.length > 0 && selectedWords.length > 0 && complexity !== null && selectedVoice !== null && generatedText !== null && generatedText !== '';
+    setIsReadyToRecord(readyToRecord);
+  }, [vocabularySets, selectedWords, complexity, selectedVoice, generatedText]);
 
   // Effect hook for updating audio player source
   useEffect(() => {
@@ -111,6 +128,21 @@ const AudioRecordingPage = () => {
     fetchVoices();
   }, []);
 
+  // Effect hook to fetch all recordings
+  useEffect(() => {
+    const fetchRecordings = async () => {
+      try {
+        const response = await axios.get('http://localhost:8100/api/recordings');
+        setRecordings(response.data);
+      } catch (error) {
+        console.error('Error fetching recordings:', error);
+      }
+    };
+  
+    fetchRecordings();
+  }, []);
+  
+
   const handleSetSelection = async (setId) => {
     setSelectedWords([]);
     try {
@@ -128,51 +160,58 @@ const AudioRecordingPage = () => {
   };
 
   const startRecording = async () => {
+    if (!isReadyToRecord) return;
     const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
     const recorder = new MediaRecorder(stream);
-    let audioChunks = [];
-
+    audioChunksRef.current = [];
+  
     recorder.ondataavailable = event => {
-      audioChunks.push(event.data);
+      audioChunksRef.current.push(event.data);
     };
-
-    recorder.onstop = async () => {
-      const audioBlob = new Blob(audioChunks, { type: 'audio/wav' });
-      const url = URL.createObjectURL(audioBlob);
-      setAudioURL(url);
-      audioChunks = [];
-      uploadAudio(audioBlob);
-    };
-
+  
     recorder.start();
     setMediaRecorder(recorder);
     setRecording(true);
   };
-
+  
   const stopRecording = () => {
     mediaRecorder.stop();
     setRecording(false);
+    mediaRecorder.onstop = async () => {
+      const audioBlob = new Blob(audioChunksRef.current, { type: 'audio/wav' });
+      const url = URL.createObjectURL(audioBlob);
+      setAudioURL(url);
+      console.log("Generated Text at Recording Stop: ", generatedText);
+      await uploadAudio(audioBlob, generatedText);  // Pass generatedText directly
+      await uploadAndTranscribeAudio(audioBlob);
+      setCustomRecordingName('');
+      audioChunksRef.current = [];
+    };
   };
+  
 
   const uploadAudio = async (audioBlob) => {
     const formData = new FormData();
-    formData.append('file', audioBlob, 'audio-recording.wav');
-
+    const fileName = customRecordingName ? `${customRecordingName}.wav` : 'audio-recording.wav';
+    formData.append('file', audioBlob, fileName);
+    formData.append('associatedText', generatedText);
+  
     try {
-      const response = await fetch('http://localhost:8100/api/upload', {
-        method: 'POST',
-        body: formData,
+      const response = await axios.post('http://localhost:8100/api/upload', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        }
       });
-
-      if (response.ok) {
-        const data = await response.json();
+  
+      if (response.status === 200) {
+        const data = response.data;
         setUploadedFiles([...uploadedFiles, data.fileName]);
         console.log('Upload successful:', data.message);
       } else {
-        console.error('Upload failed');
+        console.error('Upload failed with status:', response.status);
       }
     } catch (error) {
-      console.error('Error:', error);
+      console.error('Error during upload:', error);
     }
   };
 
@@ -255,11 +294,14 @@ const AudioRecordingPage = () => {
         const data = await response.json();
         setGeneratedText(data.text);
         fetchSpeechAudio(data.text);
+        return data.text;
       } else {
         console.error('Failed to generate text');
+        return '';
       }
     } catch (error) {
       console.error('Error:', error);
+      return '';
     }
   };
 
@@ -269,7 +311,38 @@ const AudioRecordingPage = () => {
       await fetchSpeechAudio(generatedText);
     }
   };
+
+
   
+  const uploadAndTranscribeAudio = async (audioBlob) => {
+    const formData = new FormData();
+    formData.append('audio', audioBlob, 'audio-recording.wav');
+  
+    try {
+      const response = await axios.post('http://localhost:8100/api/speech-to-text/transcribe', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+  
+      if (response.data && response.data.transcription) {
+        console.log('Transcription:', response.data.transcription);
+        setTranscribedText(response.data.transcription); // Update the transcribed text state
+      }
+    } catch (error) {
+      console.error('Error in transcription:', error);
+    }
+  };
+  
+  const handleRecordingNameChange = (e) => {
+    setCustomRecordingName(e.target.value);
+  };
+  
+  const handleRecordingSelection = (e) => {
+    const selectedId = e.target.value;
+    const recording = recordings.find(rec => rec._id === selectedId);
+    setSelectedRecording(recording);
+  };
 
   return (
     <VStack spacing={6} align="stretch">
@@ -342,12 +415,28 @@ const AudioRecordingPage = () => {
 
       {/* Audio Recording Section */}
       <Box>
-        <Button colorScheme="blue" onClick={recording ? stopRecording : startRecording}>
-          {recording ? 'Stop Recording' : 'Start Recording'}
+        <Button 
+          colorScheme="blue" 
+          onClick={recording ? stopRecording : startRecording} 
+          isDisabled={!isReadyToRecord}
+          _disabled={{ opacity: 0.6, cursor: 'not-allowed', backgroundColor: 'gray.400' }}
+        >
+        {recording ? 'Stop Recording' : 'Start Recording'}
         </Button>
         {audioURL && <audio src={audioURL} controls aria-label="Recorded Audio" />}
+    </Box>
+
+      <Input
+          placeholder="Enter a name for your recording"
+          value={customRecordingName}
+          onChange={handleRecordingNameChange}
+      />
+      
+      <Box>
+        <Text mt={4} fontWeight="bold">Transcribed Text:</Text>
+        <Textarea value={transcribedText} readOnly />
       </Box>
-  
+
       {/* Uploaded Files List */}
       <List spacing={3}>
         {uploadedFiles.map((file, index) => (
@@ -360,6 +449,22 @@ const AudioRecordingPage = () => {
           </ListItem>
         ))}
       </List>
+
+      <Select placeholder="Select a recording" onChange={handleRecordingSelection}>
+        {recordings.map(rec => (
+          <option key={rec._id} value={rec._id}>{rec.fileName}</option>
+        ))}
+      </Select>
+
+      {selectedRecording && (
+        <>
+          <Text fontWeight="bold">Associated Text:</Text>
+          <Text>{selectedRecording.associatedText}</Text>
+          <audio src={selectedRecording.audioUrl} controls />
+        </>
+      )}
+
+
     </VStack>
   );
   
