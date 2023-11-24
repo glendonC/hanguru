@@ -26,19 +26,23 @@ router.post('/', upload.single('file'), async (req, res) => {
   const file = req.file;
   try {
     const audioUrl = await uploadToGoogleCloud(file);
+
+    const recordingName = req.body.customRecordingName || file.filename;
+
     const newRecording = new Recording({
-      fileName: file.filename,
+      fileName: recordingName,
       audioUrl: audioUrl,
       associatedText: req.body.associatedText,
     });
 
     await newRecording.save();
-    res.json({ message: 'File uploaded successfully.', fileName: file.filename });
+    res.json({ message: 'File uploaded successfully.', fileName: recordingName });
   } catch (error) {
     console.error('Error:', error);
     res.status(500).json({ message: 'Error uploading to Google Cloud Storage', error });
   }
 });
+
 
 /**
  * DELETE /delete/:fileName

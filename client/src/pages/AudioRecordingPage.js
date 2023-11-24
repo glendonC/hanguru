@@ -194,6 +194,7 @@ const AudioRecordingPage = () => {
     const formData = new FormData();
     const fileName = customRecordingName ? `${customRecordingName}.wav` : 'audio-recording.wav';
     formData.append('file', audioBlob, fileName);
+    formData.append('customRecordingName', customRecordingName);
     formData.append('associatedText', generatedText);
   
     try {
@@ -214,6 +215,7 @@ const AudioRecordingPage = () => {
       console.error('Error during upload:', error);
     }
   };
+  
 
   const deleteAudio = async (fileName) => {
     try {
