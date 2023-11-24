@@ -62,9 +62,10 @@ const AudioRecordingPage = () => {
   const [audioURL, setAudioURL] = useState('');
   const [mediaRecorder, setMediaRecorder] = useState(null);
   const [uploadedFiles, setUploadedFiles] = useState([]);
-  const [complexity, setComplexity] = useState('easy');
+  const [complexity, setComplexity] = useState(null);
+  const [selectedVoice, setSelectedVoice] = useState(null);
+  const [generatedText, setGeneratedText] = useState(null);
 
-  const [generatedText, setGeneratedText] = useState('');
   const [speechAudioUrl, setSpeechAudioUrl] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
@@ -73,7 +74,6 @@ const AudioRecordingPage = () => {
   const [setWords, setSetWords] = useState([]);
   const [selectedWords, setSelectedWords] = useState([]);
 
-  const [selectedVoice, setSelectedVoice] = useState('');
   const [voices, setVoices] = useState([]);
 
   const [audioRef, setAudioRef] = useState(new Audio());
@@ -86,7 +86,13 @@ const AudioRecordingPage = () => {
 
   const [recordings, setRecordings] = useState([]);
   const [selectedRecording, setSelectedRecording] = useState(null);
+  const [isReadyToRecord, setIsReadyToRecord] = useState(false);
 
+  // Effect hook to force users to fill requirements before recording
+  useEffect(() => {
+    const readyToRecord = vocabularySets.length > 0 && selectedWords.length > 0 && complexity !== null && selectedVoice !== null && generatedText !== null && generatedText !== '';
+    setIsReadyToRecord(readyToRecord);
+  }, [vocabularySets, selectedWords, complexity, selectedVoice, generatedText]);
 
   // Effect hook for updating audio player source
   useEffect(() => {
@@ -154,6 +160,7 @@ const AudioRecordingPage = () => {
   };
 
   const startRecording = async () => {
+    if (!isReadyToRecord) return;
     const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
     const recorder = new MediaRecorder(stream);
     audioChunksRef.current = [];
@@ -408,11 +415,17 @@ const AudioRecordingPage = () => {
 
       {/* Audio Recording Section */}
       <Box>
-        <Button colorScheme="blue" onClick={recording ? stopRecording : startRecording}>
-          {recording ? 'Stop Recording' : 'Start Recording'}
+        <Button 
+          colorScheme="blue" 
+          onClick={recording ? stopRecording : startRecording} 
+          isDisabled={!isReadyToRecord}
+          _disabled={{ opacity: 0.6, cursor: 'not-allowed', backgroundColor: 'gray.400' }}
+        >
+        {recording ? 'Stop Recording' : 'Start Recording'}
         </Button>
         {audioURL && <audio src={audioURL} controls aria-label="Recorded Audio" />}
-      </Box>
+    </Box>
+
       <Input
           placeholder="Enter a name for your recording"
           value={customRecordingName}
