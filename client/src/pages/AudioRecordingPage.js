@@ -156,7 +156,7 @@ const AudioRecordingPage = () => {
   const startRecording = async () => {
     const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
     const recorder = new MediaRecorder(stream);
-    audioChunksRef.current = []; // Reset the audio chunks
+    audioChunksRef.current = [];
   
     recorder.ondataavailable = event => {
       audioChunksRef.current.push(event.data);
@@ -174,7 +174,8 @@ const AudioRecordingPage = () => {
       const audioBlob = new Blob(audioChunksRef.current, { type: 'audio/wav' });
       const url = URL.createObjectURL(audioBlob);
       setAudioURL(url);
-      await uploadAudio(audioBlob);
+      console.log("Generated Text at Recording Stop: ", generatedText);
+      await uploadAudio(audioBlob, generatedText);  // Pass generatedText directly
       await uploadAndTranscribeAudio(audioBlob);
       setCustomRecordingName('');
       audioChunksRef.current = [];
@@ -186,7 +187,7 @@ const AudioRecordingPage = () => {
     const formData = new FormData();
     const fileName = customRecordingName ? `${customRecordingName}.wav` : 'audio-recording.wav';
     formData.append('file', audioBlob, fileName);
-    formData.append('associatedText', generatedText); // Appending associated text
+    formData.append('associatedText', generatedText);
   
     try {
       const response = await axios.post('http://localhost:8100/api/upload', formData, {
@@ -286,11 +287,14 @@ const AudioRecordingPage = () => {
         const data = await response.json();
         setGeneratedText(data.text);
         fetchSpeechAudio(data.text);
+        return data.text;
       } else {
         console.error('Failed to generate text');
+        return '';
       }
     } catch (error) {
       console.error('Error:', error);
+      return '';
     }
   };
 
@@ -320,7 +324,6 @@ const AudioRecordingPage = () => {
       }
     } catch (error) {
       console.error('Error in transcription:', error);
-      // Handle error
     }
   };
   
@@ -440,12 +443,14 @@ const AudioRecordingPage = () => {
         ))}
       </Select>
 
-    {selectedRecording && (
-      <Box mt={4}>
-        <Text fontWeight="bold">Associated Text:</Text>
-        <Text>{selectedRecording.associatedText}</Text>
-      </Box>
-    )}
+      {selectedRecording && (
+        <>
+          <Text fontWeight="bold">Associated Text:</Text>
+          <Text>{selectedRecording.associatedText}</Text>
+          <audio src={selectedRecording.audioUrl} controls />
+        </>
+      )}
+
 
     </VStack>
   );

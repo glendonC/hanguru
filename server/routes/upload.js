@@ -10,33 +10,30 @@ const Recording = require('../models/Recording');
 
 /**
  * POST /
- * This endpoint handles the upload of a file to Google Cloud Storage
+ * This endpoint handles the upload of a file to Google Cloud Storage and saves the recording metadata
  * It uses 'multer' for handling multipart/form-data, specifically for file uploads
  *
  * Request:
  * - The file to be uploaded should be sent as part of the form data with the key 'file'
+ * - Associated text for the recording should be sent as part of the form data with the key 'associatedText'
  * 
  * Response:
  * - On successful upload, it returns a JSON object with a success message and the filename
+ * - Saves the recording metadata (file name, audio URL, associated text) to the database
  * - In case of an error during the upload process, it returns a 500 status code with an error message
  */
-// need to update documentation
 router.post('/', upload.single('file'), async (req, res) => {
   const file = req.file;
   try {
-    await uploadToGoogleCloud(file);
-
+    const audioUrl = await uploadToGoogleCloud(file);
     const newRecording = new Recording({
       fileName: file.filename,
-      associatedText: req.body.associatedText
+      audioUrl: audioUrl,
+      associatedText: req.body.associatedText,
     });
 
     await newRecording.save();
-
-    res.json({ 
-      message: 'File uploaded successfully to Google Cloud Storage.',
-      fileName: file.filename
-    });
+    res.json({ message: 'File uploaded successfully.', fileName: file.filename });
   } catch (error) {
     console.error('Error:', error);
     res.status(500).json({ message: 'Error uploading to Google Cloud Storage', error });
@@ -52,7 +49,7 @@ router.post('/', upload.single('file'), async (req, res) => {
  * - fileName: The name of the file to be deleted from the Google Cloud Storage bucket
  * 
  * Response:
- * - On successful deletion, it returns a JSON object with a success message.
+ * - On successful deletion, it returns a JSON object with a success message
  * - If there's an error in the file deletion process, it returns a 500 status code with an error message
  */
 router.delete('/delete/:fileName', async (req, res) => {
