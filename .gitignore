@@ -18,3 +18,4 @@ data/
 server/gcs-service-account.json
 server/speech-to-text-service-account.json
 server/text-to-speech-service-account.json
+server/cloud-proxy-service-account.json
