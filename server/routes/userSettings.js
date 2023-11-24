@@ -35,10 +35,6 @@ router.post('/change-username', isAuthenticated, async (req, res) => {
 router.post('/change-password', isAuthenticated, async (req, res) => {
   const { newPassword } = req.body;
 
-  if (!newPassword || newPassword.length < 6) {
-    return res.status(400).send('Password too short');
-  }
-
   try {
     const hashedPassword = await bcrypt.hash(newPassword, 10);
     await User.findByIdAndUpdate(req.user.id, { password: hashedPassword });

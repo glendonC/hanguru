@@ -59,36 +59,44 @@ function AccountSettingsPage() {
   const handlePasswordChange = async (e) => {
     e.preventDefault();
     try {
-        const response = await fetch('http://localhost:8100/api/user/change-password', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ newPassword: password }),
-        });
-        if (!response.ok) {
-            throw new Error('Password update failed');
-        }
-        // Display success message
+      const response = await fetch('http://localhost:8100/api/user/change-password', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ newPassword: password }),
+        credentials: 'include'
+      });
+  
+      let message;
+      if (response.headers.get("Content-Type").includes("application/json")) {
+        const responseData = await response.json();
+        message = responseData.message;
+      } else {
+        message = await response.text();
+      }
+  
+      if (response.ok) {
         toast({
-            title: 'Password updated successfully.',
-            status: 'success',
-            duration: 5000,
-            isClosable: true,
+          title: "Password Updated",
+          description: message,
+          status: "success",
+          duration: 5000,
+          isClosable: true,
         });
-    } catch (err) {
-        // Display error message
-        toast({
-            title: 'Error updating password.',
-            description: err.message,
-            status: 'error',
-            duration: 5000,
-            isClosable: true,
-        });
+      } else {
+        throw new Error(message || 'Failed to update password');
+      }
+    } catch (error) {
+      console.error('Error:', error);
+      toast({
+        title: "Error",
+        description: error.message,
+        status: "error",
+        duration: 5000,
+        isClosable: true,
+      });
     }
-};
-
-
+  };
+  
   return (
     <Box p={8} maxWidth="500px" mx="auto">
       <Heading as="h2" mb={6}>
