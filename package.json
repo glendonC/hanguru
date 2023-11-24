@@ -1,6 +1,7 @@
 {
   "dependencies": {
     "@google-cloud/text-to-speech": "^5.0.1",
-    "connect-mongo": "^5.1.0"
+    "connect-mongo": "^5.1.0",
+    "mysql2": "^3.6.5"
   }
 }
