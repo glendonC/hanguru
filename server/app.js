@@ -15,6 +15,10 @@ const textToSpeechRoute = require('./routes/textToSpeechRoute');
 const userSettingsRoutes = require('./routes/userSettings');
 const speechToTextRoute = require('./routes/speechToTextRoute');
 const recordingRoutes = require('./routes/recording');
+const usersRoutes = require('./routes/users');
+const dbPool = require('./db/database');
+
+
 const bcrypt = require('bcryptjs');
 
 const MongoStore = require('connect-mongo');
@@ -48,6 +52,17 @@ mongoose.connect(process.env.MONGO_URI, { useNewUrlParser: true, useUnifiedTopol
 .then(() => console.log('MongoDB Connected to Hanguru Database'))
 .catch(err => console.error(err));
 
+app.get('/example', async (req, res) => {
+  try {
+    const [rows, fields] = await dbPool.query('SELECT * FROM your_table');
+    res.json(rows);
+  } catch (error) {
+    console.error('Error querying the database:', error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
+
+
 app.get('/', (req, res) => {
   res.send('Hello World!');
 });
@@ -63,6 +78,7 @@ app.use('/api', textToSpeechRoute);
 app.use('/api/user', userSettingsRoutes);
 app.use('/api/speech-to-text', speechToTextRoute);
 app.use('/api/recordings', recordingRoutes);
+app.use('/api/users', usersRoutes);
 
 // Define the port to listen on
 const PORT = process.env.PORT || 8100;

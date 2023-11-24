@@ -9,6 +9,26 @@ function isAuthenticated(req, res, next) {
   }
   res.status(401).send('User not authenticated');
 }
+router.post('/update-profile-picture', isAuthenticated, async (req, res) => {
+  const { selectedProfilePicture } = req.body;
+
+  try {
+    const updatedUser = await User.findByIdAndUpdate(
+      req.user.id,
+      { profilePicture: selectedProfilePicture },
+      { new: true }
+    );
+
+    if (!updatedUser) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+
+    res.status(200).json({ message: 'Profile picture updated successfully', user: updatedUser });
+  } catch (error) {
+    console.error('Error updating profile picture:', error);
+    res.status(500).json({ error: 'Error updating profile picture' });
+  }
+});
 
 // Endpoint to change username
 router.post('/change-username', isAuthenticated, async (req, res) => {

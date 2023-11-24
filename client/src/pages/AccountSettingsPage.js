@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Box,
   Button,
@@ -7,7 +7,10 @@ import {
   Input,
   VStack,
   Heading,
-  useToast
+  useToast,
+  Grid,
+  GridItem,
+  Image
 } from '@chakra-ui/react';
 
 function AccountSettingsPage() {
@@ -15,6 +18,54 @@ function AccountSettingsPage() {
   const [password, setPassword] = useState('');
   const toast = useToast();
 
+  const [selectedProfilePicture, setSelectedProfilePicture] = useState(null);
+  const [profilePictures, setProfilePictures] = useState([]);
+
+  useEffect(() => {
+    fetch('http://localhost:8100/api/users/profile-pictures')
+      .then((response) => response.json())
+      .then((data) => {
+        setProfilePictures(data);
+      })
+      .catch((error) => {
+        console.error('Error fetching profile pictures:', error);
+      });
+  }, []);
+
+  const handleProfilePictureChange = async (pictureId) => {
+    try {
+      const response = await fetch('http://localhost:8100/api/user/update-profile-picture', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ selectedProfilePicture: pictureId }),
+        credentials: 'include',
+      });
+  
+      if (response.ok) {
+        setSelectedProfilePicture(pictureId);
+  
+        toast({
+          title: 'Profile Picture Updated',
+          description: 'Your profile picture has been updated successfully',
+          status: 'success',
+          duration: 5000,
+          isClosable: true,
+        });
+      } else {
+        throw new Error('Failed to update profile picture');
+      }
+    } catch (error) {
+      console.error('Error:', error);
+      toast({
+        title: 'Error',
+        description: error.message,
+        status: 'error',
+        duration: 5000,
+        isClosable: true,
+      });
+    }
+  };
+  
   const handleUsernameChange = async (e) => {
     e.preventDefault();
     try {
@@ -105,7 +156,21 @@ function AccountSettingsPage() {
 
       <VStack spacing={4}>
         {/* Profile Picture Update */}
-        {/* Add a file input for profile picture with Chakra UI styling if needed */}
+        <FormControl>
+          <FormLabel>Select Profile Picture</FormLabel>
+          <Grid templateColumns="repeat(3, 1fr)" gap={4}>
+            {profilePictures.map((picture) => (
+              <Image
+                key={picture.id}
+                src={picture.imageUrl}
+                alt="Profile"
+                onClick={() => handleProfilePictureChange(picture.id)}
+                className={picture.id === selectedProfilePicture ? 'selected' : ''}
+              />
+            ))}
+          </Grid>
+
+        </FormControl>
 
         {/* Username Update */}
         <FormControl as="fieldset">
