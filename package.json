@@ -1,5 +1,6 @@
 {
   "dependencies": {
-    "@google-cloud/text-to-speech": "^5.0.1"
+    "@google-cloud/text-to-speech": "^5.0.1",
+    "connect-mongo": "^5.1.0"
   }
 }

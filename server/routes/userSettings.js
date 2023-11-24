@@ -14,12 +14,14 @@ function isAuthenticated(req, res, next) {
 router.post('/change-username', isAuthenticated, async (req, res) => {
   const { newUsername } = req.body;
 
-  // Basic validation for new username
+  const existingUser = await User.findOne({ username: newUsername });
+  if (existingUser) {
+    return res.status(400).send('Username already taken');
+  } 
+
   if (!newUsername || newUsername.length < 3) {
     return res.status(400).send('Invalid username');
   }
-
-  // Additional validation checks can be added here (e.g., check if username already exists)
 
   try {
     await User.findByIdAndUpdate(req.user.id, { username: newUsername });
@@ -33,7 +35,6 @@ router.post('/change-username', isAuthenticated, async (req, res) => {
 router.post('/change-password', isAuthenticated, async (req, res) => {
   const { newPassword } = req.body;
 
-  // Basic validation for new password
   if (!newPassword || newPassword.length < 6) {
     return res.status(400).send('Password too short');
   }

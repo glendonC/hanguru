@@ -21,8 +21,9 @@ function AccountSettingsPage() {
       const response = await fetch('http://localhost:8100/api/user/change-username', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ newUsername: username })
-      });
+        body: JSON.stringify({ newUsername: username }),
+        credentials: 'include'
+    });
   
       // Handle response
     } catch (error) {
@@ -33,17 +34,35 @@ function AccountSettingsPage() {
   const handlePasswordChange = async (e) => {
     e.preventDefault();
     try {
-      const response = await fetch('http://localhost:8100/api/user/change-password', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ newPassword: password })
-      });
-  
-      // Handle response
-    } catch (error) {
-      console.error('Error:', error);
+        const response = await fetch('http://localhost:8100/api/user/change-password', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ newPassword: password }),
+        });
+        if (!response.ok) {
+            throw new Error('Password update failed');
+        }
+        // Display success message
+        toast({
+            title: 'Password updated successfully.',
+            status: 'success',
+            duration: 5000,
+            isClosable: true,
+        });
+    } catch (err) {
+        // Display error message
+        toast({
+            title: 'Error updating password.',
+            description: err.message,
+            status: 'error',
+            duration: 5000,
+            isClosable: true,
+        });
     }
-  };
+};
+
 
   return (
     <Box p={8} maxWidth="500px" mx="auto">

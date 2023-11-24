@@ -17,14 +17,28 @@ const speechToTextRoute = require('./routes/speechToTextRoute');
 const recordingRoutes = require('./routes/recording');
 const bcrypt = require('bcryptjs');
 
+const MongoStore = require('connect-mongo');
 
 // Configure middleware
-app.use(express.json());                   // Parse JSON request bodies
-app.use(cors());                           // Enable Cross-Origin Resource Sharing
-app.use(session({ 
-  secret: process.env.SESSION_SECRET,       // Secret key for session management
-  resave: false,                            // Don't save session if unmodified
-  saveUninitialized: false                  // Don't create session until something is stored
+app.use(express.json());            // Parse JSON request bodies
+const corsOptions = {
+  origin: 'http://localhost:3001', // Client's origin
+  credentials: true // To allow sending cookies or authentication headers
+};
+app.use(cors(corsOptions));  // Enable Cross-Origin Resource Sharing
+                          
+app.use(session({
+  secret: process.env.SESSION_SECRET,
+  resave: false,
+  saveUninitialized: false,
+  store: MongoStore.create({ 
+    mongoUrl: process.env.MONGO_URI
+  }),
+  cookie: {
+    secure: process.env.NODE_ENV === 'production',
+    httpOnly: true,
+    maxAge: 24 * 60 * 60 * 1000 // 1 day
+  }
 }));
 app.use(passport.initialize());             // Initialize Passport for user authentication
 app.use(passport.session());                // Enable session support for Passport

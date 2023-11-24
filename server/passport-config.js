@@ -33,9 +33,11 @@ function initialize(passport) {
       const user = await User.findById(id);
       done(null, user);
     } catch (e) {
+      console.error("Error in deserialization:", e);
       done(e);
     }
   });
+  
 }
 
 module.exports = initialize;
