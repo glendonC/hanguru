@@ -359,6 +359,11 @@ const AudioRecordingPage = () => {
     }
   };
 
+  const formatDate = (dateString) => {
+    const options = { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' };
+    return new Date(dateString).toLocaleDateString(undefined, options);
+  };
+
   return (
     <VStack spacing={6} align="stretch">
       {/* Vocabulary and Complexity Selection */}
@@ -466,15 +471,18 @@ const AudioRecordingPage = () => {
       </List>
 
       <Select placeholder="Select a recording" onChange={handleRecordingSelection}>
-        {recordings.map(rec => (
-          <option key={rec._id} value={rec._id}>{rec.fileName}</option>
-        ))}
+      {recordings.map(rec => (
+        <option key={rec._id} value={rec._id}>
+          {rec.fileName} - Uploaded on: {formatDate(rec.uploadDate)}
+        </option>
+      ))}
       </Select>
 
       {selectedRecording && (
         <>
           <Text fontWeight="bold">Associated Text:</Text>
           <Text>{selectedRecording.associatedText}</Text>
+          <Text>Uploaded on: {formatDate(selectedRecording.uploadDate)}</Text>
           <audio src={selectedRecording.audioUrl} controls />
           <Button colorScheme="red" onClick={deleteSelectedRecording}>Delete Recording</Button>
         </>
