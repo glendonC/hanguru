@@ -24,7 +24,17 @@ router.get('/recordings/:id', async (req, res) => {
       console.error('Error fetching recording:', error);
       res.status(500).send('Error fetching recording');
     }
-  });
-  
+});
+
+router.delete('/delete/:id', async (req, res) => {
+  try {
+    const recordingId = req.params.id;
+    await Recording.findByIdAndDelete(recordingId);
+    res.json({ message: 'Recording deleted successfully' });
+  } catch (error) {
+    console.error('Error deleting recording:', error);
+    res.status(500).send('Error deleting recording');
+  }
+});
 
 module.exports = router;

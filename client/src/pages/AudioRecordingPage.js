@@ -344,6 +344,21 @@ const AudioRecordingPage = () => {
     setSelectedRecording(recording);
   };
 
+  const deleteSelectedRecording = async () => {
+    if (!selectedRecording) return;
+  
+    try {
+      const response = await axios.delete(`http://localhost:8100/api/recordings/delete/${selectedRecording._id}`);
+      if (response.status === 200) {
+        setRecordings(recordings.filter(rec => rec._id !== selectedRecording._id));
+        setSelectedRecording(null);
+        console.log('Recording deleted successfully');
+      }
+    } catch (error) {
+      console.error('Error deleting recording:', error);
+    }
+  };
+
   return (
     <VStack spacing={6} align="stretch">
       {/* Vocabulary and Complexity Selection */}
@@ -461,6 +476,7 @@ const AudioRecordingPage = () => {
           <Text fontWeight="bold">Associated Text:</Text>
           <Text>{selectedRecording.associatedText}</Text>
           <audio src={selectedRecording.audioUrl} controls />
+          <Button colorScheme="red" onClick={deleteSelectedRecording}>Delete Recording</Button>
         </>
       )}
 
