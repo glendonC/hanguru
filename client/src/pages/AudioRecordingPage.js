@@ -13,7 +13,7 @@ import {
   SliderFilledTrack,
   SliderThumb,
   HStack,
-  Icon,
+  Input,
   Text,
   Textarea
 } from '@chakra-ui/react';
@@ -80,6 +80,13 @@ const AudioRecordingPage = () => {
   const [transcribedText, setTranscribedText] = useState('');
   const audioChunksRef = useRef([]);
 
+  const [customFileName, setCustomFileName] = useState('');
+
+  const [customRecordingName, setCustomRecordingName] = useState('');
+
+  const [recordings, setRecordings] = useState([]);
+  const [selectedRecording, setSelectedRecording] = useState(null);
+
 
   // Effect hook for updating audio player source
   useEffect(() => {
@@ -114,6 +121,21 @@ const AudioRecordingPage = () => {
     };
     fetchVoices();
   }, []);
+
+  // Effect hook to fetch all recordings
+  useEffect(() => {
+    const fetchRecordings = async () => {
+      try {
+        const response = await axios.get('http://localhost:8100/api/recordings');
+        setRecordings(response.data);
+      } catch (error) {
+        console.error('Error fetching recordings:', error);
+      }
+    };
+  
+    fetchRecordings();
+  }, []);
+  
 
   const handleSetSelection = async (setId) => {
     setSelectedWords([]);
@@ -154,6 +176,7 @@ const AudioRecordingPage = () => {
       setAudioURL(url);
       await uploadAudio(audioBlob);
       await uploadAndTranscribeAudio(audioBlob);
+      setCustomRecordingName('');
       audioChunksRef.current = [];
     };
   };
@@ -161,23 +184,26 @@ const AudioRecordingPage = () => {
 
   const uploadAudio = async (audioBlob) => {
     const formData = new FormData();
-    formData.append('file', audioBlob, 'audio-recording.wav');
-
+    const fileName = customRecordingName ? `${customRecordingName}.wav` : 'audio-recording.wav';
+    formData.append('file', audioBlob, fileName);
+    formData.append('associatedText', generatedText); // Appending associated text
+  
     try {
-      const response = await fetch('http://localhost:8100/api/upload', {
-        method: 'POST',
-        body: formData,
+      const response = await axios.post('http://localhost:8100/api/upload', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        }
       });
-
-      if (response.ok) {
-        const data = await response.json();
+  
+      if (response.status === 200) {
+        const data = response.data;
         setUploadedFiles([...uploadedFiles, data.fileName]);
         console.log('Upload successful:', data.message);
       } else {
-        console.error('Upload failed');
+        console.error('Upload failed with status:', response.status);
       }
     } catch (error) {
-      console.error('Error:', error);
+      console.error('Error during upload:', error);
     }
   };
 
@@ -298,7 +324,15 @@ const AudioRecordingPage = () => {
     }
   };
   
+  const handleRecordingNameChange = (e) => {
+    setCustomRecordingName(e.target.value);
+  };
   
+  const handleRecordingSelection = (e) => {
+    const selectedId = e.target.value;
+    const recording = recordings.find(rec => rec._id === selectedId);
+    setSelectedRecording(recording);
+  };
 
   return (
     <VStack spacing={6} align="stretch">
@@ -376,6 +410,11 @@ const AudioRecordingPage = () => {
         </Button>
         {audioURL && <audio src={audioURL} controls aria-label="Recorded Audio" />}
       </Box>
+      <Input
+          placeholder="Enter a name for your recording"
+          value={customRecordingName}
+          onChange={handleRecordingNameChange}
+      />
       
       <Box>
         <Text mt={4} fontWeight="bold">Transcribed Text:</Text>
@@ -394,6 +433,20 @@ const AudioRecordingPage = () => {
           </ListItem>
         ))}
       </List>
+
+      <Select placeholder="Select a recording" onChange={handleRecordingSelection}>
+        {recordings.map(rec => (
+          <option key={rec._id} value={rec._id}>{rec.fileName}</option>
+        ))}
+      </Select>
+
+    {selectedRecording && (
+      <Box mt={4}>
+        <Text fontWeight="bold">Associated Text:</Text>
+        <Text>{selectedRecording.associatedText}</Text>
+      </Box>
+    )}
+
     </VStack>
   );
   

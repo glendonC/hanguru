@@ -14,6 +14,7 @@ const gptRoute = require('./routes/gpt');
 const textToSpeechRoute = require('./routes/textToSpeechRoute');
 const userSettingsRoutes = require('./routes/userSettings');
 const speechToTextRoute = require('./routes/speechToTextRoute');
+const recordingRoutes = require('./routes/recording');
 const bcrypt = require('bcryptjs');
 
 
@@ -47,6 +48,7 @@ app.use('/api/upload', uploadRoutes);
 app.use('/api', textToSpeechRoute);
 app.use('/api/user', userSettingsRoutes);
 app.use('/api/speech-to-text', speechToTextRoute);
+app.use('/api/recordings', recordingRoutes);
 
 // Define the port to listen on
 const PORT = process.env.PORT || 8100;
