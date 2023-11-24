@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState, useEffect} from 'react';
 import {
   Box,
   Flex,
@@ -58,7 +58,28 @@ export default function NavBar({ user }) {
   const { colorMode, toggleColorMode } = useColorMode();
   const { isOpen, onOpen, onClose } = useDisclosure();
   const navigate = useNavigate();
+  const [profilePictureUrl, setProfilePictureUrl] = useState(null);
   
+  useEffect(() => {
+    if (user?.user?.profilePicture) {
+      const profilePictureId = user.user.profilePicture;
+      fetch(`http://localhost:8100/api/users/profile-pictures/${profilePictureId}`)
+        .then((response) => {
+          if (response.ok) {
+            return response.json();
+          } else {
+            throw new Error('Network response was not ok');
+          }
+        })
+        .then((data) => {
+          setProfilePictureUrl(data.signedUrl);
+        })
+        .catch((error) => {
+          console.error('Error fetching signed URL for profile picture:', error);
+        });
+    }
+  }, [user]);
+    
   const handleAccountSettingsClick = () => {
     navigate('/account-settings');
   };
@@ -98,15 +119,15 @@ export default function NavBar({ user }) {
                 minW={0}>
                 <Avatar
                   size={'sm'}
-                  src={'https://avatars.dicebear.com/api/male/username.svg'}
+                  src={profilePictureUrl || 'https://avatars.dicebear.com/api/male/username.svg'}
                 />
               </MenuButton>
               <MenuList>
                 <Center>
-                  <Avatar
-                    size={'2xl'}
-                    src={'https://avatars.dicebear.com/api/male/username.svg'}
-                  />
+                <Avatar
+                  size={'sm'}
+                  src={profilePictureUrl || 'https://avatars.dicebear.com/api/male/username.svg'}
+                />
                 </Center>
                 <Center>
                     <p>{user?.user?.username || 'Guest'}</p>
