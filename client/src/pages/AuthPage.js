@@ -61,7 +61,7 @@ function AuthPage({ onLogin, showLogin, toggleAuthPage }) {
       ? { usernameOrEmail, password }
       : { username, email, password };
     try {
-      const response = await fetch(`http://localhost:8100/api/${endpoint}`, {
+      const response = await fetch(`https://peaceful-retreat-31647-a23d2c8b232f.herokuapp.com/api/${endpoint}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(formData),

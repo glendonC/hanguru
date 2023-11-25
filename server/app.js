@@ -22,13 +22,13 @@ const dbPool = require('./db/database');
 const bcrypt = require('bcryptjs');
 
 const MongoStore = require('connect-mongo');
-
+app.use(express.json()); 
 // Configure middleware
-app.use(express.json());            // Parse JSON request bodies
 const corsOptions = {
-  origin: 'http://localhost:3001', // Client's origin
-  credentials: true // To allow sending cookies or authentication headers
+  origin: ['http://localhost:3001', 'https://glendonC.github.io/hanguru'],
+  credentials: true,
 };
+
 app.use(cors(corsOptions));  // Enable Cross-Origin Resource Sharing
                           
 app.use(session({

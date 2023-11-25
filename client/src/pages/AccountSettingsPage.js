@@ -9,7 +9,6 @@ import {
   Heading,
   useToast,
   Grid,
-  GridItem,
   Image
 } from '@chakra-ui/react';
 
