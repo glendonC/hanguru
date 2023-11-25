@@ -4,6 +4,7 @@
     "@google-cloud/storage": "^7.6.0",
     "@google-cloud/text-to-speech": "^5.0.1",
     "@google-cloud/translate": "^8.0.2",
+    "axios": "^1.6.2",
     "bcryptjs": "^2.4.3",
     "connect-mongo": "^5.1.0",
     "cors": "^2.8.5",
