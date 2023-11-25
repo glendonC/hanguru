@@ -24,11 +24,17 @@ const bcrypt = require('bcryptjs');
 const MongoStore = require('connect-mongo');
 app.use(express.json()); 
 // Configure middleware
-const corsOptions = {
-  origin: ['http://localhost:3001', 'https://glendonC.github.io/hanguru'],
-  credentials: true,
-};
+const allowedOrigins = ['https://glendonc.github.io', 'http://localhost:3001'];
 
+const corsOptions = {
+  origin: function (origin, callback) {
+    if (allowedOrigins.indexOf(origin) !== -1 || !origin) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
+};
 app.use(cors(corsOptions));  // Enable Cross-Origin Resource Sharing
                           
 app.use(session({
