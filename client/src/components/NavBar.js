@@ -15,10 +15,12 @@ import {
   useColorModeValue,
   Stack,
   useColorMode,
-  Center
+  Center,
+  Image
 } from '@chakra-ui/react';
 import { HamburgerIcon, CloseIcon, MoonIcon, SunIcon } from '@chakra-ui/icons';
 import { Link, useNavigate } from 'react-router-dom';
+import logo from './logo.png';
 
 const navLinks = [
   { name: 'Home', path: '/' },
@@ -103,7 +105,9 @@ export default function NavBar({ user }) {
             onClick={isOpen ? onClose : onOpen}
           />
           <HStack spacing={8} alignItems={'center'}>
-            <Box>Logo</Box>
+            <Box>
+              <Image src={logo} alt="Logo" boxSize="50px" />
+            </Box>
             <HStack as={'nav'} spacing={4} display={{ base: 'none', md: 'flex' }}>
               {navLinks.map((link) => (
                 <NavLink key={link.name} to={link.path}>{link.name}</NavLink>
