@@ -21,6 +21,7 @@ services:
       - ./server/.env
     depends_on:
       - mongo
+      - cloud_sql_proxy
 
   client:
     build: 
@@ -32,7 +33,14 @@ services:
       - server
 
   mongo:
-      image: mongo
-      ports:
-        - '27017:27017'
-      restart: unless-stopped
+    image: mongo
+    ports:
+      - '27017:27017'
+    restart: unless-stopped
+
+  cloud_sql_proxy:
+    image: gcr.io/cloudsql-docker/gce-proxy:1.24.0
+    command: /cloud_sql_proxy -instances=hanguru-405413:us-east4:hanguru-profile-pics-db=tcp:0.0.0.0:3306 -credential_file=/config
+    volumes:
+      - /server/cloud-proxy-service-account.json:/config
+    restart: unless-stopped
