@@ -7,6 +7,7 @@ import VocabularyPage from './pages/VocabularyPage';
 import ExercisesPage from './pages/ExercisesPage';
 import AudioRecordingPage from './pages/AudioRecordingPage';
 import AccountSettingsPage from './pages/AccountSettingsPage';
+import ProgressChecker from './pages/ProgressChecker';
 
 function App() {
   const [isLoggedIn, setLoggedIn] = useState(false);
@@ -35,6 +36,10 @@ function App() {
         <Route 
           path="/" 
           element={isLoggedIn ? <HomePage /> : <Navigate to="/auth" />} 
+        />
+        <Route 
+          path="/progress-checker" 
+          element={isLoggedIn ? <ProgressChecker /> : <Navigate to="/auth" />} 
         />
         <Route 
           path="/account-settings" 

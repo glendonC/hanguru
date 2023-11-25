@@ -40,6 +40,8 @@ const NavLink = ({ children, to }) => (
   </Link>
 );
 
+
+
 const handleLogout = async () => {
   try {
     const response = await fetch('http://localhost:8100/api/logout', { method: 'POST' });
@@ -82,6 +84,10 @@ export default function NavBar({ user }) {
     
   const handleAccountSettingsClick = () => {
     navigate('/account-settings');
+  };
+
+  const handleProgressCheckerClick = () => {
+    navigate('/progress-checker');
   };
 
   // console.log(user)
@@ -133,7 +139,7 @@ export default function NavBar({ user }) {
                     <p>{user?.user?.username || 'Guest'}</p>
                 </Center>
                 <MenuDivider />
-                <MenuItem>Progress Checker</MenuItem>
+                <MenuItem onClick={handleProgressCheckerClick}>Progress Checker</MenuItem>
                 <MenuItem onClick={handleAccountSettingsClick}>Account Settings</MenuItem>
                 <MenuItem onClick={handleLogout}>Logout</MenuItem>
               </MenuList>
