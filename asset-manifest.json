@@ -1,0 +1,13 @@
+{
+  "files": {
+    "main.js": "/hanguru/static/js/main.c848a5e3.js",
+    "static/js/787.c4e7f8f9.chunk.js": "/hanguru/static/js/787.c4e7f8f9.chunk.js",
+    "static/media/logo.png": "/hanguru/static/media/logo.6f57b66b332ac799a87a.png",
+    "index.html": "/hanguru/index.html",
+    "main.c848a5e3.js.map": "/hanguru/static/js/main.c848a5e3.js.map",
+    "787.c4e7f8f9.chunk.js.map": "/hanguru/static/js/787.c4e7f8f9.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/js/main.c848a5e3.js"
+  ]
+}
