@@ -27,8 +27,9 @@ app.use(cors({
   allowedHeaders: ['Content-Type', 'Authorization']
 }));  // Enable Cross-Origin Resource Sharing
                           
+console.log("Session Secret: ", process.env.SESSION_SECRET);
 app.use(session({
-  secret: process.env.SESSION_SECRET,
+  secret: process.env.SESSION_SECRET || 'temporarySecretForTesting',
   resave: false,
   saveUninitialized: false,
   store: MongoStore.create({ 
