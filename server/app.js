@@ -20,12 +20,12 @@ const authRoutes = require('./routes/auth');
 const MongoStore = require('connect-mongo');
 app.use(express.json()); 
 // Configure middleware
-app.use(express.json());
-const corsOptions = {
-  origin: 'http://localhost:3001',
-  credentials: true
-};
-app.use(cors(corsOptions));
+
+app.use(cors({
+  origin: ['https://glendonc.github.io', 'http://localhost:3001'],
+  credentials: true,
+  allowedHeaders: ['Content-Type', 'Authorization']
+}));  // Enable Cross-Origin Resource Sharing
                           
 app.use(session({
   secret: process.env.SESSION_SECRET,
