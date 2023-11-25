@@ -101,4 +101,47 @@ router.get('/:userId', (req, res) => {
   );
 });
 
+router.get('/user/:userId/login-streak', (req, res) => {
+  User.findById(req.params.userId, (err, user) => {
+      if (err) {
+          return res.status(500).send('Error fetching user data');
+      }
+      if (!user) {
+          return res.status(404).send('User not found');
+      }
+
+      const streak = calculateStreak(user.loginDates);
+      res.json({ streak });
+  });
+});
+
+function calculateStreak(dates) {
+  let streak = 0;
+  let currentDate = new Date();
+
+  for (let i = dates.length - 1; i >= 0; i--) {
+    let loginDate = new Date(dates[i]);
+    if (currentDate.toDateString() === loginDate.toDateString()) {
+      streak++;
+      currentDate.setDate(currentDate.getDate() - 1);
+    } else {
+      break;
+    }
+  }
+  
+  return streak;
+}
+
+router.get('/current-user', (req, res) => {
+  console.log('Received request to /api/users/current-user');
+  if (req.isAuthenticated()) {
+    res.json({ user: req.user });
+  } else {
+    res.status(401).json({ message: 'Not authenticated' });
+  }
+});
+
+
+
+
 module.exports = router;

@@ -69,6 +69,13 @@ function AuthPage({ onLogin, showLogin, toggleAuthPage }) {
       });
       if (response.ok) {
         const userData = await response.json();
+      
+        if (userData.streak !== undefined) {
+          localStorage.setItem('loginStreak', userData.streak);
+        }
+        if (userData.user && userData.user.loginDates) {
+          localStorage.setItem('loginDates', JSON.stringify(userData.user.loginDates));
+        }
         onLogin(userData);
       } else {
         const errorData = await response.json();
@@ -79,7 +86,6 @@ function AuthPage({ onLogin, showLogin, toggleAuthPage }) {
       setError('Server error');
     }
   };
-  
   
   // Render the component UI
   return (

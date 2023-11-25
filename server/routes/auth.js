@@ -53,26 +53,55 @@ router.post('/register', async (req, res) => {
  * In case of errors during the login process, appropriate messages are returned to the client
  */
 router.post('/login', (req, res, next) => {
-  passport.authenticate('local', (err, user, info) => {
+  passport.authenticate('local', async (err, user, info) => {
     if (err) {
       console.error('Login Error:', err);
       throw err;
     }
     if (!user) {
       return res.status(401).json({ message: 'No User Exists or Password Incorrect' });
-    }    
-    else {
-      req.logIn(user, (err) => {
+    } else {
+      req.logIn(user, async (err) => {
         if (err) {
           console.error('Login Error:', err);
           throw err;
         }
-        res.json({ message: 'Successfully Authenticated', user: user });
-        console.log(req.user);
+
+        const currentDate = new Date().toISOString();
+        if (!user.loginDates.some((date) => date.toISOString().split('T')[0] === currentDate.split('T')[0])) {
+          user.loginDates.push(currentDate);
+
+          try {
+            await user.save();
+          } catch (error) {
+            console.error('Error saving user with updated loginDates:', error);
+            throw error;
+          }
+        }
+
+        const streak = calculateStreak(user.loginDates);
+      res.json({ message: 'Successfully Authenticated', user: user, streak: streak });
       });
     }
   })(req, res, next);
 });
+
+function calculateStreak(dates) {
+  let streak = 0;
+  let currentDate = new Date();
+
+  for (let i = dates.length - 1; i >= 0; i--) {
+    let loginDate = new Date(dates[i]);
+    if (currentDate.toDateString() === loginDate.toDateString()) {
+      streak++;
+      currentDate.setDate(currentDate.getDate() - 1);
+    } else {
+      break;
+    }
+  }
+  
+  return streak;
+}
 
 // POST /signout
 // This endpoint handles user sign-out
