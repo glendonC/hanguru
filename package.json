@@ -10,6 +10,7 @@
     "mongoose": "^8.0.1",
     "mysql2": "^3.6.5",
     "passport": "^0.6.0",
+    "passport-local": "^1.0.0",
     "react-calendar": "^4.6.1",
     "styled-components": "^6.1.1"
   }
