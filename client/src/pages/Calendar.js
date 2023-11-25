@@ -1,20 +1,27 @@
 import React from 'react';
-import { Grid, Box, Text } from '@chakra-ui/react';
+import { Grid, Box, useColorModeValue } from '@chakra-ui/react';
 
 const Calendar = ({ loginDates }) => {
   const monthDays = getMonthDays();
-  const formattedLoginDates = loginDates.map(date => date.split('T')[0]);
+  const formattedLoginDates = loginDates.map(date => new Date(date).toISOString().split('T')[0]);
+  const currentDate = new Date().toISOString().split('T')[0];
+
+  const dayBg = useColorModeValue('gray.100', 'gray.700');
+  const highlightedBg = useColorModeValue('green.200', 'green.700');
+  const currentDayBg = useColorModeValue('blue.200', 'blue.700');
 
   return (
     <Grid templateColumns="repeat(7, 1fr)" gap={2}>
       {monthDays.map(day => (
-        formattedLoginDates.includes(day.dateString) ?
-          <Box key={day.dateString} p={3} bg="green.200" borderRadius="md">
-            <Text>{day.day}</Text>
-          </Box> :
-          <Box key={day.dateString} p={3} bg="gray.100" borderRadius="md">
-            <Text>{day.day}</Text>
-          </Box>
+        <Box
+          key={day.dateString}
+          p={3}
+          bg={day.dateString === currentDate ? currentDayBg :
+              formattedLoginDates.includes(day.dateString) ? highlightedBg : dayBg}
+          borderRadius="md"
+        >
+          {day.day}
+        </Box>
       ))}
     </Grid>
   );

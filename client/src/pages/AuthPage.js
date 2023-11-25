@@ -69,8 +69,12 @@ function AuthPage({ onLogin, showLogin, toggleAuthPage }) {
       });
       if (response.ok) {
         const userData = await response.json();
+      
         if (userData.streak !== undefined) {
           localStorage.setItem('loginStreak', userData.streak);
+        }
+        if (userData.user && userData.user.loginDates) {
+          localStorage.setItem('loginDates', JSON.stringify(userData.user.loginDates));
         }
         onLogin(userData);
       } else {
