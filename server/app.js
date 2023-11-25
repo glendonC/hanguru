@@ -22,10 +22,11 @@ app.use(express.json());
 // Configure middleware
 
 app.use(cors({
-  origin: ['https://glendonc.github.io', 'http://localhost:3001'],
+  origin: '*',
+  methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
   credentials: true,
-  allowedHeaders: ['Content-Type', 'Authorization']
-}));  // Enable Cross-Origin Resource Sharing
+}));
+
                           
 console.log("Session Secret: ", process.env.SESSION_SECRET);
 app.use(session({
