@@ -16,26 +16,16 @@ const userSettingsRoutes = require('./routes/userSettings');
 const speechToTextRoute = require('./routes/speechToTextRoute');
 const recordingRoutes = require('./routes/recording');
 const usersRoutes = require('./routes/users');
-const dbPool = require('./db/database');
-
-
-const bcrypt = require('bcryptjs');
-
+const authRoutes = require('./routes/auth');
 const MongoStore = require('connect-mongo');
 app.use(express.json()); 
 // Configure middleware
-const allowedOrigins = ['https://glendonc.github.io', 'http://localhost:3001'];
-
+app.use(express.json());
 const corsOptions = {
-  origin: function (origin, callback) {
-    if (allowedOrigins.indexOf(origin) !== -1 || !origin) {
-      callback(null, true);
-    } else {
-      callback(new Error('Not allowed by CORS'));
-    }
-  },
+  origin: 'http://localhost:3001',
+  credentials: true
 };
-app.use(cors(corsOptions));  // Enable Cross-Origin Resource Sharing
+app.use(cors(corsOptions));
                           
 app.use(session({
   secret: process.env.SESSION_SECRET,
@@ -47,35 +37,21 @@ app.use(session({
   cookie: {
     secure: process.env.NODE_ENV === 'production',
     httpOnly: true,
-    maxAge: 24 * 60 * 60 * 1000 // 1 day
+    maxAge: 24 * 60 * 60 * 1000
   }
 }));
-app.use(passport.initialize());             // Initialize Passport for user authentication
-app.use(passport.session());                // Enable session support for Passport
 
+app.use(passport.initialize());
+app.use(passport.session());
 // Connect to MongoDB
 mongoose.connect(process.env.MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true })
 .then(() => console.log('MongoDB Connected to Hanguru Database'))
 .catch(err => console.error(err));
 
-app.get('/example', async (req, res) => {
-  try {
-    const [rows, fields] = await dbPool.query('SELECT * FROM your_table');
-    res.json(rows);
-  } catch (error) {
-    console.error('Error querying the database:', error);
-    res.status(500).json({ error: 'Internal Server Error' });
-  }
-});
-
-
 app.get('/', (req, res) => {
   res.send('Hello World!');
 });
-
-const authRoutes = require('./routes/auth');
 app.use('/api', authRoutes);
-
 app.use('/api', translateRoutes);
 app.use('/api/vocabulary', vocabularyRoutes);
 app.use('/api', gptRoute);
