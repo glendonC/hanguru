@@ -17,7 +17,6 @@ import {
   Text,
   Textarea
 } from '@chakra-ui/react';
-import { FaPlay, FaPause } from 'react-icons/fa';
 
 import { DeleteIcon } from '@chakra-ui/icons';
 import axios from 'axios';
@@ -79,8 +78,6 @@ const AudioRecordingPage = () => {
   const [audioRef, setAudioRef] = useState(new Audio());
   const [transcribedText, setTranscribedText] = useState('');
   const audioChunksRef = useRef([]);
-
-  const [customFileName, setCustomFileName] = useState('');
 
   const [customRecordingName, setCustomRecordingName] = useState('');
 

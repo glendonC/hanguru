@@ -18,7 +18,7 @@ const recordingRoutes = require('./routes/recording');
 const usersRoutes = require('./routes/users');
 const authRoutes = require('./routes/auth');
 const MongoStore = require('connect-mongo');
-
+app.use(express.json()); 
 // Configure middleware
 app.use(express.json());
 const corsOptions = {
