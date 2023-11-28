@@ -1,6 +1,7 @@
 import React from 'react';
 import { Grid, Box, useColorModeValue } from '@chakra-ui/react';
 
+// Calendar functional component to display a calendar with highlighted dates
 const Calendar = ({ loginDates }) => {
   const monthDays = getMonthDays();
   const formattedLoginDates = loginDates.map(date => new Date(date).toISOString().split('T')[0]);
@@ -10,6 +11,7 @@ const Calendar = ({ loginDates }) => {
   const highlightedBg = useColorModeValue('green.200', 'green.700');
   const currentDayBg = useColorModeValue('blue.200', 'blue.700');
 
+  // Render a grid of days, highlighting current day and login days
   return (
     <Grid templateColumns="repeat(7, 1fr)" gap={2}>
       {monthDays.map(day => (
