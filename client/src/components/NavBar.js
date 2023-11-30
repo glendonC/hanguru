@@ -1,4 +1,8 @@
 import React, {useState, useEffect} from 'react';
+import { css } from '@emotion/react';
+import styled from '@emotion/styled';
+
+
 import {
   Box,
   Flex,
@@ -29,18 +33,56 @@ const navLinks = [
   { name: 'Audio Recording', path: '/audio-recording' },
 ];
 
-const NavLink = ({ children, to }) => (
-  <Link
-    to={to}
-    style={{
-      padding: '8px 16px',
-      borderRadius: '4px',
-      textDecoration: 'none',
-      backgroundColor: useColorModeValue('gray.200', 'gray.700')
-    }}>
-    {children}
-  </Link>
-);
+const StyledLink = styled(Link)`
+  position: relative;
+  text-decoration: none;
+  font-weight: 800;
+  color: gray.500;
+  text-transform: uppercase;
+  margin: 0 10px;
+  padding: 8px 16px;
+  transition: all .3s ease-in-out;
+  display: inline-block;
+  background-color: transparent;
+  z-index: 1;
+
+  &:hover {
+    color: #91640F;
+  }
+
+  &:hover::after {
+    opacity: 1;
+    visibility: visible;
+    height: 100%;
+  }
+
+  &::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    margin: auto;
+    width: 100%;
+    height: 1px;
+    background: #F1C40F;
+    transition: all .3s ease-in-out;
+    opacity: 0;
+    visibility: hidden;
+    z-index: -1;
+  }
+`;
+
+const NavLink = ({ children, to }) => {
+  return (
+    <StyledLink to={to}>
+      {children}
+    </StyledLink>
+  );
+};
+
+
 
 
 
