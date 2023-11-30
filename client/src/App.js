@@ -19,6 +19,7 @@ function App() {
     setUser(userData);
   };
 
+  // Toggle between showing login and signup on the Auth page
   const toggleAuthPage = () => {
     setShowLogin(!showLogin);
   };
@@ -29,18 +30,25 @@ function App() {
       {isLoggedIn && <NavBar user={user} />}
 
       <Routes>
+        {/* Authentication page route */}
         <Route 
           path="/auth" 
           element={!isLoggedIn ? <AuthPage onLogin={handleLogin} showLogin={showLogin} toggleAuthPage={toggleAuthPage} /> : <Navigate to="/" />} 
         />
+
+        {/* Home page route */}
         <Route 
           path="/" 
           element={isLoggedIn ? <HomePage /> : <Navigate to="/auth" />} 
         />
+
+        {/* Progress checker route */}
         <Route 
           path="/progress-checker" 
           element={isLoggedIn ? <ProgressChecker /> : <Navigate to="/auth" />} 
         />
+
+        {/* Account settings route */}
         <Route 
           path="/account-settings" 
           element={isLoggedIn ? <AccountSettingsPage /> : <Navigate to="/auth" />} 
