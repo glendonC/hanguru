@@ -3,6 +3,7 @@ import { createRoot } from 'react-dom/client'; // Import createRoot
 import { ChakraProvider } from '@chakra-ui/react';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
+import { extendTheme } from '@chakra-ui/react';
 
 // Get the div with the id of 'root'
 const container = document.getElementById('root');
@@ -10,10 +11,23 @@ const container = document.getElementById('root');
 // Create a root.
 const root = createRoot(container);
 
-// Initial render
+// Put custom theme over Chakra
+const theme = extendTheme({
+  styles: {
+    global: {
+      'html, body': {
+        cursor: 'none',
+      },
+      '*': {
+        cursor: 'none',
+      },
+    },
+  },
+});
+
 root.render(
   <React.StrictMode>
-    <ChakraProvider>
+    <ChakraProvider theme={theme}>
       <App />
     </ChakraProvider>
   </React.StrictMode>
