@@ -8,6 +8,8 @@ import ExercisesPage from './pages/ExercisesPage';
 import AudioRecordingPage from './pages/AudioRecordingPage';
 import AccountSettingsPage from './pages/AccountSettingsPage';
 import ProgressChecker from './pages/ProgressChecker';
+import AnimatedCursor from './components/AnimatedCursor';
+
 
 function App() {
   const [isLoggedIn, setLoggedIn] = useState(false);
@@ -26,6 +28,7 @@ function App() {
 
   return (
     <Router>
+       <AnimatedCursor/>
       {/* Show NavBar only when logged in */}
       {isLoggedIn && <NavBar user={user} />}
 
