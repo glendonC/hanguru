@@ -22,7 +22,7 @@ app.use(express.json());
 // Configure middleware
 
 app.use(cors({
-  origin: 'https://glendonc.github.io',
+  origin: ['https://glendonc.github.io', 'localhost:3000', 'localhost:3001'],
   methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
   credentials: true,
 }));
