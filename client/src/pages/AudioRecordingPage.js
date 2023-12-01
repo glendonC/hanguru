@@ -15,7 +15,8 @@ import {
   HStack,
   Input,
   Text,
-  Textarea
+  Textarea,
+  Container
 } from '@chakra-ui/react';
 
 import { DeleteIcon } from '@chakra-ui/icons';
@@ -364,6 +365,7 @@ const AudioRecordingPage = () => {
   };
 
   return (
+    <Container>
     <VStack spacing={6} align="stretch">
       {/* Vocabulary and Complexity Selection */}
       <Select placeholder="Select set" onChange={e => handleSetSelection(e.target.value)}>
@@ -489,6 +491,7 @@ const AudioRecordingPage = () => {
 
 
     </VStack>
+    </Container>
   );
   
   
