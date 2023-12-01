@@ -6,6 +6,8 @@ services:
       context: ./server
       dockerfile: Dockerfile
     command: npx nodemon -L app.js
+    networks:
+      - hanguru_network
     ports:
       - '8100:8100'
     volumes:
@@ -26,13 +28,21 @@ services:
     build: 
       context: ./client
       dockerfile: Dockerfile
+    networks:
+      - hanguru_network
     ports:
       - '3000:80'
     depends_on:
       - server
 
   mongo:
-      image: mongo
-      ports:
-        - '27017:27017'
-      restart: unless-stopped
+    image: mongo
+    networks:
+      - hanguru_network
+    ports:
+      - '27017:27017'
+    restart: unless-stopped
+
+networks:
+  hanguru_network:
+    driver: bridge
