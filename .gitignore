@@ -19,3 +19,7 @@ server/gcs-service-account.json
 server/speech-to-text-service-account.json
 server/text-to-speech-service-account.json
 server/cloud-proxy-service-account.json
+server/gcs-service-account-base64.txt
+server/speech-to-text-service-account-base64.txt
+server/text-to-speech-service-account-base64.txt
+server/cloud-proxy-service-account-base64.txt

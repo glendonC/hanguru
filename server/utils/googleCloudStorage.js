@@ -1,7 +1,4 @@
-const { Storage } = require('@google-cloud/storage');
-
-const storage = new Storage({ keyFilename: process.env.GCS_SERVICE_ACCOUNT });
-const bucketName = process.env.GCS_BUCKET_NAME;
+const { storage, bucketName } = require('./googleCloudConfig');
 
 /**
  * Asynchronously uploads a file to Google Cloud Storage and makes it publicly accessible

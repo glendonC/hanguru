@@ -1,8 +1,8 @@
 module.exports = {
-  host: '172.27.0.5',
-  user: 'root',
-  password: 'bob',
-  database: 'hanguru',
+  host: process.env.DB_HOST || 'defaultHost',
+  user: process.env.DB_USER || 'defaultUser',
+  password: process.env.DB_PASSWORD || 'defaultPassword',
+  database: process.env.DB_NAME || 'defaultDatabase',
   port: 3306,
   waitForConnections: true,
   connectionLimit: 10,
