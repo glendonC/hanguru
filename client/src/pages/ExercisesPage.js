@@ -50,7 +50,7 @@ const ExercisesPage = () => {
   useEffect(() => {
     const fetchSets = async () => {
       try {
-        const response = await axios.get('http://localhost:8100/api/vocabulary/sets');
+        const response = await axios.get('https://peaceful-retreat-31647-a23d2c8b232f.herokuapp.com/api/vocabulary/sets');
         setVocabularySets(response.data);
       } catch (error) {
         console.error('Error fetching sets:', error);
@@ -63,7 +63,7 @@ const ExercisesPage = () => {
   const handleSetSelection = async (setId) => {
     setSelectedWords([]);
     try {
-      const response = await axios.get(`http://localhost:8100/api/vocabulary/set/${setId}/items`);
+      const response = await axios.get(`https://peaceful-retreat-31647-a23d2c8b232f.herokuapp.com/api/vocabulary/set/${setId}/items`);
       setSetWords(response.data);
     } catch (error) {
       console.error('Error fetching words from set:', error);
@@ -80,7 +80,7 @@ const ExercisesPage = () => {
   // Generates a question using GPT-3 based on the selected words
   const generateQuestion = async () => {
     try {
-      const response = await axios.post('http://localhost:8100/api/generate-sentence', {
+      const response = await axios.post('https://peaceful-retreat-31647-a23d2c8b232f.herokuapp.com/api/generate-sentence', {
         vocab: selectedWords.join(', '),
       });
       setGeneratedQuestion(response.data.question || 'No question provided');
@@ -93,7 +93,7 @@ const ExercisesPage = () => {
   // Checks the user's sentence for correctness and naturalness using GPT model in gpt.js
   const checkUserAnswer = async () => {
     try {
-      const response = await axios.post('http://localhost:8100/api/check-answer', {
+      const response = await axios.post('https://peaceful-retreat-31647-a23d2c8b232f.herokuapp.com/api/check-answer', {
         userSentence: userInput,
         question: generatedQuestion,
         vocab: selectedWords.join(', ')

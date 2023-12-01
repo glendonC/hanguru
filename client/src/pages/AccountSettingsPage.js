@@ -21,7 +21,7 @@ function AccountSettingsPage() {
   const [profilePictures, setProfilePictures] = useState([]);
 
   useEffect(() => {
-    fetch('http://localhost:8100/api/users/profile-pictures')
+    fetch('https://peaceful-retreat-31647-a23d2c8b232f.herokuapp.com/api/users/profile-pictures')
       .then((response) => response.json())
       .then((data) => {
         setProfilePictures(data);
@@ -33,7 +33,7 @@ function AccountSettingsPage() {
 
   const handleProfilePictureChange = async (pictureId) => {
     try {
-      const response = await fetch('http://localhost:8100/api/user/update-profile-picture', {
+      const response = await fetch('https://peaceful-retreat-31647-a23d2c8b232f.herokuapp.com/api/user/update-profile-picture', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ selectedProfilePicture: pictureId }),
@@ -109,7 +109,7 @@ function AccountSettingsPage() {
   const handlePasswordChange = async (e) => {
     e.preventDefault();
     try {
-      const response = await fetch('http://localhost:8100/api/user/change-password', {
+      const response = await fetch('https://peaceful-retreat-31647-a23d2c8b232f.herokuapp.com//api/user/change-password', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ newPassword: password }),

@@ -56,7 +56,7 @@ const VocabularyPage = () => {
   useEffect(() => {
     const fetchSets = async () => {
       try {
-        const response = await axios.get('http://localhost:8100/api/vocabulary/sets');
+        const response = await axios.get('https://peaceful-retreat-31647-a23d2c8b232f.herokuapp.com/api/vocabulary/sets');
         setVocabularySets(response.data);
       } catch (error) {
         toast({
@@ -82,7 +82,7 @@ const VocabularyPage = () => {
   // Handles translation of the input Korean word
   const handleTranslate = async () => {
     try {
-      const response = await axios.post('http://localhost:8100/api/translate', {
+      const response = await axios.post('https://peaceful-retreat-31647-a23d2c8b232f.herokuapp.com/api/translate', {
         text: koreanWord,
         sourceLang: 'ko',
         targetLang: 'en'
@@ -124,7 +124,7 @@ const VocabularyPage = () => {
     }
 
     try {
-        await axios.post('http://localhost:8100/api/vocabulary/add', {
+        await axios.post('https://peaceful-retreat-31647-a23d2c8b232f.herokuapp.com/api/vocabulary/add', {
           korean: koreanWord,
           english: englishDefinition,
           set: currentSet || null
@@ -165,7 +165,7 @@ const VocabularyPage = () => {
     }
 
     try {
-      const response = await axios.post('http://localhost:8100/api/vocabulary/set/add', { name: newSetName });
+      const response = await axios.post('https://peaceful-retreat-31647-a23d2c8b232f.herokuapp.com/api/vocabulary/set/add', { name: newSetName });
       setVocabularySets([...vocabularySets, response.data]);
       setCurrentSet(response.data._id);
       setNewSetName('');
@@ -195,10 +195,9 @@ const VocabularyPage = () => {
     }
   
     try {
-      const response = await axios.get(`http://localhost:8100/api/vocabulary/set/${setId}/items`);
+      const response = await axios.get(`https://peaceful-retreat-31647-a23d2c8b232f.herokuapp.com/api/vocabulary/set/${setId}/items`);
       setSelectedSetItems(response.data);
     } catch (error) {
-      console.error("Error fetching set items:", error); // Add this line for detailed error logging
       toast({
         title: 'Error',
         description: 'Failed to fetch set items.',
@@ -241,7 +240,7 @@ const VocabularyPage = () => {
   // Submits the edited vocabulary item
   const submitEdit = async () => {
     try {
-      const response = await axios.put(`http://localhost:8100/api/vocabulary/item/edit/${editingItem._id}`, {
+      const response = await axios.put(`https://peaceful-retreat-31647-a23d2c8b232f.herokuapp.com/api/vocabulary/item/edit/${editingItem._id}`, {
         korean: editedKorean,
         english: editedEnglish
       });
@@ -276,7 +275,7 @@ const VocabularyPage = () => {
   // Handles the deletion of a vocabulary item
   const handleDeleteItem = async (itemId) => {
     try {
-      await axios.delete(`http://localhost:8100/api/vocabulary/item/delete/${itemId}`);
+      await axios.delete(`https://peaceful-retreat-31647-a23d2c8b232f.herokuapp.com/api/vocabulary/item/delete/${itemId}`);
       setSelectedSetItems(selectedSetItems.filter(item => item._id !== itemId));
       toast({
         title: 'Success',

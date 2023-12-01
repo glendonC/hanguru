@@ -104,7 +104,7 @@ const AudioRecordingPage = () => {
   useEffect(() => {
     const fetchSets = async () => {
       try {
-        const response = await axios.get('http://localhost:8100/api/vocabulary/sets');
+        const response = await axios.get('https://peaceful-retreat-31647-a23d2c8b232f.herokuapp.com/api/vocabulary/sets');
         setVocabularySets(response.data);
       } catch (error) {
         console.error('Error fetching sets:', error);
@@ -117,7 +117,7 @@ const AudioRecordingPage = () => {
   useEffect(() => {
     const fetchVoices = async () => {
       try {
-        const response = await axios.get('http://localhost:8100/api/text-to-speech/voices');
+        const response = await axios.get('https://peaceful-retreat-31647-a23d2c8b232f.herokuapp.com/api/text-to-speech/voices');
         setVoices(response.data.voices);
       } catch (error) {
         console.error('Error fetching voices:', error);
@@ -130,7 +130,7 @@ const AudioRecordingPage = () => {
   useEffect(() => {
     const fetchRecordings = async () => {
       try {
-        const response = await axios.get('http://localhost:8100/api/recordings');
+        const response = await axios.get('https://peaceful-retreat-31647-a23d2c8b232f.herokuapp.com/api/recordings');
         setRecordings(response.data);
       } catch (error) {
         console.error('Error fetching recordings:', error);
@@ -144,7 +144,7 @@ const AudioRecordingPage = () => {
   const handleSetSelection = async (setId) => {
     setSelectedWords([]);
     try {
-      const response = await axios.get(`http://localhost:8100/api/vocabulary/set/${setId}/items`);
+      const response = await axios.get(`https://peaceful-retreat-31647-a23d2c8b232f.herokuapp.com/api/vocabulary/set/${setId}/items`);
       setSetWords(response.data);
     } catch (error) {
       console.error('Error fetching words from set:', error);
@@ -180,7 +180,7 @@ const AudioRecordingPage = () => {
       const url = URL.createObjectURL(audioBlob);
       setAudioURL(url);
       console.log("Generated Text at Recording Stop: ", generatedText);
-      await uploadAudio(audioBlob, generatedText);  // Pass generatedText directly
+      await uploadAudio(audioBlob, generatedText);
       await uploadAndTranscribeAudio(audioBlob);
       setCustomRecordingName('');
       audioChunksRef.current = [];
@@ -196,7 +196,7 @@ const AudioRecordingPage = () => {
     formData.append('associatedText', generatedText);
   
     try {
-      const response = await axios.post('http://localhost:8100/api/upload', formData, {
+      const response = await axios.post('https://peaceful-retreat-31647-a23d2c8b232f.herokuapp.com/api/upload', formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         }
@@ -217,7 +217,7 @@ const AudioRecordingPage = () => {
 
   const deleteAudio = async (fileName) => {
     try {
-      const response = await fetch(`http://localhost:8100/api/upload/delete/${fileName}`, {
+      const response = await fetch(`https://peaceful-retreat-31647-a23d2c8b232f.herokuapp.com/api/upload/delete/${fileName}`, {
         method: 'DELETE',
       });
 
@@ -259,7 +259,7 @@ const AudioRecordingPage = () => {
     setError('');
   
     try {
-      const response = await fetch('http://localhost:8100/api/text-to-speech', {
+      const response = await fetch('https://peaceful-retreat-31647-a23d2c8b232f.herokuapp.com/api/text-to-speech', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ text, voice: selectedVoice }),
@@ -285,7 +285,7 @@ const AudioRecordingPage = () => {
 
   const generateText = async () => {
     try {
-      const response = await fetch('http://localhost:8100/api/generate-text', {
+      const response = await fetch('https://peaceful-retreat-31647-a23d2c8b232f.herokuapp.com/api/generate-text', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ vocab: selectedWords.join(', '), complexity }),
@@ -319,7 +319,7 @@ const AudioRecordingPage = () => {
     formData.append('audio', audioBlob, 'audio-recording.wav');
   
     try {
-      const response = await axios.post('http://localhost:8100/api/speech-to-text/transcribe', formData, {
+      const response = await axios.post('https://peaceful-retreat-31647-a23d2c8b232f.herokuapp.com/api/speech-to-text/transcribe', formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
@@ -348,7 +348,7 @@ const AudioRecordingPage = () => {
     if (!selectedRecording) return;
   
     try {
-      const response = await axios.delete(`http://localhost:8100/api/recordings/delete/${selectedRecording._id}`);
+      const response = await axios.delete(`https://peaceful-retreat-31647-a23d2c8b232f.herokuapp.com/api/recordings/delete/${selectedRecording._id}`);
       if (response.status === 200) {
         setRecordings(recordings.filter(rec => rec._id !== selectedRecording._id));
         setSelectedRecording(null);
