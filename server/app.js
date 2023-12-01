@@ -22,7 +22,7 @@ app.use(express.json());
 // Configure middleware
 
 app.use(cors({
-  origin: '*',
+  origin: 'https://glendonc.github.io',
   methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
   credentials: true,
 }));
