@@ -6,13 +6,22 @@ const storage = new Storage();
 
 async function generateSignedUrl(imageUrl) {
   const bucketName = 'hanguru-profile-pic-bucket';
-  const fileName = imageUrl.split('/').slice(-1)[0];
-  const signedUrl = await storage.bucket(bucketName).file(fileName).getSignedUrl({
-    action: 'read',
-    expires: Date.now() + 5 * 60 * 1000,
-  });
-  return signedUrl[0];
+  const fileName = imageUrl.split('/').pop();
+  console.log("Image URL: ", imageUrl)
+  try {
+    const options = {
+      action: 'read',
+      expires: Date.now() + 15 * 60 * 1000, 
+    };
+
+    const [signedUrl] = await storage.bucket(bucketName).file(fileName).getSignedUrl(options);
+    return signedUrl;
+  } catch (error) {
+    console.error('Error generating signed URL:', error);
+    throw error;
+  }
 }
+
 
 const User = require('../models/User');
 const ProfilePicture = require('../models/ProfilePicture');
@@ -35,29 +44,37 @@ router.get('/profile-pictures/:id', async (req, res) => {
     if (!picture) {
       return res.status(404).json({ error: 'Profile picture not found' });
     }
-    const imageUrl = rows[0].image_url;
-    const signedUrl = await generateSignedUrl(imageUrl);
+    const signedUrl = await generateSignedUrl(picture.imageUrl);
 
-    res.json({ signedUrl });
+    res.json({ imageUrl: signedUrl });
   } catch (error) {
     console.error('Error fetching profile picture:', error);
     res.status(500).json({ error: 'Internal Server Error' });
   }
 });
 
+
+// router.get('/profile-pictures', async (req, res) => {
+//   try {
+//     console.log('Fetching profile pictures...');
+//     const pictures = await ProfilePicture.find({});
+//     console.log(`Found ${pictures.length} pictures, generating URLs...`);
+//     const profilePictures = pictures.map(picture => ({
+//       id: picture._id,
+//       imageUrl: picture.imageUrl,
+//     }));
+//     console.log('Sending response with profile pictures.');
+//     res.json(profilePictures);
+//   } catch (error) {
+//     console.error('Error fetching profile pictures:', error);
+//     res.status(500).json({ error: 'Internal Server Error', details: error.message });
+//   }
+// });
 router.get('/profile-pictures', async (req, res) => {
-  try {
-    const pictures = await ProfilePicture.find({});
-    const profilePictures = pictures.map(picture => ({
-      id: picture._id,
-      imageUrl: picture.imageUrl,
-    }));
-    res.json(profilePictures);
-  } catch (error) {
-    console.error('Error fetching profile pictures:', error);
-    res.status(500).json({ error: 'Internal Server Error' });
-  }
+  res.json({ message: "Route hit successfully" });
 });
+
+
 
 
 router.post('/upload', async (req, res) => {

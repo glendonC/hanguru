@@ -158,15 +158,16 @@ function AccountSettingsPage() {
         <FormControl>
           <FormLabel>Select Profile Picture</FormLabel>
           <Grid templateColumns="repeat(3, 1fr)" gap={4}>
-            {profilePictures.map((picture) => (
-              <Image
-                key={picture.id}
-                src={picture.imageUrl}
-                alt="Profile"
-                onClick={() => handleProfilePictureChange(picture.id)}
-                className={picture.id === selectedProfilePicture ? 'selected' : ''}
-              />
-            ))}
+          {Array.isArray(profilePictures) && profilePictures.map((picture) => (
+  <Image
+    key={picture.id}
+    src={picture.imageUrl}
+    alt="Profile"
+    onClick={() => handleProfilePictureChange(picture.id)}
+    className={picture.id === selectedProfilePicture ? 'selected' : ''}
+  />
+))}
+
           </Grid>
 
         </FormControl>
