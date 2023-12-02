@@ -4,6 +4,13 @@ const bcrypt = require('bcryptjs');
 const User = require('../models/User');
 
 function isAuthenticated(req, res, next) {
+  console.log("Session ID from isAuthenticated middleware: ", req.sessionID);
+  console.log("Session data from isAuthenticated middleware: ", req.session);
+  console.log("User data from isAuthenticated middleware: ", req.user);
+  if (req.isAuthenticated()) {
+    return next();
+  }
+  res.status(401).send('User not authenticated');
   if (req.isAuthenticated()) {
     return next();
   }
@@ -11,6 +18,9 @@ function isAuthenticated(req, res, next) {
 }
 router.post('/update-profile-picture', isAuthenticated, async (req, res) => {
   const { selectedProfilePicture } = req.body;
+  console.log("Session ID in update-profile-picture: ", req.sessionID);
+  console.log("Session data in update-profile-picture: ", req.session);
+  console.log("User data in update-profile-picture: ", req.user);
 
   try {
     const updatedUser = await User.findByIdAndUpdate(

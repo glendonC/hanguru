@@ -29,10 +29,13 @@ function initialize(passport) {
   passport.use(new LocalStrategy({ usernameField: 'usernameOrEmail' }, authenticateUser));
   passport.serializeUser((user, done) => done(null, user.id));
   passport.deserializeUser(async (id, done) => {
+    console.log("Deserializing user with ID: ", id);
     try {
       const user = await User.findById(id);
+      console.log("User found in deserializeUser: ", user);
       done(null, user);
     } catch (e) {
+      console.error("Error in deserialization:", e);
       console.error("Error in deserialization:", e);
       done(e);
     }
