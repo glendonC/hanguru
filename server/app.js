@@ -45,10 +45,23 @@ app.use(session({
 
 app.use(passport.initialize());
 app.use(passport.session());
+app.use((req, res, next) => {
+  console.log('Session ID:', req.sessionID);
+  console.log('Session User:', req.user);
+  next();
+});
+
 // Connect to MongoDB
 mongoose.connect(process.env.MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true })
 .then(() => console.log('MongoDB Connected to Hanguru Database'))
 .catch(err => console.error(err));
+app.get('/test-session', (req, res) => {
+  if (req.isAuthenticated()) {
+    res.json({ message: "Authenticated", user: req.user });
+  } else {
+    res.status(401).json({ message: "Not authenticated" });
+  }
+});
 
 app.get('/', (req, res) => {
   res.send('Hello World!');
