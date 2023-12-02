@@ -25,6 +25,7 @@ app.use(cors({
   origin: ['https://glendonc.github.io', 'http://localhost:3000', 'http://localhost:3001'],
   methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
   credentials: true,
+  allowedHeaders: ['Content-Type', 'Authorization']
 }));
 
                           
@@ -42,6 +43,7 @@ app.use(session({
     maxAge: 24 * 60 * 60 * 1000
   }
 }));
+
 
 app.use(passport.initialize());
 app.use(passport.session());
