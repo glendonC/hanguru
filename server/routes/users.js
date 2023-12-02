@@ -54,25 +54,23 @@ router.get('/profile-pictures/:id', async (req, res) => {
 });
 
 
-// router.get('/profile-pictures', async (req, res) => {
-//   try {
-//     console.log('Fetching profile pictures...');
-//     const pictures = await ProfilePicture.find({});
-//     console.log(`Found ${pictures.length} pictures, generating URLs...`);
-//     const profilePictures = pictures.map(picture => ({
-//       id: picture._id,
-//       imageUrl: picture.imageUrl,
-//     }));
-//     console.log('Sending response with profile pictures.');
-//     res.json(profilePictures);
-//   } catch (error) {
-//     console.error('Error fetching profile pictures:', error);
-//     res.status(500).json({ error: 'Internal Server Error', details: error.message });
-//   }
-// });
 router.get('/profile-pictures', async (req, res) => {
-  res.json({ message: "Route hit successfully" });
+  try {
+    console.log('Fetching profile pictures...');
+    const pictures = await ProfilePicture.find({});
+    console.log(`Found ${pictures.length} pictures, generating URLs...`);
+    const profilePictures = pictures.map(picture => ({
+      id: picture._id,
+      imageUrl: picture.imageUrl,
+    }));
+    console.log('Sending response with profile pictures.');
+    res.json(profilePictures);
+  } catch (error) {
+    console.error('Error fetching profile pictures:', error);
+    res.status(500).json({ error: 'Internal Server Error', details: error.message });
+  }
 });
+
 
 
 
