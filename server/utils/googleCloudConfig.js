@@ -3,9 +3,15 @@ const { Storage } = require('@google-cloud/storage');
 let serviceAccount = null;
 
 if (process.env.GCS_SERVICE_ACCOUNT) {
-  const serviceAccountEncoded = process.env.GCS_SERVICE_ACCOUNT;
-  const serviceAccountDecoded = Buffer.from(serviceAccountEncoded, 'base64').toString('utf-8');
-  serviceAccount = JSON.parse(serviceAccountDecoded);
+  console.log('Encoded Service Account:', process.env.GCS_SERVICE_ACCOUNT);
+  const serviceAccountDecoded = Buffer.from(process.env.GCS_SERVICE_ACCOUNT, 'base64').toString('utf-8');
+  console.log('Decoded Service Account:', serviceAccountDecoded);
+
+  try {
+    serviceAccount = JSON.parse(serviceAccountDecoded);
+  } catch (error) {
+    console.error('Error parsing service account JSON:', error);
+  }
 }
 
 const storage = new Storage({

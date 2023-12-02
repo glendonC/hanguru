@@ -1,6 +1,5 @@
 const express = require('express');
 const router = express.Router();
-const pool = require('../db/database');
 const path = require('path');
 const { Storage } = require('@google-cloud/storage');
 const storage = new Storage();
@@ -15,11 +14,13 @@ async function generateSignedUrl(imageUrl) {
   return signedUrl[0];
 }
 
+const User = require('../models/User');
+const ProfilePicture = require('../models/ProfilePicture');
 
 router.get('/get-users', async (req, res) => {
   try {
-    const [rows, fields] = await pool.query('SELECT * FROM users');
-    res.json(rows);
+    const users = await User.find({});
+    res.json(users);
   } catch (error) {
     console.error('Error:', error);
     res.status(500).json({ error: 'Internal Server Error' });
@@ -30,12 +31,10 @@ router.get('/profile-pictures/:id', async (req, res) => {
   const pictureId = req.params.id;
 
   try {
-    const [rows, fields] = await pool.query('SELECT image_url FROM profile_pictures WHERE id = ?', [pictureId]);
-
-    if (rows.length === 0) {
+    const picture = await ProfilePicture.findById(pictureId);
+    if (!picture) {
       return res.status(404).json({ error: 'Profile picture not found' });
     }
-
     const imageUrl = rows[0].image_url;
     const signedUrl = await generateSignedUrl(imageUrl);
 
@@ -48,13 +47,11 @@ router.get('/profile-pictures/:id', async (req, res) => {
 
 router.get('/profile-pictures', async (req, res) => {
   try {
-    const [rows, fields] = await pool.query('SELECT * FROM profile_pictures');
-    
-    const profilePictures = rows.map((row) => ({
-      id: row.id,
-      imageUrl: row.image_url,
+    const pictures = await ProfilePicture.find({});
+    const profilePictures = pictures.map(picture => ({
+      id: picture._id,
+      imageUrl: picture.imageUrl,
     }));
-
     res.json(profilePictures);
   } catch (error) {
     console.error('Error fetching profile pictures:', error);
@@ -62,43 +59,32 @@ router.get('/profile-pictures', async (req, res) => {
   }
 });
 
-router.post('/upload', (req, res) => {
-    const userId = req.user.id;
-    const imageUrl = req.body.imageUrl;
 
-    pool.query(
-        'INSERT INTO profile_pictures (user_id, image_url) VALUES (?, ?)',
-        [userId, imageUrl],
-        (err, results) => {
-        if (err) {
-            console.error('Error saving profile picture:', err);
-            return res.status(500).send('Error saving profile picture');
-        }
-        return res.status(200).send('Profile picture saved successfully');
-        }
-    );
+router.post('/upload', async (req, res) => {
+  const { userId, imageUrl } = req.body;
+
+  try {
+    const newPicture = new ProfilePicture({ userId, imageUrl });
+    await newPicture.save();
+    res.status(200).send('Profile picture saved successfully');
+  } catch (error) {
+  }
 });
 
-router.get('/:userId', (req, res) => {
+router.get('/:userId', async (req, res) => {
   const userId = req.params.userId;
 
-  pool.query(
-    'SELECT image_url FROM profile_pictures WHERE user_id = ?',
-    [userId],
-    (err, results) => {
-      if (err) {
-        console.error('Error fetching profile picture:', err);
-        return res.status(500).send('Error fetching profile picture');
-      }
-      if (results.length === 0) {
-        return res.status(404).send('Profile picture not found');
-      }
-      const imageUrl = results[0].image_url;
-      
-      res.setHeader('Content-Type', 'image/jpeg');
-      res.sendFile(path.join(__dirname, '..', imageUrl));
+  try {
+    const picture = await ProfilePicture.findOne({ userId });
+    if (!picture) {
+      return res.status(404).send('Profile picture not found');
     }
-  );
+    const imageUrl = picture.imageUrl;
+    res.json({ imageUrl });
+  } catch (error) {
+    console.error('Error fetching profile picture:', error);
+    res.status(500).send('Error fetching profile picture');
+  }
 });
 
 router.get('/user/:userId/login-streak', (req, res) => {
