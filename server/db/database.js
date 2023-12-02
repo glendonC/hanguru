@@ -1,6 +1,12 @@
-const mysql = require('mysql2/promise');
+const mongoose = require('mongoose');
 const config = require('../config');
 
-const pool = mysql.createPool(config);
+mongoose.connect(config.mongoUri, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+});
 
-module.exports = pool;
+const db = mongoose.connection;
+db.on('error', console.error.bind(console, 'MongoDB connection error:'));
+
+module.exports = db;
