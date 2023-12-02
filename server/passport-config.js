@@ -31,15 +31,19 @@ function initialize(passport) {
   passport.deserializeUser(async (id, done) => {
     console.log("Deserializing user with ID: ", id);
     try {
-      const user = await User.findById(id);
-      console.log("User found in deserializeUser: ", user);
-      done(null, user);
+        const user = await User.findById(id);
+        if (user) {
+            console.log("User found in deserializeUser: ", user);
+        } else {
+            console.log("No user found with ID: ", id);
+        }
+        done(null, user);
     } catch (e) {
-      console.error("Error in deserialization:", e);
-      console.error("Error in deserialization:", e);
-      done(e);
+        console.error("Error in deserialization:", e);
+        done(e);
     }
-  });
+});
+
   
 }
 

@@ -53,38 +53,44 @@ router.post('/register', async (req, res) => {
  * In case of errors during the login process, appropriate messages are returned to the client
  */
 router.post('/login', (req, res, next) => {
-  passport.authenticate('local', async (err, user, info) => {
+  passport.authenticate('local', (err, user, info) => {
     if (err) {
       console.error('Login Error:', err);
-      throw err;
+      return res.status(500).json({ message: 'Error during login' });
     }
     if (!user) {
       return res.status(401).json({ message: 'No User Exists or Password Incorrect' });
-    } else {
-      req.logIn(user, async (err) => {
-        if (err) {
-          console.error('Login Error:', err);
-          throw err;
-        }
-
-        const currentDate = new Date().toISOString();
-        if (!user.loginDates.some((date) => date.toISOString().split('T')[0] === currentDate.split('T')[0])) {
-          user.loginDates.push(currentDate);
-
-          try {
-            await user.save();
-          } catch (error) {
-            console.error('Error saving user with updated loginDates:', error);
-            throw error;
-          }
-        }
-
-        const streak = calculateStreak(user.loginDates);
-      res.json({ message: 'Successfully Authenticated', user: user, streak: streak });
-      });
     }
+
+    console.log("User found in login route: ", user);
+
+    req.logIn(user, async (err) => {
+      if (err) {
+        console.error('Error in req.logIn:', err);
+        return res.status(500).json({ message: 'Error during login process' });
+      }
+
+      console.log("User logged in: ", req.user);
+
+      const currentDate = new Date().toISOString();
+      if (!user.loginDates.some((date) => date.toISOString().split('T')[0] === currentDate.split('T')[0])) {
+        user.loginDates.push(currentDate);
+
+        try {
+          await user.save();
+        } catch (error) {
+          console.error('Error saving user with updated loginDates:', error);
+          throw error;
+        }
+      }
+
+      const streak = calculateStreak(user.loginDates);
+
+      res.json({ message: 'Successfully Authenticated', user: user, streak: streak });
+    });
   })(req, res, next);
 });
+
 
 function calculateStreak(dates) {
   let streak = 0;
