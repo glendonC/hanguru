@@ -32,7 +32,10 @@ function AccountSettingsPage() {
   }, []);
 
   const handleProfilePictureChange = async (pictureId) => {
+    console.log('Sending request to update profile picture', { selectedProfilePicture: pictureId });
+
     try {
+      
       const response = await fetch('https://peaceful-retreat-31647-a23d2c8b232f.herokuapp.com/api/user/update-profile-picture', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -51,6 +54,7 @@ function AccountSettingsPage() {
           isClosable: true,
         });
       } else {
+        console.error('Error status:', response.status, 'Error message:', response.statusText);
         throw new Error('Failed to update profile picture');
       }
     } catch (error) {
