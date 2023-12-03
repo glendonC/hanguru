@@ -88,7 +88,7 @@ const NavLink = ({ children, to }) => {
 
 const handleLogout = async () => {
   try {
-    const response = await fetch('https://peaceful-retreat-31647-a23d2c8b232f.herokuapp.com//api/logout', { method: 'POST' });
+    const response = await fetch('https://peaceful-retreat-31647-a23d2c8b232f.herokuapp.com/api/logout', { method: 'POST' });
     if (response.ok) {
       window.location.href = '/';
     } else {

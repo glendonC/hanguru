@@ -11,16 +11,16 @@ function isAuthenticated(req, res, next) {
     return next();
   }
   res.status(401).send('User not authenticated');
-  if (req.isAuthenticated()) {
-    return next();
-  }
-  res.status(401).send('User not authenticated');
 }
+
 router.post('/update-profile-picture', isAuthenticated, async (req, res) => {
   const { selectedProfilePicture } = req.body;
   console.log("Session ID in update-profile-picture: ", req.sessionID);
   console.log("Session data in update-profile-picture: ", req.session);
   console.log("User data in update-profile-picture: ", req.user);
+  if (!req.user || !req.user.id) {
+    return res.status(401).send('User not authenticated');
+  }
 
   try {
     const updatedUser = await User.findByIdAndUpdate(
