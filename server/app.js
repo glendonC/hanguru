@@ -50,11 +50,20 @@ app.use(session({
 app.use(passport.initialize());
 app.use(passport.session());
 app.use((req, res, next) => {
-  console.log('Session ID:', req.sessionID);
-  console.log('Session User:', req.user);
-  console.log('Session Details:', req.session);
+  console.log('Request headers:', req.headers);
+  console.log('Session:', req.session);
+  console.log('Authenticated:', req.isAuthenticated());
   next();
 });
+
+app.get('/test-auth', (req, res) => {
+  if (req.isAuthenticated()) {
+    res.send(`User is authenticated. User ID: ${req.user.id}`);
+  } else {
+    res.send('User is not authenticated');
+  }
+});
+
 
 // Connect to MongoDB
 mongoose.connect(process.env.MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true })
