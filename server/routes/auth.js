@@ -65,6 +65,7 @@ router.post('/login', (req, res, next) => {
     console.log("User found in login route: ", user);
 
     req.logIn(user, async (err) => {
+      console.log('User logged in, Session ID:', req.sessionID);
       if (err) {
         console.error('Error in req.logIn:', err);
         return res.status(500).json({ message: 'Error during login process' });

@@ -39,8 +39,7 @@ app.use(session({
     mongoUrl: process.env.MONGO_URI
   }),
   cookie: {
-    //secure: process.env.NODE_ENV === 'production',
-    secure: false,
+    secure: process.env.NODE_ENV === 'production',
     httpOnly: true,
     maxAge: 24 * 60 * 60 * 1000
   }
@@ -49,6 +48,12 @@ app.use(session({
 
 app.use(passport.initialize());
 app.use(passport.session());
+app.use((req, res, next) => {
+  console.log('Session ID:', req.sessionID);
+  console.log('Session User:', req.user ? req.user.id : 'No user');
+  console.log('Session Data:', req.session);
+  next();
+});
 app.use((req, res, next) => {
   console.log('Request headers:', req.headers);
   console.log('Session:', req.session);
