@@ -71,6 +71,13 @@ router.post('/login', (req, res, next) => {
         return res.status(500).json({ message: 'Error during login process' });
       }
 
+      res.cookie('connect.sid', req.sessionID, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        maxAge: 24 * 60 * 60 * 1000
+      });
+
+
       console.log("User logged in: ", req.user);
 
       const currentDate = new Date().toISOString();
