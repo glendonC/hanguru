@@ -69,6 +69,7 @@ function AuthPage({ onLogin, showLogin, toggleAuthPage }) {
       });
       if (response.ok) {
         const userData = await response.json();
+        console.log('Login/Register successful:', userData);
       
         if (userData.streak !== undefined) {
           localStorage.setItem('loginStreak', userData.streak);
@@ -80,6 +81,7 @@ function AuthPage({ onLogin, showLogin, toggleAuthPage }) {
       } else {
         const errorData = await response.json();
         setError(errorData.message || 'Failed to authenticate');
+        console.error('Login/Register error:', errorData);
       }
     } catch (err) {
       console.error('Error:', err);
