@@ -1,3 +1,13 @@
+const fs = require('fs');
+function decodeBase64ToFile(base64str, file) {
+  const buffer = Buffer.from(base64str, 'base64');
+  fs.writeFileSync(file, buffer);
+}
+decodeBase64ToFile(process.env.GCS_SERVICE_ACCOUNT_BASE64, 'gcs-service-account.json');
+decodeBase64ToFile(process.env.SPEECH_TO_TEXT_SERVICE_ACCOUNT_BASE64, 'speech-to-text-service-account.json');
+decodeBase64ToFile(process.env.CLOUD_PROXY_SERVICE_ACCOUNT_BASE64, 'cloud-proxy-service-account.json');
+decodeBase64ToFile(process.env.TEXT_TO_SPEECH_SERVICE_ACCOUNT_BASE64, 'text-to-speech-service-account.json');
+
 // Import required packages
 require('dotenv').config();
 const express = require('express');        // Web framework for Node.js
