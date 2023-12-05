@@ -21,6 +21,7 @@ function AccountSettingsPage() {
   const [profilePictures, setProfilePictures] = useState([]);
 
   const apiUrl = process.env.REACT_APP_API_URL || 'http://localhost:8100';
+  console.log("React APP API URL: ", process.env.REACT_APP_API_URL)
   console.log("API URL:", apiUrl);
 
 
