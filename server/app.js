@@ -96,6 +96,19 @@ app.get('/test-auth', (req, res) => {
   }
 });
 
+app.get('/test-session', (req, res) => {
+  if (req.isAuthenticated()) {
+      res.json({
+          message: 'User is authenticated',
+          user: req.user,
+          sessionId: req.sessionID,
+          session: req.session
+      });
+  } else {
+      res.status(401).json({ message: 'User is not authenticated' });
+  }
+});
+
 
 
 // Connect to MongoDB
