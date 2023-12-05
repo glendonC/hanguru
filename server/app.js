@@ -107,7 +107,7 @@ app.get('/test-session', (req, res) => {
 app.get('/', (req, res) => {
   res.send('Hello World!');
 });
-app.use('/api', authRoutes);
+app.use('/hanguru/api', authRoutes);
 app.use('/api', translateRoutes);
 app.use('/api/vocabulary', vocabularyRoutes);
 app.use('/api', gptRoute);

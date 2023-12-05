@@ -61,7 +61,7 @@ function AuthPage({ onLogin, showLogin, toggleAuthPage }) {
       ? { usernameOrEmail, password }
       : { username, email, password };
     try {
-      const response = await fetch(`/api/${endpoint}`, {
+      const response = await fetch(`/hanguru/api/${endpoint}`, {
         method: 'POST',
         headers: { 
           'Content-Type': 'application/json',
