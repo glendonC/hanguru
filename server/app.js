@@ -65,12 +65,17 @@ app.use((req, res, next) => {
 });
 
 app.get('/test-auth', (req, res) => {
-  if (req.isAuthenticated()) {
-    res.send(`User is authenticated. User ID: ${req.user.id}`);
+  if (!req.isAuthenticated()) {
+    // Manually setting a user for testing
+    req.login({ id: '656bb9f409ed34860c37d255' }, err => {
+      if (err) return res.status(500).send('Error');
+      res.send('User set in session');
+    });
   } else {
-    res.send('User is not authenticated');
+    res.send(`User is authenticated. User ID: ${req.user.id}`);
   }
 });
+
 
 
 // Connect to MongoDB
