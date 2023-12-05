@@ -61,7 +61,7 @@ function AuthPage({ onLogin, showLogin, toggleAuthPage }) {
       ? { usernameOrEmail, password }
       : { username, email, password };
     try {
-      const response = await fetch(`https://peaceful-retreat-31647-a23d2c8b232f.herokuapp.com/api/${endpoint}`, {
+      const response = await fetch(`/api/${endpoint}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(formData),
@@ -72,7 +72,7 @@ function AuthPage({ onLogin, showLogin, toggleAuthPage }) {
         console.log('Login/Register successful:', userData);
   
         // Session test immediately after successful login
-        fetch('https://peaceful-retreat-31647-a23d2c8b232f.herokuapp.com/api/test-session', {
+        fetch('/api/test-session', {
           credentials: 'include'
         })
         .then(testResponse => testResponse.json())
