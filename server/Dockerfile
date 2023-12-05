@@ -1,4 +1,3 @@
-# Use the official Node.js 18 image as a parent image
 FROM node:18-bullseye-slim
 
 # Set the working directory
@@ -10,11 +9,6 @@ COPY package*.json ./
 
 # Install dependencies
 RUN npm install
-
-# Copy the service account JSON file into the image
-COPY gcs-service-account.json /usr/src/app/gcs-service-account.json
-COPY speech-to-text-service-account.json /usr/src/app/speech-to-text-service-account.json
-COPY text-to-speech-service-account.json /usr/src/app/text-to-speech-service-account.json
 
 # Copy the rest of the app's source code
 COPY . .
