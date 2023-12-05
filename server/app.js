@@ -31,6 +31,8 @@ app.use(cors({
                           
 console.log("Session Secret: ", process.env.SESSION_SECRET);
 console.log("Mongo URI: ", process.env.MONGO_URI)
+console.log("Environment:", process.env.NODE_ENV);
+console.log("Session Cookie Secure Flag:", process.env.NODE_ENV === 'production');
 app.use(session({
   secret: process.env.SESSION_SECRET || 'temporarySecretForTesting',
   resave: false,
