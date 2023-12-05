@@ -118,8 +118,8 @@ export default function NavBar({ user }) {
           }
         })
         .then((data) => {
-          setProfilePictureUrl(data.signedUrl);
-        })
+          setProfilePictureUrl(data.imageUrl);
+        })        
         .catch((error) => {
           console.error('Error fetching signed URL for profile picture:', error);
         });
