@@ -87,6 +87,7 @@ const NavLink = ({ children, to }) => {
 
 
 const handleLogout = async () => {
+  const apiUrl = process.env.REACT_APP_API_URL || 'http://localhost:8100';
   try {
     const response = await fetch(`${apiUrl}/hanguru/api/logout`, { method: 'POST' });
     if (response.ok) {
