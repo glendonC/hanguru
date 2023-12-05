@@ -5,9 +5,16 @@ function decodeBase64ToFile(base64str, file) {
     return;
   }
   const buffer = Buffer.from(base64str, 'base64');
-  fs.writeFileSync(file, buffer);
+  const filePath = './' + file;
+  fs.writeFileSync(filePath, buffer);
+  return filePath;
 }
-decodeBase64ToFile(process.env.GCS_SERVICE_ACCOUNT_BASE64, 'gcs-service-account.json');
+
+const gcsServiceAccountFilePath = decodeBase64ToFile(process.env.GCS_SERVICE_ACCOUNT_BASE64, 'gcs-service-account.json');
+if (gcsServiceAccountFilePath) {
+  process.env.GOOGLE_APPLICATION_CREDENTIALS = gcsServiceAccountFilePath;
+}
+
 decodeBase64ToFile(process.env.SPEECH_TO_TEXT_SERVICE_ACCOUNT_BASE64, 'speech-to-text-service-account.json');
 decodeBase64ToFile(process.env.CLOUD_PROXY_SERVICE_ACCOUNT_BASE64, 'cloud-proxy-service-account.json');
 decodeBase64ToFile(process.env.TEXT_TO_SPEECH_SERVICE_ACCOUNT_BASE64, 'text-to-speech-service-account.json');
