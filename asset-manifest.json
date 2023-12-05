@@ -1,13 +1,13 @@
 {
   "files": {
-    "main.js": "/hanguru/static/js/main.0918f835.js",
+    "main.js": "/hanguru/static/js/main.f010c11b.js",
     "static/js/787.c4e7f8f9.chunk.js": "/hanguru/static/js/787.c4e7f8f9.chunk.js",
     "static/media/logo.png": "/hanguru/static/media/logo.6f57b66b332ac799a87a.png",
     "index.html": "/hanguru/index.html",
-    "main.0918f835.js.map": "/hanguru/static/js/main.0918f835.js.map",
+    "main.f010c11b.js.map": "/hanguru/static/js/main.f010c11b.js.map",
     "787.c4e7f8f9.chunk.js.map": "/hanguru/static/js/787.c4e7f8f9.chunk.js.map"
   },
   "entrypoints": [
-    "static/js/main.0918f835.js"
+    "static/js/main.f010c11b.js"
   ]
 }
