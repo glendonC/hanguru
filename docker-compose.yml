@@ -14,15 +14,12 @@ services:
       - ./server:/usr/src/app
       - /usr/src/app/node_modules
     environment:
-      - MONGO_URI=mongodb://mongo:27017/hanguru
       - GCS_SERVICE_ACCOUNT=/usr/src/app/gcs-service-account.json
       - SPEECH_TO_TEXT_SERVICE_ACCOUNT=/usr/src/app/speech-to-text-service-account.json
       - GOOGLE_APPLICATION_CREDENTIALS=/usr/src/app/text-to-speech-service-account.json
       - GCS_BUCKET_NAME=hanguru-audio-bucket
     env_file: 
       - ./server/.env
-    depends_on:
-      - mongo
 
   client:
     build: 
@@ -32,16 +29,6 @@ services:
       - hanguru_network
     ports:
       - '3000:80'
-    depends_on:
-      - server
-
-  mongo:
-    image: mongo
-    networks:
-      - hanguru_network
-    ports:
-      - '27017:27017'
-    restart: unless-stopped
 
 networks:
   hanguru_network:
