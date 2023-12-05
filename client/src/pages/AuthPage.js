@@ -63,7 +63,10 @@ function AuthPage({ onLogin, showLogin, toggleAuthPage }) {
     try {
       const response = await fetch(`/api/${endpoint}`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        },
         body: JSON.stringify(formData),
         credentials: 'include'
       });
@@ -94,6 +97,9 @@ function AuthPage({ onLogin, showLogin, toggleAuthPage }) {
       }
     } catch (err) {
       console.error('Error:', err);
+      if (err.response) {
+        console.error('Error response:', err.response);
+      }
       setError('Server error');
     }
   };
