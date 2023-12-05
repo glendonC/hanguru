@@ -74,13 +74,7 @@ function AuthPage({ onLogin, showLogin, toggleAuthPage }) {
         const userData = await response.json();
         console.log('Login/Register successful:', userData);
   
-        // Session test immediately after successful login
-        fetch('/api/test-session', {
-          credentials: 'include'
-        })
-        .then(testResponse => testResponse.json())
-        .then(testData => console.log('Session test after login:', testData))
-        .catch(testError => console.error('Session test error:', testError));
+       
   
         // Handle user data
         if (userData.streak !== undefined) {

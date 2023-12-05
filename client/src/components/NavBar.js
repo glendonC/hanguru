@@ -88,7 +88,7 @@ const NavLink = ({ children, to }) => {
 
 const handleLogout = async () => {
   try {
-    const response = await fetch('https://peaceful-retreat-31647-a23d2c8b232f.herokuapp.com/api/logout', { method: 'POST' });
+    const response = await fetch('/hanguru/api/logout', { method: 'POST' });
     if (response.ok) {
       window.location.href = '/';
     } else {
@@ -109,7 +109,7 @@ export default function NavBar({ user }) {
   useEffect(() => {
     if (user?.user?.profilePicture) {
       const profilePictureId = user.user.profilePicture;
-      fetch(`https://peaceful-retreat-31647-a23d2c8b232f.herokuapp.com/api/users/profile-pictures/${profilePictureId}`)
+      fetch(`/hanguru/api/users/profile-pictures/${profilePictureId}`)
         .then((response) => {
           if (response.ok) {
             return response.json();
