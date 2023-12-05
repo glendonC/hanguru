@@ -21,7 +21,7 @@ function AccountSettingsPage() {
   const [profilePictures, setProfilePictures] = useState([]);
 
   useEffect(() => {
-    fetch('/api/users/profile-pictures')
+    fetch('/hanguru/api/users/profile-pictures')
       .then((response) => response.json())
       .then((data) => {
         setProfilePictures(data);
@@ -36,7 +36,7 @@ function AccountSettingsPage() {
 
     try {
       
-      const response = await fetch('/api/user/update-profile-picture', {
+      const response = await fetch('/hanguru/api/user/update-profile-picture', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ selectedProfilePicture: pictureId }),
@@ -72,7 +72,7 @@ function AccountSettingsPage() {
   const handleUsernameChange = async (e) => {
     e.preventDefault();
     try {
-      const response = await fetch('/api/user/change-username', {
+      const response = await fetch('/hanguru/api/user/change-username', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ newUsername: username }),
@@ -113,7 +113,7 @@ function AccountSettingsPage() {
   const handlePasswordChange = async (e) => {
     e.preventDefault();
     try {
-      const response = await fetch('/api/user/change-password', {
+      const response = await fetch('/hanguru/api/user/change-password', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ newPassword: password }),

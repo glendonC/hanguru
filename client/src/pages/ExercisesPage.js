@@ -80,7 +80,7 @@ const ExercisesPage = () => {
   // Generates a question using GPT-3 based on the selected words
   const generateQuestion = async () => {
     try {
-      const response = await axios.post('https://peaceful-retreat-31647-a23d2c8b232f.herokuapp.com/api/generate-sentence', {
+      const response = await axios.post('/hanguru/api/generate-sentence', {
         vocab: selectedWords.join(', '),
       });
       setGeneratedQuestion(response.data.question || 'No question provided');
@@ -93,7 +93,7 @@ const ExercisesPage = () => {
   // Checks the user's sentence for correctness and naturalness using GPT model in gpt.js
   const checkUserAnswer = async () => {
     try {
-      const response = await axios.post('https://peaceful-retreat-31647-a23d2c8b232f.herokuapp.com/api/check-answer', {
+      const response = await axios.post('/hanguru/api/check-answer', {
         userSentence: userInput,
         question: generatedQuestion,
         vocab: selectedWords.join(', ')

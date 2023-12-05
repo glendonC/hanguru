@@ -108,15 +108,15 @@ app.get('/', (req, res) => {
   res.send('Hello World!');
 });
 app.use('/hanguru/api', authRoutes);
-app.use('/api', translateRoutes);
-app.use('/api/vocabulary', vocabularyRoutes);
-app.use('/api', gptRoute);
-app.use('/api/upload', uploadRoutes);
-app.use('/api', textToSpeechRoute);
-app.use('/api/user', userSettingsRoutes);
-app.use('/api/speech-to-text', speechToTextRoute);
-app.use('/api/recordings', recordingRoutes);
-app.use('/api/users', usersRoutes);
+app.use('/hanguru/api', translateRoutes);
+app.use('/hanguru/api/vocabulary', vocabularyRoutes);
+app.use('/hanguru/api', gptRoute);
+app.use('/hanguru/api/upload', uploadRoutes);
+app.use('/hanguru/api', textToSpeechRoute);
+app.use('/hanguru/api/user', userSettingsRoutes);
+app.use('/hanguru/api/speech-to-text', speechToTextRoute);
+app.use('/hanguru/api/recordings', recordingRoutes);
+app.use('/hanguru/api/users', usersRoutes);
 
 // Define the port to listen on
 const PORT = process.env.PORT || 8100;
