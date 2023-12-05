@@ -59,6 +59,7 @@ function AccountSettingsPage() {
         });
       } else {
         console.error('Error status:', response.status, 'Error message:', response.statusText);
+        console.log("Failed API URL:", apiUrl);
         throw new Error('Failed to update profile picture');
       }
     } catch (error) {
