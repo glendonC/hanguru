@@ -50,7 +50,7 @@ const ExercisesPage = () => {
   useEffect(() => {
     const fetchSets = async () => {
       try {
-        const response = await axios.get('https://peaceful-retreat-31647-a23d2c8b232f.herokuapp.com/api/vocabulary/sets');
+        const response = await axios.get('/hanguru/api/vocabulary/sets');
         setVocabularySets(response.data);
       } catch (error) {
         console.error('Error fetching sets:', error);
@@ -63,7 +63,7 @@ const ExercisesPage = () => {
   const handleSetSelection = async (setId) => {
     setSelectedWords([]);
     try {
-      const response = await axios.get(`https://peaceful-retreat-31647-a23d2c8b232f.herokuapp.com/api/vocabulary/set/${setId}/items`);
+      const response = await axios.get(`/hanguru/api/vocabulary/set/${setId}/items`);
       setSetWords(response.data);
     } catch (error) {
       console.error('Error fetching words from set:', error);
