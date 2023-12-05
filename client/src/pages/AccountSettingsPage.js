@@ -21,6 +21,8 @@ function AccountSettingsPage() {
   const [profilePictures, setProfilePictures] = useState([]);
 
   const apiUrl = process.env.REACT_APP_API_URL || 'http://localhost:8100';
+  console.log("API URL:", apiUrl);
+
 
   useEffect(() => {
     fetch(`${apiUrl}/hanguru/api/users/profile-pictures`)
