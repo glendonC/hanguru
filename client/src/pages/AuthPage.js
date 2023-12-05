@@ -70,7 +70,16 @@ function AuthPage({ onLogin, showLogin, toggleAuthPage }) {
       if (response.ok) {
         const userData = await response.json();
         console.log('Login/Register successful:', userData);
-      
+  
+        // Session test immediately after successful login
+        fetch('https://peaceful-retreat-31647-a23d2c8b232f.herokuapp.com/api/test-session', {
+          credentials: 'include'
+        })
+        .then(testResponse => testResponse.json())
+        .then(testData => console.log('Session test after login:', testData))
+        .catch(testError => console.error('Session test error:', testError));
+  
+        // Handle user data
         if (userData.streak !== undefined) {
           localStorage.setItem('loginStreak', userData.streak);
         }
