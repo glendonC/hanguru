@@ -47,6 +47,8 @@ function AuthPage({ onLogin, showLogin, toggleAuthPage }) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+
+  const apiUrl = process.env.REACT_APP_API_URL || 'http://localhost:8100';
   
   const handleToggle = () => {
     setIsLogin(!isLogin); // Toggle between login and sign-up
@@ -61,7 +63,7 @@ function AuthPage({ onLogin, showLogin, toggleAuthPage }) {
       ? { usernameOrEmail, password }
       : { username, email, password };
     try {
-      const response = await fetch(`/hanguru/api/${endpoint}`, {
+      const response = await fetch(`${apiUrl}/hanguru/api/${endpoint}`, {
         method: 'POST',
         headers: { 
           'Content-Type': 'application/json',
@@ -73,9 +75,7 @@ function AuthPage({ onLogin, showLogin, toggleAuthPage }) {
       if (response.ok) {
         const userData = await response.json();
         console.log('Login/Register successful:', userData);
-  
-       
-  
+    
         // Handle user data
         if (userData.streak !== undefined) {
           localStorage.setItem('loginStreak', userData.streak);
