@@ -1,5 +1,9 @@
 const fs = require('fs');
 function decodeBase64ToFile(base64str, file) {
+  if (!base64str) {
+    console.error(`Environment variable for ${file} is not set`);
+    return;
+  }
   const buffer = Buffer.from(base64str, 'base64');
   fs.writeFileSync(file, buffer);
 }
