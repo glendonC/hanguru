@@ -5,7 +5,7 @@ services:
     build: 
       context: ./server
       dockerfile: Dockerfile
-    command: npx nodemon -L app.js
+    command: npx nodemon app.js
     networks:
       - hanguru_network
     ports:
