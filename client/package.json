@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "homepage": "https://glendonC.github.io/hanguru/",
-  "proxy": "https://peaceful-retreat-31647-a23d2c8b232f.herokuapp.com",
+  "proxy": "http://localhost:8100",
   "dependencies": {
     "@chakra-ui/icons": "^2.1.1",
     "@chakra-ui/react": "^2.8.2",
