@@ -88,7 +88,7 @@ const NavLink = ({ children, to }) => {
 
 const handleLogout = async () => {
   try {
-    const response = await fetch('/hanguru/api/logout', { method: 'POST' });
+    const response = await fetch(`${apiUrl}/hanguru/api/logout`, { method: 'POST' });
     if (response.ok) {
       window.location.href = '/';
     } else {
@@ -105,11 +105,13 @@ export default function NavBar({ user }) {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const navigate = useNavigate();
   const [profilePictureUrl, setProfilePictureUrl] = useState(null);
+
+  const apiUrl = process.env.REACT_APP_API_URL || 'http://localhost:8100';
   
   useEffect(() => {
     if (user?.user?.profilePicture) {
       const profilePictureId = user.user.profilePicture;
-      fetch(`/hanguru/api/users/profile-pictures/${profilePictureId}`)
+      fetch(`${apiUrl}/hanguru/api/users/profile-pictures/${profilePictureId}`)
         .then((response) => {
           if (response.ok) {
             return response.json();

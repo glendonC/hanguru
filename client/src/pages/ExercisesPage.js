@@ -46,11 +46,13 @@ const ExercisesPage = () => {
   const [generatedQuestion, setGeneratedQuestion] = useState('');
   const [questionTranslation, setQuestionTranslation] = useState('');
 
+  const apiUrl = process.env.REACT_APP_API_URL || 'http://localhost:8100';
+
   // Fetches the vocabulary sets when the component mounts
   useEffect(() => {
     const fetchSets = async () => {
       try {
-        const response = await axios.get('/hanguru/api/vocabulary/sets');
+        const response = await axios.get(`${apiUrl}/hanguru/api/vocabulary/sets`);
         setVocabularySets(response.data);
       } catch (error) {
         console.error('Error fetching sets:', error);
@@ -63,7 +65,7 @@ const ExercisesPage = () => {
   const handleSetSelection = async (setId) => {
     setSelectedWords([]);
     try {
-      const response = await axios.get(`/hanguru/api/vocabulary/set/${setId}/items`);
+      const response = await axios.get(`${apiUrl}/hanguru/api/vocabulary/set/${setId}/items`);
       setSetWords(response.data);
     } catch (error) {
       console.error('Error fetching words from set:', error);
@@ -80,7 +82,7 @@ const ExercisesPage = () => {
   // Generates a question using GPT-3 based on the selected words
   const generateQuestion = async () => {
     try {
-      const response = await axios.post('/hanguru/api/generate-sentence', {
+      const response = await axios.post(`${apiUrl}/hanguru/api/generate-sentence`, {
         vocab: selectedWords.join(', '),
       });
       setGeneratedQuestion(response.data.question || 'No question provided');
@@ -93,7 +95,7 @@ const ExercisesPage = () => {
   // Checks the user's sentence for correctness and naturalness using GPT model in gpt.js
   const checkUserAnswer = async () => {
     try {
-      const response = await axios.post('/hanguru/api/check-answer', {
+      const response = await axios.post(`${apiUrl}/hanguru/api/check-answer`, {
         userSentence: userInput,
         question: generatedQuestion,
         vocab: selectedWords.join(', ')
