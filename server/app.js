@@ -64,10 +64,11 @@ app.use(session({
   cookie: {
     secure: process.env.NODE_ENV === 'production',
     httpOnly: true,
-    maxAge: 24 * 60 * 60 * 1000
+    maxAge: 24 * 60 * 60 * 1000,
+    sameSite: 'None'
   }
 }));
-
+app.set('trust proxy', 1);
 
 app.use(passport.initialize());
 app.use(passport.session());
