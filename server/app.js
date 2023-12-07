@@ -43,7 +43,7 @@ app.use(express.json());
 // Configure middleware
 
 app.use(cors({
-  origin: ['https://glendonc.github.io', 'http://localhost:3000', 'http://localhost:3001'],
+  origin: ['https://www.hanguru.me', 'https://glendonc.github.io', 'http://localhost:3000', 'http://localhost:3001'],
   methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
   credentials: true,
   allowedHeaders: ['Content-Type', 'Authorization']
