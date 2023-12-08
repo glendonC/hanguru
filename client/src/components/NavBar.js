@@ -24,6 +24,30 @@ import { HamburgerIcon, CloseIcon, MoonIcon, SunIcon } from '@chakra-ui/icons';
 import { Link, useNavigate } from 'react-router-dom';
 import logo from './logo.png';
 
+/**
+ * NavBar Component
+ * 
+ * This component provides a responsive navigation bar for the application.
+ * 
+ * Props:
+ * - user: An object containing user information (e.g., username, profile picture).
+ * 
+ * State:
+ * - profilePictureUrl: URL of the user's profile picture.
+ * 
+ * Behavior:
+ * - Displays navigation links.
+ * - Handles toggling between light and dark mode.
+ * - Manages the responsive menu for smaller screens.
+ * - Provides user account interaction such as logout and account settings.
+ * 
+ * Navigation:
+ * - Uses react-router-dom for navigation without reloading the page.
+ * 
+ * Styling:
+ * - Uses Chakra UI for styling components.
+ * - Utilizes styled components for custom link styling.
+ */
 const navLinks = [
   { name: 'Home', path: '/' },
   { name: 'Vocabulary', path: '/vocabulary' },
@@ -72,6 +96,7 @@ const StyledLink = styled(Link)`
   }
 `;
 
+// Handle navigation links
 const NavLink = ({ children, to }) => {
   return (
     <StyledLink to={to}>
@@ -80,6 +105,7 @@ const NavLink = ({ children, to }) => {
   );
 };
 
+// Handle user logout
 const handleLogout = async () => {
   const apiUrl = process.env.REACT_APP_API_URL || 'http://localhost:8100';
   try {
@@ -94,7 +120,6 @@ const handleLogout = async () => {
   }
 };
 
-
 export default function NavBar({ user }) {
   const { colorMode, toggleColorMode } = useColorMode();
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -103,6 +128,7 @@ export default function NavBar({ user }) {
 
   const apiUrl = process.env.REACT_APP_API_URL || 'http://localhost:8100';
   
+  // Fetches and set the user's profile picture URL
   useEffect(() => {
     if (user?.user?.profilePicture) {
       const profilePictureId = user.user.profilePicture;
@@ -123,15 +149,16 @@ export default function NavBar({ user }) {
     }
   }, [user]);
     
+  // Navigate to account settings page
   const handleAccountSettingsClick = () => {
     navigate('/account-settings');
   };
 
+  // Navigate to progress checker page
   const handleProgressCheckerClick = () => {
     navigate('/progress-checker');
   };
 
-  // console.log(user)
   return (
     <>
       <Box bg={useColorModeValue('gray.100', 'gray.900')} px={4}>
