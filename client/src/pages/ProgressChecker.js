@@ -2,6 +2,31 @@ import React, { useState, useEffect } from 'react';
 import { Box, Text, Stat, StatLabel, StatNumber, StatHelpText } from '@chakra-ui/react';
 import Calendar from './Calendar';
 
+/**
+ * ProgressChecker Component
+ * 
+ * Provides a visual representation of the user's progress in language learning, 
+ * particularly focusing on their login streak and visualizing login dates on a calendar.
+ * 
+ * State Management:
+ * - loginStreak: Stores the user's current login streak, fetched from local storage.
+ * - loginDates: An array of dates representing the user's login history, also fetched from local storage.
+ * 
+ * Features:
+ * - Displays a calendar component (Calendar) with marked login dates.
+ * - Shows the user's login streak as a statistical number.
+ * 
+ * Effects and Lifecycle:
+ * - On component mount, fetches login streak and dates from local storage and sets them in state.
+ * - Handles parsing of dates and errors gracefully.
+ * 
+ * Styling:
+ * - Uses Chakra UI components for styling and layout.
+ * - Includes a Stat component to emphasize the login streak.
+ * 
+ * Dependency:
+ * - Relies on the Calendar component to visualize login dates.
+*/
 function ProgressChecker() {
   const [loginStreak, setLoginStreak] = useState(0);
   const [loginDates, setLoginDates] = useState([]);
