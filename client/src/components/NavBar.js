@@ -47,7 +47,7 @@ import logo from './logo.png';
  * Styling:
  * - Uses Chakra UI for styling components.
  * - Utilizes styled components for custom link styling.
- */
+*/
 const navLinks = [
   { name: 'Home', path: '/' },
   { name: 'Vocabulary', path: '/vocabulary' },

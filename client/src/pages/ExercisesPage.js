@@ -34,7 +34,7 @@ import axios from 'axios';
  * 
  * Error Handling:
  * - Handles errors in API requests and displays appropriate error messages.
- */
+*/
 const ExercisesPage = () => {
   const [vocabularySets, setVocabularySets] = useState([]);
   const [setWords, setSetWords] = useState([]);

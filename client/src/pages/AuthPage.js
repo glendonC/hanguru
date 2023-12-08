@@ -41,7 +41,7 @@ import {
  * 
  * Error Handling:
  * - Displays error messages received from the server or on network failure.
- */
+*/
 function AuthPage({ onLogin, showLogin, toggleAuthPage }) {
   // State for input fields and error message
   const [isLogin, setIsLogin] = useState(true);

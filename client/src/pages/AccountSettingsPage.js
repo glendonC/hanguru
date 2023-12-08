@@ -34,7 +34,7 @@ import {
  *
  * Styling:
  * - Uses Chakra UI for component styling.
- */
+*/
 function AccountSettingsPage() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');

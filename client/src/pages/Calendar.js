@@ -21,7 +21,7 @@ import { Grid, Box, useColorModeValue } from '@chakra-ui/react';
  * Helper Function:
  * - getMonthDays: A function to generate an array of days for the current month.
  * - Each day is represented as an object containing the day number and a string representation of the date.
- */
+*/
 const Calendar = ({ loginDates }) => {
   const monthDays = getMonthDays();
   const formattedLoginDates = loginDates.map(date => new Date(date).toISOString().split('T')[0]);
