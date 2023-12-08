@@ -148,13 +148,19 @@ export default function NavBar({ user }) {
         });
     }
   }, [user]);
-    
-  // Navigate to account settings page
+  
+  /**
+   * handleAccountSettingsClick
+   * Navigates the user to the account settings page.
+  */
   const handleAccountSettingsClick = () => {
     navigate('/account-settings');
   };
 
-  // Navigate to progress checker page
+  /**
+   * handleProgressCheckerClick
+   * Navigates the user to the progress checker page.
+  */
   const handleProgressCheckerClick = () => {
     navigate('/progress-checker');
   };
