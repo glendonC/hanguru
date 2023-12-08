@@ -12,19 +12,38 @@ import {
   Image
 } from '@chakra-ui/react';
 
+/**
+ * AccountSettingsPage Component
+ *
+ * This component provides an interface for users to update their account settings,
+ * including changing their username, password, and profile picture.
+ *
+ * State:
+ * - username: The new username input by the user.
+ * - password: The new password input by the user.
+ * - selectedProfilePicture: The selected profile picture ID.
+ * - profilePictures: Array of available profile pictures.
+ *
+ * Behavior:
+ * - Fetches available profile pictures from the server on component mount.
+ * - Allows users to update their username, password, and profile picture.
+ * - Displays toast notifications for success or error messages.
+ *
+ * API Interaction:
+ * - Communicates with a backend server to fetch profile pictures and update account settings.
+ *
+ * Styling:
+ * - Uses Chakra UI for component styling.
+ */
 function AccountSettingsPage() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const toast = useToast();
-
   const [selectedProfilePicture, setSelectedProfilePicture] = useState(null);
   const [profilePictures, setProfilePictures] = useState([]);
-
   const apiUrl = process.env.REACT_APP_API_URL || 'http://localhost:8100';
-  console.log("React APP API URL: ", process.env.REACT_APP_API_URL)
-  console.log("API URL:", apiUrl);
 
-
+  // Fetch and set available profile pictures
   useEffect(() => {
     fetch(`${apiUrl}/hanguru/api/profiles/profile-pictures`)
       .then((response) => response.json())
@@ -36,11 +55,14 @@ function AccountSettingsPage() {
       });
   }, []);
 
+ 
+  /**
+    * handleProfilePictureChange
+    * Updates the user's profile picture by sending the selected picture ID to the server.
+    * @param {string} pictureId - The ID of the selected profile picture.
+  */
   const handleProfilePictureChange = async (pictureId) => {
-    console.log('Sending request to update profile picture', { selectedProfilePicture: pictureId });
-
     try {
-      
       const response = await fetch(`${apiUrl}/hanguru/api/account/update-profile-picture`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -50,7 +72,6 @@ function AccountSettingsPage() {
   
       if (response.ok) {
         setSelectedProfilePicture(pictureId);
-  
         toast({
           title: 'Profile Picture Updated',
           description: 'Your profile picture has been updated successfully',
@@ -74,7 +95,13 @@ function AccountSettingsPage() {
       });
     }
   };
-  
+
+  /**
+   * handleUsernameChange
+   * Updates the user's username by sending the new username to the server.
+   * This function prevents the default form submission behavior.
+   * @param {Event} e - The event object from the form submission.
+  */
   const handleUsernameChange = async (e) => {
     e.preventDefault();
     try {
@@ -116,6 +143,12 @@ function AccountSettingsPage() {
     }
   };
   
+  /**
+   * handlePasswordChange
+   * Updates the user's password by sending the new password to the server.
+   * This function prevents the default form submission behavior.
+   * @param {Event} e - The event object from the form submission.
+  */
   const handlePasswordChange = async (e) => {
     e.preventDefault();
     try {
@@ -169,17 +202,15 @@ function AccountSettingsPage() {
           <FormLabel>Select Profile Picture</FormLabel>
           <Grid templateColumns="repeat(3, 1fr)" gap={4}>
           {Array.isArray(profilePictures) && profilePictures.map((picture) => (
-  <Image
-    key={picture.id}
-    src={picture.imageUrl}
-    alt="Profile"
-    onClick={() => handleProfilePictureChange(picture.id)}
-    className={picture.id === selectedProfilePicture ? 'selected' : ''}
-  />
-))}
-
+            <Image
+              key={picture.id}
+              src={picture.imageUrl}
+              alt="Profile"
+              onClick={() => handleProfilePictureChange(picture.id)}
+              className={picture.id === selectedProfilePicture ? 'selected' : ''}
+              />
+            ))}
           </Grid>
-
         </FormControl>
 
         {/* Username Update */}
