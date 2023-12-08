@@ -3,21 +3,35 @@ const router = express.Router();
 const bcrypt = require('bcryptjs');
 const User = require('../models/User');
 
+/**
+ * Middleware to check if the user is authenticated
+ * @param {Request} req - Express request object
+ * @param {Response} res - Express response object
+ * @param {Function} next - Callback to pass control to the next middleware
+*/
 function isAuthenticated(req, res, next) {
-  console.log("Session ID from isAuthenticated middleware: ", req.sessionID);
-  console.log("Session data from isAuthenticated middleware: ", req.session);
-  console.log("User data from isAuthenticated middleware: ", req.user);
   if (req.isAuthenticated()) {
     return next();
   }
   res.status(401).send('User not authenticated');
 }
 
+/**
+ * POST /update-profile-picture
+ * Updates the profile picture of the authenticated user.
+ * Requires user authentication.
+ * 
+ * Request body:
+ * - selectedProfilePicture: ID of the new profile picture to be set for the user.
+ * 
+ * Response:
+ * - On success: 200 status with a success message and updated user data.
+ * - On error: 500 status with error message.
+ * 
+ * Note: User must be authenticated to access this endpoint.
+*/
 router.post('/update-profile-picture', isAuthenticated, async (req, res) => {
   const { selectedProfilePicture } = req.body;
-  console.log("Session ID in update-profile-picture: ", req.sessionID);
-  console.log("Session data in update-profile-picture: ", req.session);
-  console.log("User data in update-profile-picture: ", req.user);
   if (!req.user || !req.user.id) {
     return res.status(401).send('User not authenticated');
   }
@@ -40,7 +54,22 @@ router.post('/update-profile-picture', isAuthenticated, async (req, res) => {
   }
 });
 
-// Endpoint to change username
+/**
+ * POST /change-username
+ * Changes the username of the authenticated user.
+ * Requires user authentication.
+ * 
+ * Request body:
+ * - newUsername: New username to be set for the user.
+ * 
+ * Response:
+ * - On success: Sends a success message 'Username updated successfully'.
+ * - On username taken: 400 status with message 'Username already taken'.
+ * - On invalid username: 400 status with message 'Invalid username'.
+ * - On error: 500 status with error message.
+ * 
+ * Note: User must be authenticated to access this endpoint.
+*/
 router.post('/change-username', isAuthenticated, async (req, res) => {
   const { newUsername } = req.body;
 
@@ -61,7 +90,20 @@ router.post('/change-username', isAuthenticated, async (req, res) => {
   }
 });
 
-// Endpoint to change password
+/**
+ * POST /change-password
+ * Changes the password of the authenticated user.
+ * Requires user authentication.
+ * 
+ * Request body:
+ * - newPassword: New password to be set for the user.
+ * 
+ * Response:
+ * - On success: Sends a success message 'Password updated successfully'.
+ * - On error: 500 status with error message.
+ * 
+ * Note: The new password is hashed using bcrypt before storing in the database.
+*/
 router.post('/change-password', isAuthenticated, async (req, res) => {
   const { newPassword } = req.body;
 
