@@ -5,17 +5,17 @@ const VocabularySet = require('../models/VocabularySet');
 
 /**
  * POST /add
- * Adds a new vocabulary item to the database and optionally to a vocabulary set
+ * Adds a new vocabulary item to the database. Optionally, it can be linked to a vocabulary set.
  * 
  * Request body:
- * - korean: The Korean word or phrase
- * - english: The English translation
- * - set: The ID of the vocabulary set to which this item belongs
+ * - korean: Korean word or phrase.
+ * - english: English translation.
+ * - set: Optional ID of the vocabulary set to link this item to.
  * 
  * Response:
- * - On success: Returns the created VocabularyItem
- * - On error: Returns a 500 status with an error message
- */
+ * - On success: 201 status with the created VocabularyItem.
+ * - On error: 500 status with an error message.
+*/
 router.post('/add', async (req, res) => {
   const { korean, english, set } = req.body;
   try {
@@ -33,18 +33,13 @@ router.post('/add', async (req, res) => {
 });
 
 /**
- * POST /add
- * Adds a new vocabulary item to the database and optionally to a vocabulary set
- * 
- * Request body:
- * - korean: The Korean word or phrase
- * - english: The English translation
- * - set: The ID of the vocabulary set to which this item belongs
+ * GET /sets
+ * Retrieves all vocabulary sets from the database.
  * 
  * Response:
- * - On success: Returns the created VocabularyItem
- * - On error: Returns a 500 status with an error message
- */
+ * - On success: JSON array of all vocabulary sets.
+ * - On error: 500 status with an error message.
+*/
 router.get('/sets', async (req, res) => {
     try {
       const sets = await VocabularySet.find({});
@@ -56,15 +51,15 @@ router.get('/sets', async (req, res) => {
 
 /**
  * POST /set/add
- * Adds a new vocabulary set
+ * Creates a new vocabulary set.
  * 
  * Request body:
- * - name: The name of the new vocabulary set
+ * - name: Name of the new vocabulary set.
  * 
  * Response:
- * - On success: Returns the created VocabularySet
- * - On error: Returns a 500 status with an error message
- */
+ * - On success: 201 status with the created VocabularySet.
+ * - On error: 500 status with an error message.
+*/
 router.post('/set/add', async (req, res) => {
     const { name } = req.body;
     try {
@@ -78,15 +73,15 @@ router.post('/set/add', async (req, res) => {
 
 /**
  * GET /set/:setId/items
- * Retrieves all vocabulary items within a specific set
+ * Retrieves all vocabulary items within a specific set by set ID.
  * 
- * URL params:
- * - setId: The ID of the vocabulary set
+ * URL parameters:
+ * - setId: ID of the vocabulary set.
  * 
  * Response:
- * - On success: Returns an array of VocabularyItem objects belonging to the set
- * - On error: Returns a 500 status with an error message
- */
+ * - On success: JSON array of VocabularyItem objects in the set.
+ * - On error: 500 status with an error message.
+*/
 router.get('/set/:setId/items', async (req, res) => {
   try {
     const { setId } = req.params;
@@ -124,16 +119,20 @@ router.put('/item/edit/:itemId', async (req, res) => {
 });
 
 /**
- * DELETE /item/delete/:itemId
- * Deletes a specific vocabulary item and removes it from any sets it belongs to
+ * PUT /item/edit/:itemId
+ * Updates a specific vocabulary item identified by its ID.
  * 
- * URL params:
- * - itemId: The ID of the vocabulary item to delete
+ * URL parameters:
+ * - itemId: ID of the vocabulary item to update.
+ * 
+ * Request body:
+ * - korean: Updated Korean word or phrase.
+ * - english: Updated English translation.
  * 
  * Response:
- * - On success: Returns a success message
- * - On error: Returns a 500 status with an error message
- */
+ * - On success: JSON object of the updated VocabularyItem.
+ * - On error: 500 status with an error message.
+*/
 router.delete('/item/delete/:itemId', async (req, res) => {
   const { itemId } = req.params;
   try {
