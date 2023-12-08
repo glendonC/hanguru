@@ -5,38 +5,37 @@ import axios from 'axios';
 /**
  * VocabularyPage Component
  * 
- * This component is designed to manage vocabulary words and sets. It allows users to add new vocabulary words, 
- * create new vocabulary sets, and edit or delete existing vocabulary
+ * Manages vocabulary words and sets, allowing users to add new vocabulary words, create vocabulary sets, and edit or delete existing vocabulary.
  *
  * State Management:
- * - koreanWord, englishDefinition: States for managing the input of new vocabulary words and their English definitions
- * - currentSet, newSetName: States for handling the current vocabulary set and the input for a new set name
- * - vocabularySets: Stores the list of vocabulary sets fetched from the server
- * - selectedSetItems: Holds the words in the currently selected vocabulary set
- * - editingItem, editedKorean, editedEnglish: States for managing the edit process of a vocabulary word
+ * - koreanWord, englishDefinition: States for managing the input of new vocabulary words and their English definitions.
+ * - currentSet, newSetName: States for handling the current vocabulary set and the input for a new set name.
+ * - vocabularySets: An array storing the list of vocabulary sets fetched from the server.
+ * - selectedSetItems: An array holding the words in the currently selected vocabulary set.
+ * - editingItem, editedKorean, editedEnglish: States for managing the editing process of a vocabulary word.
  * 
  * Features:
- * - Addition of new vocabulary words to a selected set
- * - Creation of new vocabulary sets
- * - Inline editing and deletion of vocabulary words
- * - Translation feature to automatically translate Korean words to English
- * - Display of vocabulary words in the selected set
+ * - Enables the addition of new vocabulary words to a selected set.
+ * - Allows the creation of new vocabulary sets.
+ * - Provides inline editing and deletion of vocabulary words.
+ * - Includes a translation feature for Korean words to English.
+ * - Displays vocabulary words in the selected set.
  * 
  * API Interaction:
- * - Communicates with a backend server for fetching, adding, editing, and deleting vocabulary words and sets
+ * - Communicates with the backend server for fetching, adding, editing, and deleting vocabulary words and sets.
  * 
  * Handlers:
- * - handleTranslate: Translates a Korean word to English
- * - handleAddVocabulary: Adds a new vocabulary word to a set
- * - handleAddSet: Creates a new vocabulary set
- * - handleSetSelection: Selects a set and fetches its items
- * - handleEditItem: Sets up editing for a selected vocabulary word
- * - submitEdit: Submits the edited vocabulary word
- * - handleDeleteItem: Deletes a selected vocabulary word
+ * - handleTranslate: Translates a Korean word to English using an API.
+ * - handleAddVocabulary: Adds a new vocabulary word to the selected set.
+ * - handleAddSet: Creates a new vocabulary set.
+ * - handleSetSelection: Fetches and displays items from the selected set.
+ * - handleEditItem: Initiates editing for a selected vocabulary word.
+ * - submitEdit: Submits the edited vocabulary word to the server.
+ * - handleDeleteItem: Deletes a selected vocabulary word from the server.
  * 
  * Error and Success Handling:
- * - Displays toast notifications for errors and successful operations
- */
+ * - Uses Chakra UI's useToast for displaying notifications related to errors and successful operations.
+*/
 const VocabularyPage = () => {
   // State to store inputs and fetched data
   const [koreanWord, setKoreanWord] = useState('');
@@ -74,14 +73,21 @@ const VocabularyPage = () => {
     fetchSets();
   }, []);
 
-  
-  // Returns the name of the currently selected set
+  /**
+   * getCurrentSetName
+   * Retrieves the name of the currently selected vocabulary set.
+   * @returns {string} The name of the selected set or a default message if no set is selected.
+  */
   const getCurrentSetName = () => {
     const currentSetObj = vocabularySets.find(set => set._id === currentSet);
     return currentSetObj ? currentSetObj.setName : 'No set selected';
   };
 
-  // Handles translation of the input Korean word
+  /**
+   * handleTranslate
+   * Initiates the translation of a Korean word to English.
+   * Updates the English definition state with the translated result.
+  */
   const handleTranslate = async () => {
     try {
       const response = await axios.post(`${apiUrl}/hanguru/api/translate`, {
@@ -101,7 +107,11 @@ const VocabularyPage = () => {
     }
   };
 
-  // Handles addition of a new vocabulary word
+  /**
+   * handleAddVocabulary
+   * Adds a new vocabulary word to the selected set.
+   * Validates the inputs and displays appropriate toast notifications for success or warnings.
+  */
   const handleAddVocabulary = async () => {
     if (!currentSet) {
       toast({
@@ -153,7 +163,11 @@ const VocabularyPage = () => {
       }
   };
 
-  // Handles creation of a new vocabulary set
+  /**
+   * handleAddSet
+   * Creates a new vocabulary set with the given name.
+   * Updates the list of vocabulary sets and selects the newly created set.
+  */
   const handleAddSet = async () => {
     if (!newSetName) {
       toast({
@@ -182,7 +196,12 @@ const VocabularyPage = () => {
     }
   };
 
-  // Selects a set to view its items
+  /**
+   * handleSetSelection
+   * Selects a vocabulary set and fetches its items from the server.
+   * Updates the state with the fetched items and displays appropriate toast notifications.
+   * @param {string} setId - The ID of the selected set.
+  */
   const handleSetSelection = async (setId) => {
     console.log("Set ID: ", setId)
     if (!setId) {
@@ -210,14 +229,22 @@ const VocabularyPage = () => {
     }
   };
 
-  // Sets up editing for a selected vocabulary item
+  /**
+   * handleEditItem
+   * Prepares the editing of a vocabulary item by setting the item and its details into state.
+   * @param {Object} item - The vocabulary item to be edited.
+  */
   const handleEditItem = (item) => {
     setEditingItem(item);
     setEditedKorean(item.korean);
     setEditedEnglish(item.english);
   };
 
-  // Renders the inline form for editing an item
+  /**
+   * renderEditForm
+   * Renders the inline form for editing a vocabulary item.
+   * @returns {JSX.Element|null} The JSX element of the edit form or null if no item is being edited.
+  */
   const renderEditForm = () => {
     if (!editingItem) return null;
 
@@ -239,7 +266,11 @@ const VocabularyPage = () => {
     );
   };
 
-  // Submits the edited vocabulary item
+  /**
+   * submitEdit
+   * Submits the edited vocabulary item to the server and updates the state.
+   * Displays appropriate toast notifications based on the result of the operation.
+  */
   const submitEdit = async () => {
     try {
       const response = await axios.put(`${apiUrl}/hanguru/api/vocabulary/item/edit/${editingItem._id}`, {
@@ -274,7 +305,12 @@ const VocabularyPage = () => {
     }
   };
   
-  // Handles the deletion of a vocabulary item
+  /**
+   * handleDeleteItem
+   * Deletes a selected vocabulary item from the server and updates the state.
+   * Displays appropriate toast notifications based on the result of the operation.
+   * @param {string} itemId - The ID of the item to be deleted.
+  */
   const handleDeleteItem = async (itemId) => {
     try {
       await axios.delete(`${apiUrl}/hanguru/api/vocabulary/item/delete/${itemId}`);
