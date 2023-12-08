@@ -5,26 +5,29 @@ import { motion } from 'framer-motion';
 /**
  * HomePage Component
  * 
- * This component serves as the home page of Hanguru
+ * Serves as the landing page of Hanguru, providing an engaging and animated welcome experience.
  * 
  * State Management:
- * - showEnglish: Toggles between the English and Korean versions of the welcome message
- * - mottoIndex: Controls which motto is currently displayed
+ * - showEnglish: Boolean state for toggling between English and Korean versions of the welcome message.
+ * - mottoIndex: Integer state for cycling through different mottos related to language learning.
+ * - quoteIndex: Integer state for displaying different language learning quotes.
  * 
  * Features:
- * - Alternating welcome messages in English and Korean
- * - Rotating display of different mottos related to language learning
+ * - Displays a welcome message alternating between English and Korean.
+ * - Shows a rotating selection of mottos and language learning quotes.
  * 
- * The component uses React's useState and useEffect hooks for managing state and side effects
- * It employs framer motion for animating the entrance and exit of text elements
+ * Animation and Transition:
+ * - Utilizes Framer Motion for smooth animation of text elements (welcome message and mottos).
+ * - Manages the entrance, visibility, and exit transitions of text elements for a dynamic user experience.
  * 
- * Animation and State Management:
- * - The welcome message and mottos are animated using Framer Motion to smoothly transition in and out
- * - The useEffect hook is used to set intervals for alternating between English and Korean messages, changing mottos, and displaying different quotes
- * - These intervals are cleared on component unmount to prevent memory leaks
+ * Effects and Lifecycle:
+ * - Uses useEffect hook to set intervals for alternating messages and changing mottos.
+ * - Clears intervals on component unmount to prevent memory leaks and ensure efficient resource usage.
  * 
- */
-
+ * Styling:
+ * - Styles provided by Chakra UI for a responsive and accessible design.
+ * - Flexible layout to center content vertically and horizontally on the page.
+*/
 function HomePage() {
   const [showEnglish, setShowEnglish] = useState(true);
   const [mottoIndex, setMottoIndex] = useState(0);
