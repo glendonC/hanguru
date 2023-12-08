@@ -112,7 +112,7 @@ export default function NavBar({ user }) {
   useEffect(() => {
     if (user?.user?.profilePicture) {
       const profilePictureId = user.user.profilePicture;
-      fetch(`${apiUrl}/hanguru/api/users/profile-pictures/${profilePictureId}`)
+      fetch(`${apiUrl}/hanguru/api/profiles/profile-pictures/${profilePictureId}`)
         .then((response) => {
           if (response.ok) {
             return response.json();
