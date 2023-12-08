@@ -172,22 +172,14 @@ export default function NavBar({ user }) {
                 minW={0}>
                 <Avatar
                   size={'sm'}
-                  src={
-                    profilePictureUrl ? 
-                    profilePictureUrl : 
-                    'https://avatars.dicebear.com/api/male/placeholder.svg'
-                  }
+                  {...(profilePictureUrl && { src: profilePictureUrl })}
                 />
               </MenuButton>
               <MenuList>
                 <Center>
                 <Avatar
                   size={'sm'}
-                  src={
-                    profilePictureUrl ? 
-                    profilePictureUrl : 
-                    'https://avatars.dicebear.com/api/male/placeholder.svg'
-                  }
+                  {...(profilePictureUrl && { src: profilePictureUrl })}
                 />
                 </Center>
                 <Center>
