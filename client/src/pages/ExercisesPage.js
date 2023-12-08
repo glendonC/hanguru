@@ -5,37 +5,35 @@ import axios from 'axios';
 /**
  * ExercisesPage Component
  * 
- * This component provides an interactive interface for language learning exercises, 
- * specifically focusing on vocabulary practice
+ * Provides an interactive interface for language learning exercises, focusing on vocabulary practice.
  *
  * State Management:
- * - vocabularySets: Stores a list of vocabulary sets fetched from the server
- * - setWords: Stores words from a selected vocabulary set
- * - selectedWords: Manages the selection of words by the user for generating questions
- * - userInput: Stores the user's input as an answer to the generated question
- * - feedback: Holds feedback on the user's answer
- * - generatedQuestion: Stores the question generated based on the selected vocabulary
- * - questionTranslation: Holds the English translation of the generated question
+ * - vocabularySets: An array of vocabulary sets fetched from the server.
+ * - setWords: An array of words from a selected vocabulary set.
+ * - selectedWords: An array of user-selected words for question generation.
+ * - userInput: A string storing the user's answer to the generated question.
+ * - feedback: A string containing feedback on the user's answer.
+ * - generatedQuestion: A string storing the question generated from the selected vocabulary.
+ * - questionTranslation: A string containing the English translation of the generated question.
  * 
  * Features:
- * - Dynamically populated selection of vocabulary sets
- * - Checkbox selection for vocabulary words
- * - Generation of questions using selected vocabulary words via GPT-3
- * - Input field for users to type answers to the generated questions
- * - Feedback mechanism for evaluating the user's answers
+ * - Allows users to choose from different vocabulary sets.
+ * - Enables the selection of individual vocabulary words for custom practice.
+ * - Generates language exercises based on the selected vocabulary words.
+ * - Provides an input field for user answers and offers feedback upon submission.
  * 
  * API Interaction:
- * - Communicates with a backend server for fetching vocabulary sets, generating questions,
- *   and checking answers for correctness and naturalness
+ * - Fetches vocabulary sets and set items from a backend server.
+ * - Interacts with the server to generate questions and check user answers for correctness and naturalness.
  * 
  * Handlers:
- * - handleSetSelection: Fetches words based on the selected vocabulary set
- * - handleWordSelection: Updates the selected words state
- * - generateQuestion: Generates a question using the selected vocabulary words
- * - checkUserAnswer: Submits the user's answer for evaluation and feedback
+ * - handleSetSelection: Fetches words from a selected vocabulary set.
+ * - handleWordSelection: Manages user selection of vocabulary words.
+ * - generateQuestion: Generates a question based on selected vocabulary words.
+ * - checkUserAnswer: Evaluates the user's answer and provides feedback.
  * 
  * Error Handling:
- * - Implements error handling for API requests and displays appropriate messages
+ * - Handles errors in API requests and displays appropriate error messages.
  */
 const ExercisesPage = () => {
   const [vocabularySets, setVocabularySets] = useState([]);
@@ -61,7 +59,12 @@ const ExercisesPage = () => {
     fetchSets();
   }, []);
 
-  // Fetches words from a selected vocabulary set
+  /**
+   * handleSetSelection
+   * Fetches and sets words from a selected vocabulary set.
+   * Clears the current selection of words before making a new request.
+   * @param {string} setId - The ID of the selected vocabulary set.
+  */
   const handleSetSelection = async (setId) => {
     setSelectedWords([]);
     try {
@@ -72,14 +75,24 @@ const ExercisesPage = () => {
     }
   };
 
-  // Updates the selected words state based on user selection
+  /**
+   * handleWordSelection
+   * Toggles the selection of a word in the vocabulary set for generating questions.
+   * Adds or removes the word from the selected words list.
+   * @param {string} word - The word to be toggled in the selected words list.
+  */
   const handleWordSelection = (word) => {
     setSelectedWords(prevSelectedWords =>
       prevSelectedWords.includes(word) ? prevSelectedWords.filter(w => w !== word) : [...prevSelectedWords, word]
     );
   };
 
-  // Generates a question using GPT-3 based on the selected words
+  /**
+   * generateQuestion
+   * Generates a language exercise question based on the selected vocabulary words.
+   * Sets the generated question and its English translation in the state.
+   * Handles cases where no question is provided by the server.
+  */
   const generateQuestion = async () => {
     try {
       const response = await axios.post(`${apiUrl}/hanguru/api/generate-sentence`, {
@@ -92,7 +105,12 @@ const ExercisesPage = () => {
     }
   };
 
-  // Checks the user's sentence for correctness and naturalness using GPT model in gpt.js
+  /**
+   * checkUserAnswer
+   * Submits the user's answer for evaluation.
+   * Sets the feedback received from the server in the state.
+   * Handles errors and sets appropriate feedback if there's an issue with the answer checking process.
+  */
   const checkUserAnswer = async () => {
     try {
       const response = await axios.post(`${apiUrl}/hanguru/api/check-answer`, {
