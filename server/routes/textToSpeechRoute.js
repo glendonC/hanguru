@@ -6,18 +6,18 @@ const client = new textToSpeech.TextToSpeechClient();
 
 /**
  * POST /text-to-speech
- * This endpoint converts a given text to speech using Google Cloud's Text-to-Speech API.
- * It allows for specifying different voice options.
- *
+ * Converts given text to speech using Google Cloud's Text-to-Speech API.
+ * 
  * Request body:
- * - text: A string representing the text to be converted to speech.
- * - voice: An object containing the configuration for the voice to be used in the speech synthesis.
+ * - text: String representing the text to be converted to speech.
+ * - voice: Object containing the configuration for the voice used in speech synthesis.
  * 
  * Response:
- * - The response contains the audio content of the synthesized speech.
+ * - On success: Sends the audio content of the synthesized speech.
+ * - On error: 500 status with message 'Error generating speech'.
  * 
- * In case of an error during the text-to-speech conversion process, a 500 status code is sent with an error message.
- */
+ * This endpoint synthesizes speech from text with the ability to specify voice options.
+*/
 router.post('/text-to-speech', async (req, res) => {
   try {
     const { text, voice } = req.body;
@@ -30,19 +30,16 @@ router.post('/text-to-speech', async (req, res) => {
 });
 
 /**
- * POST /text-to-speech
- * This endpoint converts a given text to speech using Google Cloud's Text-to-Speech API.
- * It allows for specifying different voice options.
- *
- * Request body:
- * - text: A string representing the text to be converted to speech.
- * - voice: An object containing the configuration for the voice to be used in the speech synthesis.
+ * GET /text-to-speech/voices
+ * Fetches and lists available voice options for text-to-speech synthesis in Korean.
  * 
  * Response:
- * - The response contains the audio content of the synthesized speech.
+ * - On success: Returns a JSON object with an array of voice options.
+ * - On error: 500 status with message 'Error fetching voices'.
  * 
- * In case of an error during the text-to-speech conversion process, a 500 status code is sent with an error message.
- */
+ * This endpoint retrieves available voices from Google Cloud's Text-to-Speech API,
+ * filtering them for the Korean language and specific gender types (Male, Female, Neutral).
+*/
 router.get('/text-to-speech/voices', async (req, res) => {
   try {
     const [result] = await client.listVoices({});
