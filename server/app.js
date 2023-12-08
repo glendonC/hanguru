@@ -33,10 +33,10 @@ const vocabularyRoutes = require('./routes/vocabulary');
 const uploadRoutes = require('./routes/upload');
 const gptRoute = require('./routes/gpt');
 const textToSpeechRoute = require('./routes/textToSpeechRoute');
-const userSettingsRoutes = require('./routes/userSettings');
+const accountRoutes = require('./routes/userSettings');
 const speechToTextRoute = require('./routes/speechToTextRoute');
 const recordingRoutes = require('./routes/recording');
-const usersRoutes = require('./routes/users');
+const profileRoutes = require('./routes/users');
 const authRoutes = require('./routes/auth');
 const MongoStore = require('connect-mongo');
 app.use(express.json()); 
@@ -133,10 +133,10 @@ app.use('/hanguru/api/vocabulary', vocabularyRoutes);
 app.use('/hanguru/api', gptRoute);
 app.use('/hanguru/api/upload', uploadRoutes);
 app.use('/hanguru/api', textToSpeechRoute);
-app.use('/hanguru/api/user', userSettingsRoutes);
+app.use('/hanguru/api/account', accountRoutes);
 app.use('/hanguru/api/speech-to-text', speechToTextRoute);
 app.use('/hanguru/api/recordings', recordingRoutes);
-app.use('/hanguru/api/users', usersRoutes);
+app.use('/hanguru/api/profiles', profileRoutes);
 
 // Define the port to listen on
 const PORT = process.env.PORT || 8100;
