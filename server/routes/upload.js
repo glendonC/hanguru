@@ -8,18 +8,19 @@ const Recording = require('../models/Recording');
 
 /**
  * POST /
- * This endpoint handles the upload of a file to Google Cloud Storage and saves the recording metadata
- * It uses 'multer' for handling multipart/form-data, specifically for file uploads
- *
+ * Handles the upload of audio files to Google Cloud Storage and saves recording metadata in the database.
+ * Utilizes 'multer' for handling multipart/form-data, specifically for file uploads.
+ * 
  * Request:
- * - The file to be uploaded should be sent as part of the form data with the key 'file'
- * - Associated text for the recording should be sent as part of the form data with the key 'associatedText'
+ * - File: The audio file to be uploaded, sent as part of form data with key 'file'.
+ * - AssociatedText: Text associated with the recording, sent as part of form data with key 'associatedText'.
  * 
  * Response:
- * - On successful upload, it returns a JSON object with a success message and the filename
- * - Saves the recording metadata (file name, audio URL, associated text) to the database
- * - In case of an error during the upload process, it returns a 500 status code with an error message
- */
+ * - On success: Returns JSON with a success message and the file name.
+ * - On error: Returns a 500 status with an error message.
+ * 
+ * Note: Saves recording metadata (file name, audio URL, associated text) to the database.
+*/
 router.post('/', upload.single('file'), async (req, res) => {
   const file = req.file;
   try {
@@ -41,19 +42,20 @@ router.post('/', upload.single('file'), async (req, res) => {
   }
 });
 
-
 /**
  * DELETE /delete/:fileName
- * This endpoint deletes a specific file from Google Cloud Storage
- * The file to be deleted is specified by the fileName parameter in the URL
- *
+ * Deletes a specified file from Google Cloud Storage.
+ * The file name is obtained from the URL parameter.
+ * 
  * Request parameters:
- * - fileName: The name of the file to be deleted from the Google Cloud Storage bucket
+ * - fileName: The name of the file to be deleted from Google Cloud Storage.
  * 
  * Response:
- * - On successful deletion, it returns a JSON object with a success message
- * - If there's an error in the file deletion process, it returns a 500 status code with an error message
- */
+ * - On success: Returns JSON with a success message.
+ * - On error: Returns a 500 status with an error message.
+ * 
+ * Note: The deletion process targets files in the Google Cloud Storage bucket.
+*/
 router.delete('/delete/:fileName', async (req, res) => {
     try {
       const fileName = req.params.fileName;
