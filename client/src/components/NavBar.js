@@ -1,7 +1,5 @@
 import React, {useState, useEffect} from 'react';
 import styled from '@emotion/styled';
-
-
 import {
   Box,
   Flex,
@@ -21,6 +19,7 @@ import {
   Center,
   Image
 } from '@chakra-ui/react';
+
 import { HamburgerIcon, CloseIcon, MoonIcon, SunIcon } from '@chakra-ui/icons';
 import { Link, useNavigate } from 'react-router-dom';
 import logo from './logo.png';
@@ -173,14 +172,22 @@ export default function NavBar({ user }) {
                 minW={0}>
                 <Avatar
                   size={'sm'}
-                  src={profilePictureUrl || 'https://avatars.dicebear.com/api/male/username.svg'}
+                  src={
+                    profilePictureUrl ? 
+                    profilePictureUrl : 
+                    'https://avatars.dicebear.com/api/male/placeholder.svg'
+                  }
                 />
               </MenuButton>
               <MenuList>
                 <Center>
                 <Avatar
                   size={'sm'}
-                  src={profilePictureUrl || 'https://avatars.dicebear.com/api/male/username.svg'}
+                  src={
+                    profilePictureUrl ? 
+                    profilePictureUrl : 
+                    'https://avatars.dicebear.com/api/male/placeholder.svg'
+                  }
                 />
                 </Center>
                 <Center>
