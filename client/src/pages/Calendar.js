@@ -1,7 +1,27 @@
 import React from 'react';
 import { Grid, Box, useColorModeValue } from '@chakra-ui/react';
 
-// Calendar functional component to display a calendar with highlighted dates
+/**
+ * Calendar Component
+ * 
+ * This component renders a calendar grid for the current month, highlighting specific dates.
+ * 
+ * Props:
+ * - loginDates: An array of dates representing user login days which will be highlighted on the calendar.
+ * 
+ * Behavior:
+ * - It displays all the days of the current month in a grid layout.
+ * - Days are highlighted differently based on whether they are the current day, 
+ *   a user login day, or a regular day.
+ * 
+ * Styling:
+ * - Uses Chakra UI's useColorModeValue hook for responsive color modes.
+ * - Different background colors are applied to current day, highlighted days, and regular days.
+ * 
+ * Helper Function:
+ * - getMonthDays: A function to generate an array of days for the current month.
+ * - Each day is represented as an object containing the day number and a string representation of the date.
+*/
 const Calendar = ({ loginDates }) => {
   const monthDays = getMonthDays();
   const formattedLoginDates = loginDates.map(date => new Date(date).toISOString().split('T')[0]);
@@ -29,6 +49,7 @@ const Calendar = ({ loginDates }) => {
   );
 };
 
+// Helper function to generate an array of days for the current month
 function getMonthDays() {
   const date = new Date();
   const year = date.getFullYear();

@@ -24,39 +24,38 @@ import axios from 'axios';
 
 /**
  * AudioRecordingPage Component
- * 
- * This component provides a comprehensive interface for audio recording, managing vocabulary, 
- * and text-to-speech functionality
+ *
+ * This component provides an interface for text-to-speech synthesis, audio recording, 
+ * and managing vocabulary. It interacts with a backend server for data processing and storage.
  *
  * State Management:
- * - It manages various states including recording status, audio URLs, media recorder, uploaded files,
- *   text complexity, generated text, selected voice, loading and error states, vocabulary sets, and 
- *   selected words
- * - It also maintains a reference to an audio object for playback control
- * 
+ * - Manages states for recording status, audio URLs, media recorder, and uploaded files.
+ * - Handles text complexity, generated text, selected voice, and loading/error states.
+ * - Maintains states for vocabulary sets, selected words, and audio-related controls.
+ *
  * Features:
- * - Vocabulary set and word selection for generating text
- * - Complexity level selection for the generated text
- * - Text-to-speech generation with voice selection
- * - Audio recording functionality using the MediaRecorder API
+ * - Enables users to select vocabulary sets and individual words for text generation.
+ * - Allows users to choose the complexity level for generated text.
+ * - Offers text-to-speech functionality with voice selection.
+ * - Provides audio recording using the MediaRecorder API.
  * - Custom audio controls for playback, volume, and speed.
- * - Display and management of uploaded audio file
- * 
+ * - Supports uploading, playing, and deleting audio files.
+ *
  * API Interaction:
- * - Communicates with backend APIs to fetch vocabulary sets, voices, and to handle text generation,
- *   speech synthesis, and audio file management
- * 
+ * - Fetches vocabulary sets and voices from backend APIs.
+ * - Sends requests to backend for text generation, speech synthesis, and audio file management.
+ *
  * Handlers:
- * - Includes handlers for set and word selection, starting and stopping audio recording, uploading and 
- *   deleting audio files, playing and pausing audio, and adjusting volume and speed of playback
- * 
+ * - Handlers for set/word selection, recording controls, audio file upload/deletion, 
+ *   and playback adjustments.
+ *
  * Effect Hooks:
- * - Utilizes useEffect hooks to fetch vocabulary sets and voices on component mount
- * - Updates the audio player reference when the speech audio URL changes
+ * - Fetches vocabulary sets and voices on component mount.
+ * - Updates audio source and fetches recordings as needed.
  * 
  * Error Handling:
- * - Implements error handling for API requests and displays appropriate messages.
- */
+ * - Implements error handling for API requests with appropriate user feedback.
+*/
 const AudioRecordingPage = () => {
   const [recording, setRecording] = useState(false);
   const [audioURL, setAudioURL] = useState('');
@@ -86,6 +85,8 @@ const AudioRecordingPage = () => {
   const [selectedRecording, setSelectedRecording] = useState(null);
   const [isReadyToRecord, setIsReadyToRecord] = useState(false);
 
+  const apiUrl = process.env.REACT_APP_API_URL || 'http://localhost:8100';
+
   // Effect hook to force users to fill requirements before recording
   useEffect(() => {
     const readyToRecord = vocabularySets.length > 0 && selectedWords.length > 0 && complexity !== null && selectedVoice !== null && generatedText !== null && generatedText !== '';
@@ -104,7 +105,7 @@ const AudioRecordingPage = () => {
   useEffect(() => {
     const fetchSets = async () => {
       try {
-        const response = await axios.get('/hanguru/api/vocabulary/sets');
+        const response = await axios.get(`${apiUrl}/hanguru/api/vocabulary/sets`);
         setVocabularySets(response.data);
       } catch (error) {
         console.error('Error fetching sets:', error);
@@ -117,7 +118,7 @@ const AudioRecordingPage = () => {
   useEffect(() => {
     const fetchVoices = async () => {
       try {
-        const response = await axios.get('/hanguru/api/text-to-speech/voices');
+        const response = await axios.get(`${apiUrl}/hanguru/api/text-to-speech/voices`);
         setVoices(response.data.voices);
       } catch (error) {
         console.error('Error fetching voices:', error);
@@ -130,7 +131,7 @@ const AudioRecordingPage = () => {
   useEffect(() => {
     const fetchRecordings = async () => {
       try {
-        const response = await axios.get('/hanguru/api/recordings');
+        const response = await axios.get(`${apiUrl}/hanguru/api/recordings`);
         setRecordings(response.data);
       } catch (error) {
         console.error('Error fetching recordings:', error);
@@ -140,23 +141,37 @@ const AudioRecordingPage = () => {
     fetchRecordings();
   }, []);
   
-
+  
+  /**
+   * handleSetSelection
+   * Fetches and sets words from a selected vocabulary set.
+   * @param {string} setId - The ID of the selected vocabulary set.
+  */
   const handleSetSelection = async (setId) => {
     setSelectedWords([]);
     try {
-      const response = await axios.get(`/hanguru/api/vocabulary/set/${setId}/items`);
+      const response = await axios.get(`${apiUrl}/hanguru/api/vocabulary/set/${setId}/items`);
       setSetWords(response.data);
     } catch (error) {
       console.error('Error fetching words from set:', error);
     }
   };
 
+  /**
+    * handleWordSelection
+    * Toggles the selection of a word in the vocabulary set.
+    * @param {string} word - The word to be toggled in the selected words list.
+  */
   const handleWordSelection = (word) => {
     setSelectedWords(prevSelectedWords =>
       prevSelectedWords.includes(word) ? prevSelectedWords.filter(w => w !== word) : [...prevSelectedWords, word]
     );
   };
 
+  /**
+   * startRecording
+   * Starts audio recording using MediaRecorder API.
+  */
   const startRecording = async () => {
     if (!isReadyToRecord) return;
     const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
@@ -171,7 +186,12 @@ const AudioRecordingPage = () => {
     setMediaRecorder(recorder);
     setRecording(true);
   };
-  
+
+
+  /**
+   * stopRecording
+   * Stops the audio recording and processes the recorded audio data.
+  */
   const stopRecording = () => {
     mediaRecorder.stop();
     setRecording(false);
@@ -187,7 +207,11 @@ const AudioRecordingPage = () => {
     };
   };
   
-
+  /**
+   * uploadAudio
+   * Uploads the recorded audio to the server.
+   * @param {Blob} audioBlob - The audio data to be uploaded.
+  */
   const uploadAudio = async (audioBlob) => {
     const formData = new FormData();
     const fileName = customRecordingName ? `${customRecordingName}.wav` : 'audio-recording.wav';
@@ -214,10 +238,14 @@ const AudioRecordingPage = () => {
     }
   };
   
-
+  /**
+   * deleteAudio
+   * Deletes an audio file from the server.
+   * @param {string} fileName - The name of the file to be deleted.
+  */
   const deleteAudio = async (fileName) => {
     try {
-      const response = await fetch(`/hanguru/api/upload/delete/${fileName}`, {
+      const response = await fetch(`${apiUrl}/hanguru/api/upload/delete/${fileName}`, {
         method: 'DELETE',
       });
 
@@ -232,14 +260,27 @@ const AudioRecordingPage = () => {
     }
   };
 
+  /**
+   * handlePlay
+   * Plays the audio from the current reference.
+  */
   const handlePlay = () => {
     audioRef.play();
   };
   
+  /**
+   * handlePause
+   * Pauses the audio playback.
+  */
   const handlePause = () => {
     audioRef.pause();
   };
   
+  /**
+   * handleVolumeChange
+   * Adjusts the playback volume of the audio.
+   * @param {number} val - The new volume level.
+  */
   const handleVolumeChange = (val) => {
     const newVolume = parseFloat(val);
     if (!isNaN(newVolume)) {
@@ -247,19 +288,26 @@ const AudioRecordingPage = () => {
     }
   };
   
-  
-  
+  /**
+   * handleSpeedChange
+   * Adjusts the playback speed of the audio.
+   * @param {number} val - The new playback speed.
+  */
   const handleSpeedChange = (val) => {
     audioRef.playbackRate = parseFloat(val);
   };
   
-
+  /**
+   * fetchSpeechAudio
+   * Fetches the speech audio for given text using the text-to-speech API.
+   * @param {string} text - The text to be converted to speech.
+  */
   const fetchSpeechAudio = async (text) => {
     setIsLoading(true);
     setError('');
   
     try {
-      const response = await fetch('/hanguru/api/text-to-speech', {
+      const response = await fetch(`${apiUrl}/hanguru/api/text-to-speech`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ text, voice: selectedVoice }),
@@ -283,9 +331,13 @@ const AudioRecordingPage = () => {
     }
   };
 
+  /**
+   * generateText
+   * Generates text based on selected vocabulary and complexity.
+  */
   const generateText = async () => {
     try {
-      const response = await fetch('/hanguru/api/generate-text', {
+      const response = await fetch(`${apiUrl}/hanguru/api/generate-text`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ vocab: selectedWords.join(', '), complexity }),
@@ -305,6 +357,11 @@ const AudioRecordingPage = () => {
     }
   };
 
+  /**
+   * handleVoiceChange
+   * Changes the selected voice for text-to-speech and re-fetches audio if text is already generated.
+   * @param {string} newVoice - The new voice to be used for speech synthesis.
+  */
   const handleVoiceChange = async (newVoice) => {
     setSelectedVoice(newVoice);
     if (generatedText) {
@@ -312,14 +369,17 @@ const AudioRecordingPage = () => {
     }
   };
 
-
-  
+  /**
+   * uploadAndTranscribeAudio
+   * Uploads the audio for transcription and sets the transcribed text.
+   * @param {Blob} audioBlob - The audio data to be transcribed.
+  */
   const uploadAndTranscribeAudio = async (audioBlob) => {
     const formData = new FormData();
     formData.append('audio', audioBlob, 'audio-recording.wav');
   
     try {
-      const response = await axios.post('/hanguru/api/speech-to-text/transcribe', formData, {
+      const response = await axios.post(`${apiUrl}/hanguru/api/speech-to-text/transcribe`, formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
@@ -334,21 +394,36 @@ const AudioRecordingPage = () => {
     }
   };
   
+  /**
+   * handleRecordingNameChange
+   * Updates the custom name for the recording.
+   * @param {Event} e - The event object containing the updated name.
+  */
   const handleRecordingNameChange = (e) => {
     setCustomRecordingName(e.target.value);
   };
   
+  /**
+   * handleRecordingSelection
+   * Selects a recording from the list of available recordings.
+   * @param {Event} e - The event object containing the selected recording ID.
+  */
   const handleRecordingSelection = (e) => {
     const selectedId = e.target.value;
     const recording = recordings.find(rec => rec._id === selectedId);
     setSelectedRecording(recording);
   };
 
+  /**
+   * deleteSelectedRecording
+   * Deletes the selected recording from the server and updates the state.
+   * This function only proceeds if a recording is currently selected.
+  */
   const deleteSelectedRecording = async () => {
     if (!selectedRecording) return;
   
     try {
-      const response = await axios.delete(`/hanguru/api/recordings/delete/${selectedRecording._id}`);
+      const response = await axios.delete(`${apiUrl}/hanguru/api/recordings/delete/${selectedRecording._id}`);
       if (response.status === 200) {
         setRecordings(recordings.filter(rec => rec._id !== selectedRecording._id));
         setSelectedRecording(null);
@@ -359,6 +434,14 @@ const AudioRecordingPage = () => {
     }
   };
 
+  /**
+    * formatDate
+    * Formats a date string into a more readable format.
+    * @param {string} dateString - The date string to be formatted.
+    * @returns {string} The formatted date string.
+    * 
+    * Example Format: 'January 1, 2020, 10:00 AM'
+  */
   const formatDate = (dateString) => {
     const options = { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' };
     return new Date(dateString).toLocaleDateString(undefined, options);
@@ -366,20 +449,20 @@ const AudioRecordingPage = () => {
 
   return (
     <Container>
-    <VStack spacing={6} align="stretch">
-      {/* Vocabulary and Complexity Selection */}
-      <Select placeholder="Select set" onChange={e => handleSetSelection(e.target.value)}>
-      {vocabularySets.map(set => (
-        <option key={set._id} value={set._id}>{set.setName}</option>
-      ))}
-    </Select>
+      <VStack spacing={6} align="stretch">
+        {/* Vocabulary and Complexity Selection */}
+        <Select placeholder="Select set" onChange={e => handleSetSelection(e.target.value)}>
+        {vocabularySets.map(set => (
+          <option key={set._id} value={set._id}>{set.setName}</option>
+        ))}
+      </Select>
 
-    {setWords.map(word => (
-      <Checkbox key={word._id} isChecked={selectedWords.includes(word.korean)} onChange={() => handleWordSelection(word.korean)}>
-        {word.korean}
-      </Checkbox>
-    ))}
-  
+      {setWords.map(word => (
+        <Checkbox key={word._id} isChecked={selectedWords.includes(word.korean)} onChange={() => handleWordSelection(word.korean)}>
+          {word.korean}
+        </Checkbox>
+      ))}
+    
       <Box>
         <Select placeholder="Select Complexity" onChange={e => setComplexity(e.target.value)}>
           <option value="easy">Easy</option>
@@ -445,7 +528,7 @@ const AudioRecordingPage = () => {
         {recording ? 'Stop Recording' : 'Start Recording'}
         </Button>
         {audioURL && <audio src={audioURL} controls aria-label="Recorded Audio" />}
-    </Box>
+      </Box>
 
       <Input
           placeholder="Enter a name for your recording"
@@ -488,13 +571,9 @@ const AudioRecordingPage = () => {
           <Button colorScheme="red" onClick={deleteSelectedRecording}>Delete Recording</Button>
         </>
       )}
-
-
-    </VStack>
+      </VStack>
     </Container>
   );
-  
-  
 };
 
 export default AudioRecordingPage;

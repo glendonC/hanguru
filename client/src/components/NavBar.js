@@ -1,8 +1,5 @@
 import React, {useState, useEffect} from 'react';
-import { css } from '@emotion/react';
 import styled from '@emotion/styled';
-
-
 import {
   Box,
   Flex,
@@ -22,10 +19,35 @@ import {
   Center,
   Image
 } from '@chakra-ui/react';
+
 import { HamburgerIcon, CloseIcon, MoonIcon, SunIcon } from '@chakra-ui/icons';
 import { Link, useNavigate } from 'react-router-dom';
 import logo from './logo.png';
 
+/**
+ * NavBar Component
+ * 
+ * This component provides a responsive navigation bar for the application.
+ * 
+ * Props:
+ * - user: An object containing user information (e.g., username, profile picture).
+ * 
+ * State:
+ * - profilePictureUrl: URL of the user's profile picture.
+ * 
+ * Behavior:
+ * - Displays navigation links.
+ * - Handles toggling between light and dark mode.
+ * - Manages the responsive menu for smaller screens.
+ * - Provides user account interaction such as logout and account settings.
+ * 
+ * Navigation:
+ * - Uses react-router-dom for navigation without reloading the page.
+ * 
+ * Styling:
+ * - Uses Chakra UI for styling components.
+ * - Utilizes styled components for custom link styling.
+*/
 const navLinks = [
   { name: 'Home', path: '/' },
   { name: 'Vocabulary', path: '/vocabulary' },
@@ -74,6 +96,7 @@ const StyledLink = styled(Link)`
   }
 `;
 
+// Handle navigation links
 const NavLink = ({ children, to }) => {
   return (
     <StyledLink to={to}>
@@ -82,15 +105,13 @@ const NavLink = ({ children, to }) => {
   );
 };
 
-
-
-
-
+// Handle user logout
 const handleLogout = async () => {
+  const apiUrl = process.env.REACT_APP_API_URL || 'http://localhost:8100';
   try {
-    const response = await fetch('/hanguru/api/logout', { method: 'POST' });
+    const response = await fetch(`${apiUrl}/hanguru/api/logout`, { method: 'POST' });
     if (response.ok) {
-      window.location.href = '/';
+      navigate('/');
     } else {
       console.error('Logout failed');
     }
@@ -99,17 +120,19 @@ const handleLogout = async () => {
   }
 };
 
-
 export default function NavBar({ user }) {
   const { colorMode, toggleColorMode } = useColorMode();
   const { isOpen, onOpen, onClose } = useDisclosure();
   const navigate = useNavigate();
   const [profilePictureUrl, setProfilePictureUrl] = useState(null);
+
+  const apiUrl = process.env.REACT_APP_API_URL || 'http://localhost:8100';
   
+  // Fetches and set the user's profile picture URL
   useEffect(() => {
     if (user?.user?.profilePicture) {
       const profilePictureId = user.user.profilePicture;
-      fetch(`/hanguru/api/users/profile-pictures/${profilePictureId}`)
+      fetch(`${apiUrl}/hanguru/api/profiles/profile-pictures/${profilePictureId}`)
         .then((response) => {
           if (response.ok) {
             return response.json();
@@ -125,16 +148,23 @@ export default function NavBar({ user }) {
         });
     }
   }, [user]);
-    
+  
+  /**
+   * handleAccountSettingsClick
+   * Navigates the user to the account settings page.
+  */
   const handleAccountSettingsClick = () => {
     navigate('/account-settings');
   };
 
+  /**
+   * handleProgressCheckerClick
+   * Navigates the user to the progress checker page.
+  */
   const handleProgressCheckerClick = () => {
     navigate('/progress-checker');
   };
 
-  // console.log(user)
   return (
     <>
       <Box bg={useColorModeValue('gray.100', 'gray.900')} px={4}>
@@ -171,14 +201,14 @@ export default function NavBar({ user }) {
                 minW={0}>
                 <Avatar
                   size={'sm'}
-                  src={profilePictureUrl || 'https://avatars.dicebear.com/api/male/username.svg'}
+                  {...(profilePictureUrl && { src: profilePictureUrl })}
                 />
               </MenuButton>
               <MenuList>
                 <Center>
                 <Avatar
                   size={'sm'}
-                  src={profilePictureUrl || 'https://avatars.dicebear.com/api/male/username.svg'}
+                  {...(profilePictureUrl && { src: profilePictureUrl })}
                 />
                 </Center>
                 <Center>

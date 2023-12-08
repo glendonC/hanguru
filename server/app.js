@@ -33,17 +33,17 @@ const vocabularyRoutes = require('./routes/vocabulary');
 const uploadRoutes = require('./routes/upload');
 const gptRoute = require('./routes/gpt');
 const textToSpeechRoute = require('./routes/textToSpeechRoute');
-const userSettingsRoutes = require('./routes/userSettings');
+const accountRoutes = require('./routes/userSettings');
 const speechToTextRoute = require('./routes/speechToTextRoute');
 const recordingRoutes = require('./routes/recording');
-const usersRoutes = require('./routes/users');
+const profileRoutes = require('./routes/users');
 const authRoutes = require('./routes/auth');
 const MongoStore = require('connect-mongo');
 app.use(express.json()); 
 // Configure middleware
 
 app.use(cors({
-  origin: ['https://glendonc.github.io', 'http://localhost:3000', 'http://localhost:3001'],
+  origin: ['https://www.hanguru.me', 'https://glendonc.github.io', 'http://localhost:3000', 'http://localhost:3001'],
   methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
   credentials: true,
   allowedHeaders: ['Content-Type', 'Authorization']
@@ -62,13 +62,13 @@ app.use(session({
     mongoUrl: process.env.MONGO_URI
   }),
   cookie: {
-    // secure: process.env.NODE_ENV === 'production',
-    secure: false,
+    secure: process.env.NODE_ENV === 'production',
     httpOnly: true,
-    maxAge: 24 * 60 * 60 * 1000
+    maxAge: 24 * 60 * 60 * 1000,
+    sameSite: 'None'
   }
 }));
-
+app.set('trust proxy', 1);
 
 app.use(passport.initialize());
 app.use(passport.session());
@@ -97,6 +97,19 @@ app.get('/test-auth', (req, res) => {
   }
 });
 
+app.get('/test-session', (req, res) => {
+  if (req.isAuthenticated()) {
+      res.json({
+          message: 'User is authenticated',
+          user: req.user,
+          sessionId: req.sessionID,
+          session: req.session
+      });
+  } else {
+      res.status(401).json({ message: 'User is not authenticated' });
+  }
+});
+
 
 
 // Connect to MongoDB
@@ -120,10 +133,10 @@ app.use('/hanguru/api/vocabulary', vocabularyRoutes);
 app.use('/hanguru/api', gptRoute);
 app.use('/hanguru/api/upload', uploadRoutes);
 app.use('/hanguru/api', textToSpeechRoute);
-app.use('/hanguru/api/user', userSettingsRoutes);
+app.use('/hanguru/api/account', accountRoutes);
 app.use('/hanguru/api/speech-to-text', speechToTextRoute);
 app.use('/hanguru/api/recordings', recordingRoutes);
-app.use('/hanguru/api/users', usersRoutes);
+app.use('/hanguru/api/profiles', profileRoutes);
 
 // Define the port to listen on
 const PORT = process.env.PORT || 8100;
