@@ -70,14 +70,19 @@ router.delete('/delete/:customName', async (req, res) => {
       return res.status(404).json({ message: 'Recording not found' });
     }
 
+    // Delete the file from GCS
     await storage.bucket(bucketName).file(`uploads/${recording.gcsFileName}`).delete();
-    await recording.remove();
+
+    // Delete the recording from MongoDB
+    await Recording.deleteOne({ _id: recording._id });
+    
     res.json({ message: 'Audio file deleted successfully.' });
   } catch (error) {
     console.error('Error:', error);
     res.status(500).json({ message: 'Error deleting the file', error: error.message });
   }
 });
+
 
 
 module.exports = router;
