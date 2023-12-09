@@ -24,31 +24,37 @@ const Recording = require('../models/Recording');
 router.post('/', upload.single('file'), async (req, res) => {
   const file = req.file;
   try {
+    console.log('Uploading file to GCS:', file.filename);
     const audioUrl = await uploadToGoogleCloud(file);
+    console.log('File uploaded to GCS:', audioUrl);
 
     const recordingName = req.body.customRecordingName || file.filename;
 
+    console.log('Saving recording to MongoDB:', recordingName);
     const newRecording = new Recording({
       fileName: recordingName,
+      gcsFileName: file.filename,
       audioUrl: audioUrl,
       associatedText: req.body.associatedText,
     });
 
     await newRecording.save();
+    console.log('Recording saved:', newRecording);
     res.json({ message: 'File uploaded successfully.', fileName: recordingName });
   } catch (error) {
-    console.error('Error:', error);
-    res.status(500).json({ message: 'Error uploading to Google Cloud Storage', error });
+    console.error('Error during file upload:', error);
+    res.status(500).json({ message: 'Error uploading to Google Cloud Storage', error: error.message });
   }
 });
 
+
 /**
- * DELETE /delete/:fileName
+ * DELETE /delete/:customName
  * Deletes a specified file from Google Cloud Storage.
  * The file name is obtained from the URL parameter.
  * 
  * Request parameters:
- * - fileName: The name of the file to be deleted from Google Cloud Storage.
+ * - customName: The name of the file to be deleted from Google Cloud Storage.
  * 
  * Response:
  * - On success: Returns JSON with a success message.
@@ -56,14 +62,27 @@ router.post('/', upload.single('file'), async (req, res) => {
  * 
  * Note: The deletion process targets files in the Google Cloud Storage bucket.
 */
-router.delete('/delete/:fileName', async (req, res) => {
-    try {
-      const fileName = req.params.fileName;
-      await storage.bucket(bucketName).file(`uploads/${fileName}`).delete();
-      res.json({ message: 'Audio file deleted successfully.' });
-    } catch (error) {
-      res.status(500).send({ message: 'Error deleting the file', error });
+router.delete('/delete/:customName', async (req, res) => {
+  try {
+    const customName = req.params.customName;
+    const recording = await Recording.findOne({ fileName: customName });
+    if (!recording) {
+      return res.status(404).json({ message: 'Recording not found' });
     }
+
+    // Delete the file from GCS
+    await storage.bucket(bucketName).file(`uploads/${recording.gcsFileName}`).delete();
+
+    // Delete the recording from MongoDB
+    await Recording.deleteOne({ _id: recording._id });
+    
+    res.json({ message: 'Audio file deleted successfully.' });
+  } catch (error) {
+    console.error('Error:', error);
+    res.status(500).json({ message: 'Error deleting the file', error: error.message });
+  }
 });
+
+
 
 module.exports = router;

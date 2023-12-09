@@ -220,7 +220,7 @@ const AudioRecordingPage = () => {
     formData.append('associatedText', generatedText);
   
     try {
-      const response = await axios.post('/hanguru/api/upload', formData, {
+      const response = await axios.post(`${apiUrl}/hanguru/api/upload`, formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         }
@@ -241,24 +241,32 @@ const AudioRecordingPage = () => {
   /**
    * deleteAudio
    * Deletes an audio file from the server.
-   * @param {string} fileName - The name of the file to be deleted.
-  */
-  const deleteAudio = async (fileName) => {
+   * @param {string} customName - The custom name of the file to be deleted.
+   */
+  const deleteAudio = async (customName) => {
     try {
-      const response = await fetch(`${apiUrl}/hanguru/api/upload/delete/${fileName}`, {
+      const response = await fetch(`${apiUrl}/hanguru/api/upload/delete/${customName}`, {
         method: 'DELETE',
       });
-
+  
       if (response.ok) {
-        setUploadedFiles(uploadedFiles.filter(file => file !== fileName));
+        setUploadedFiles(uploadedFiles.filter(file => file !== customName));
         console.log('Audio deleted successfully');
       } else {
         console.error('Failed to delete audio');
+        try {
+          const errorResponse = await response.json(); // Attempt to parse the error response
+          console.error('Error response:', errorResponse); // Log the parsed error response
+        } catch (parseError) {
+          console.error('Error parsing server response:', parseError);
+        }
       }
     } catch (error) {
       console.error('Error:', error);
     }
   };
+  
+  
 
   /**
    * handlePlay
