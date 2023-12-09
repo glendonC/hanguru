@@ -7,7 +7,7 @@ const { storage, bucketName } = require('../utils/googleCloudConfig');
 const Recording = require('../models/Recording');
 
 /**
- * POST /upload
+ * POST /
  * Handles the upload of audio files to Google Cloud Storage and saves recording metadata in the database.
  * Utilizes 'multer' for handling multipart/form-data, specifically for file uploads.
  * 
@@ -21,7 +21,7 @@ const Recording = require('../models/Recording');
  * 
  * Note: Saves recording metadata (file name, audio URL, associated text) to the database.
 */
-router.post('/upload', upload.single('file'), async (req, res) => {
+router.post('/', upload.single('file'), async (req, res) => {
   const file = req.file;
   try {
     const audioUrl = await uploadToGoogleCloud(file);
