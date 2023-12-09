@@ -248,17 +248,25 @@ const AudioRecordingPage = () => {
       const response = await fetch(`${apiUrl}/hanguru/api/upload/delete/${customName}`, {
         method: 'DELETE',
       });
-
+  
       if (response.ok) {
         setUploadedFiles(uploadedFiles.filter(file => file !== customName));
         console.log('Audio deleted successfully');
       } else {
         console.error('Failed to delete audio');
+        try {
+          const errorResponse = await response.json(); // Attempt to parse the error response
+          console.error('Error response:', errorResponse); // Log the parsed error response
+        } catch (parseError) {
+          console.error('Error parsing server response:', parseError);
+        }
       }
     } catch (error) {
       console.error('Error:', error);
     }
   };
+  
+  
 
   /**
    * handlePlay

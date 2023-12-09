@@ -24,10 +24,13 @@ const Recording = require('../models/Recording');
 router.post('/', upload.single('file'), async (req, res) => {
   const file = req.file;
   try {
+    console.log('Uploading file to GCS:', file.filename);
     const audioUrl = await uploadToGoogleCloud(file);
+    console.log('File uploaded to GCS:', audioUrl);
 
     const recordingName = req.body.customRecordingName || file.filename;
 
+    console.log('Saving recording to MongoDB:', recordingName);
     const newRecording = new Recording({
       fileName: recordingName,
       gcsFileName: file.filename,
@@ -36,12 +39,14 @@ router.post('/', upload.single('file'), async (req, res) => {
     });
 
     await newRecording.save();
+    console.log('Recording saved:', newRecording);
     res.json({ message: 'File uploaded successfully.', fileName: recordingName });
   } catch (error) {
-    console.error('Error:', error);
-    res.status(500).json({ message: 'Error uploading to Google Cloud Storage', error });
+    console.error('Error during file upload:', error);
+    res.status(500).json({ message: 'Error uploading to Google Cloud Storage', error: error.message });
   }
 });
+
 
 /**
  * DELETE /delete/:customName
@@ -70,7 +75,7 @@ router.delete('/delete/:customName', async (req, res) => {
     res.json({ message: 'Audio file deleted successfully.' });
   } catch (error) {
     console.error('Error:', error);
-    res.status(500).json({ message: 'Error deleting the file', error });
+    res.status(500).json({ message: 'Error deleting the file', error: error.message });
   }
 });
 
