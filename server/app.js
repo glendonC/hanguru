@@ -40,7 +40,7 @@ const profileRoutes = require('./routes/users');
 const authRoutes = require('./routes/auth');
 const MongoStore = require('connect-mongo');
 app.use(express.json()); 
-// Configure middleware
+
 
 app.use(cors({
   origin: ['https://www.hanguru.me', 'https://glendonc.github.io', 'http://localhost:3000', 'http://localhost:3001'],
@@ -49,11 +49,6 @@ app.use(cors({
   allowedHeaders: ['Content-Type', 'Authorization']
 }));
 
-                          
-console.log("Session Secret: ", process.env.SESSION_SECRET);
-console.log("Mongo URI: ", process.env.MONGO_URI)
-console.log("Environment:", process.env.NODE_ENV);
-console.log("Session Cookie Secure Flag:", process.env.NODE_ENV === 'production');
 app.use(session({
   secret: process.env.SESSION_SECRET || 'temporarySecretForTesting',
   resave: false,
@@ -73,15 +68,9 @@ app.set('trust proxy', 1);
 app.use(passport.initialize());
 app.use(passport.session());
 app.use((req, res, next) => {
-  console.log('Session ID:', req.sessionID);
-  console.log('Session User:', req.user ? req.user.id : 'No user');
-  console.log('Session Data:', req.session);
   next();
 });
 app.use((req, res, next) => {
-  console.log('Request headers:', req.headers);
-  console.log('Session:', req.session);
-  console.log('Authenticated:', req.isAuthenticated());
   next();
 });
 
