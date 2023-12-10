@@ -19,7 +19,7 @@ jobs:
       with:
         context: ./client
         push: true
-        tags: glendonchin/hanguru-client-1:staging
+        tags: glendonchin/hanguru-client:staging
 
     # Building and pushing the server image
     - name: Build and Push Server Docker Image
@@ -27,7 +27,7 @@ jobs:
       with:
         context: ./server
         push: true
-        tags: glendonchin/hanguru-server-1:staging
+        tags: glendonchin/hanguru-server:staging
 
     # Login to Docker Hub.
     - name: Login to Docker Hub
