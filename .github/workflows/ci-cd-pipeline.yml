@@ -1,10 +1,10 @@
-name: CI/CD Pipeline for Production Branch
+name: CI/CD Pipeline
 
 on:
   push:
-    branches: [ production ]
+    branches: [ main, production ]
   pull_request:
-    branches: [ production ]
+    branches: [ main, production ]
 
 jobs:
   build-and-push:
@@ -20,13 +20,13 @@ jobs:
         username: ${{ secrets.DOCKER_HUB_USERNAME }}
         password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
 
-    # Building and pushing the client image.
+    # Building and pushing the client image
     - name: Build and Push Client Docker Image
       uses: docker/build-push-action@v2
       with:
         context: ./client
         push: true
-        tags: glendonchin/hanguru-client:staging
+        tags: glendonchin/hanguru-client:${{ github.ref == 'refs/heads/main' && 'latest' || 'staging' }}
 
     # Building and pushing the server image
     - name: Build and Push Server Docker Image
@@ -34,5 +34,4 @@ jobs:
       with:
         context: ./server
         push: true
-        tags: glendonchin/hanguru-server:staging
-
+        tags: glendonchin/hanguru-server:${{ github.ref == 'refs/heads/main' && 'latest' || 'staging' }}
