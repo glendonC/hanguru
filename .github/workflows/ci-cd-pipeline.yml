@@ -19,7 +19,7 @@ jobs:
       with:
         context: ./client
         push: true
-        tags: username/hanguru-client:staging
+        tags: username/hanguru-client-1:staging
 
     # Building and pushing the server image
     - name: Build and Push Server Docker Image
@@ -27,7 +27,7 @@ jobs:
       with:
         context: ./server
         push: true
-        tags: username/hanguru-server:staging
+        tags: username/hanguru-server-1:staging
 
     # Login to Docker Hub.
     - name: Login to Docker Hub
