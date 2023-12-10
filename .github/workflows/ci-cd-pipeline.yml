@@ -13,7 +13,7 @@ jobs:
     steps:
     - uses: actions/checkout@v2
 
-    # Building and pushing the client image
+    # Building and pushing the client image.
     - name: Build and Push Client Docker Image
       uses: docker/build-push-action@v2
       with:
