@@ -111,7 +111,7 @@ const handleLogout = async (navigate) => {
   try {
     const response = await fetch(`${apiUrl}/hanguru/api/logout`, { method: 'POST' });
     if (response.ok) {
-      navigate('/');
+      navigate('/auth');
     } else {
       console.error('Logout failed');
     }
