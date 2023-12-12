@@ -108,7 +108,7 @@ function AuthPage({ onLogin, showLogin, toggleAuthPage }) {
         const errorData = await response.json();
         toast({
           title: 'Error',
-          description: errorData,
+          description: JSON.stringify(errorData),
           status: 'error',
           duration: 5000,
           isClosable: true,
@@ -117,12 +117,9 @@ function AuthPage({ onLogin, showLogin, toggleAuthPage }) {
       }
     } catch (err) {
       console.error('Error:', err);
-      if (err.response) {
-        console.error('Error response:', err.response);
-      }
       toast({
         title: 'Server Error',
-        description: error.message,
+        description: err.message,
         status: 'error',
         duration: 5000,
         isClosable: true,
