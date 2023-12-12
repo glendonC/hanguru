@@ -9,7 +9,8 @@ import {
   Stack,
   Text,
   useColorModeValue,
-  Link as ChakraLink
+  Link as ChakraLink,
+  ToastContainer
 } from '@chakra-ui/react';
 import { toast } from 'react-toastify';
 
