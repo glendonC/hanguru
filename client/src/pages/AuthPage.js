@@ -11,6 +11,7 @@ import {
   useColorModeValue,
   Link as ChakraLink
 } from '@chakra-ui/react';
+import { toast } from 'react-toastify';
 
 /**
  * AuthPage Component
@@ -104,7 +105,7 @@ function AuthPage({ onLogin, showLogin, toggleAuthPage }) {
         onLogin(userData);
       } else {
         const errorData = await response.json();
-        setError(errorData.message || 'Failed to authenticate');
+        toast.error(errorData.message || 'Failed to authenticate');
         console.error('Login/Register error:', errorData);
       }
     } catch (err) {
@@ -112,13 +113,15 @@ function AuthPage({ onLogin, showLogin, toggleAuthPage }) {
       if (err.response) {
         console.error('Error response:', err.response);
       }
-      setError('Server error');
+      toast.error('Server error');
     }
   };
   
   // Render the component UI
   return (
+    
     <Container centerContent>
+      <ToastContainer />
       <Box
         p={8}
         maxWidth="400px"
