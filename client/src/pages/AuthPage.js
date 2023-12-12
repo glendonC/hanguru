@@ -105,7 +105,20 @@ function AuthPage({ onLogin, showLogin, toggleAuthPage }) {
         onLogin(userData);
       } else {
         const errorData = await response.json();
-        toast.error(errorData.message || 'Failed to authenticate');
+        toast.error('An error occurred. Please try again.', {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: true,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          style: {
+            backgroundColor: "red",
+            color: "white"
+          }
+        });
+        
         console.error('Login/Register error:', errorData);
       }
     } catch (err) {
