@@ -10,9 +10,8 @@ import {
   Text,
   useColorModeValue,
   Link as ChakraLink,
-  ToastContainer
 } from '@chakra-ui/react';
-import { toast } from 'react-toastify';
+import { toast, ToastContainer } from 'react-toastify';
 
 /**
  * AuthPage Component
