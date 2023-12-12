@@ -9,7 +9,8 @@ import {
   Stack,
   Text,
   useColorModeValue,
-  Link as ChakraLink
+  Link as ChakraLink,
+  useToast
 } from '@chakra-ui/react';
 
 /**
@@ -50,6 +51,7 @@ function AuthPage({ onLogin, showLogin, toggleAuthPage }) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+  const toast = useToast();
 
   const apiUrl = process.env.REACT_APP_API_URL || 'http://localhost:8100';
   
@@ -104,15 +106,24 @@ function AuthPage({ onLogin, showLogin, toggleAuthPage }) {
         onLogin(userData);
       } else {
         const errorData = await response.json();
-        setError(errorData.message || 'Failed to authenticate');
+        toast({
+          title: 'Error',
+          description: errorData.message || JSON.stringify(errorData),
+          status: 'error',
+          duration: 5000,
+          isClosable: true,
+        });        
         console.error('Login/Register error:', errorData);
       }
     } catch (err) {
       console.error('Error:', err);
-      if (err.response) {
-        console.error('Error response:', err.response);
-      }
-      setError('Server error');
+      toast({
+        title: 'Server Error',
+        description: err.message,
+        status: 'error',
+        duration: 5000,
+        isClosable: true,
+      });
     }
   };
   
