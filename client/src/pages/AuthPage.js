@@ -105,20 +105,13 @@ function AuthPage({ onLogin, showLogin, toggleAuthPage }) {
         onLogin(userData);
       } else {
         const errorData = await response.json();
-        toast.error('An error occurred. Please try again.', {
-          position: "top-right",
-          autoClose: 5000,
-          hideProgressBar: true,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-          style: {
-            backgroundColor: "red",
-            color: "white"
-          }
+        toast({
+          title: 'Error',
+          description: errorData,
+          status: 'error',
+          duration: 5000,
+          isClosable: true,
         });
-        
         console.error('Login/Register error:', errorData);
       }
     } catch (err) {
@@ -126,7 +119,13 @@ function AuthPage({ onLogin, showLogin, toggleAuthPage }) {
       if (err.response) {
         console.error('Error response:', err.response);
       }
-      toast.error('Server error');
+      toast({
+        title: 'Server Error',
+        description: error.message,
+        status: 'error',
+        duration: 5000,
+        isClosable: true,
+      });
     }
   };
   
