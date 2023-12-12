@@ -108,11 +108,11 @@ function AuthPage({ onLogin, showLogin, toggleAuthPage }) {
         const errorData = await response.json();
         toast({
           title: 'Error',
-          description: JSON.stringify(errorData),
+          description: errorData.message || JSON.stringify(errorData),
           status: 'error',
           duration: 5000,
           isClosable: true,
-        });
+        });        
         console.error('Login/Register error:', errorData);
       }
     } catch (err) {
