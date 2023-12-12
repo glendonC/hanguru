@@ -10,8 +10,8 @@ import {
   Text,
   useColorModeValue,
   Link as ChakraLink,
+  useToast
 } from '@chakra-ui/react';
-import { toast, ToastContainer } from 'react-toastify';
 
 /**
  * AuthPage Component
@@ -51,6 +51,7 @@ function AuthPage({ onLogin, showLogin, toggleAuthPage }) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+  const toast = useToast();
 
   const apiUrl = process.env.REACT_APP_API_URL || 'http://localhost:8100';
   
