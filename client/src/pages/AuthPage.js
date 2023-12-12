@@ -132,9 +132,7 @@ function AuthPage({ onLogin, showLogin, toggleAuthPage }) {
   
   // Render the component UI
   return (
-    
     <Container centerContent>
-      <ToastContainer />
       <Box
         p={8}
         maxWidth="400px"
