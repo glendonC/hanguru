@@ -8,7 +8,7 @@ function AuthPage({ onLogin }) {
     const messageHandler = (event) => {
       if (event.data.type === 'LOGIN_SUCCESS') {
         onLogin(event.data.userData);
-        const homeRoute = window.location.hostname === 'localhost' ? '/' : 'https://www.hanguru.me';
+        const homeRoute = window.location.hostname === 'localhost' ? '/' : '/';
         navigate(homeRoute);
       }
     };
