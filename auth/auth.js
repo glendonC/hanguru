@@ -1,7 +1,11 @@
 const logregBox = document.querySelector('.logreg-box');
 const loginLink = document.querySelector('.login-link');
 const registerLink = document.querySelector('.register-link');
-const apiUrl = 'http://localhost:8100';
+registerLink.addEventListener('click', () => logregBox.classList.add('active'));
+loginLink.addEventListener('click', () => logregBox.classList.remove('active'));
+
+
+const apiUrl = window.REACT_APP_API_URL || 'http://localhost:8100';
 
 registerLink.addEventListener('click', () => {
     logregBox.classList.add('active');
@@ -19,32 +23,25 @@ document.getElementById('loginForm').addEventListener('submit', function(event) 
     fetch(`${apiUrl}/hanguru/api/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ usernameOrEmail: usernameOrEmail, password: password }),
-        credentials: 'include' // Add this line if needed
-    })    
-    .then(response => response.json())
-    .then(data => {
-        if (data.user) {
-            // Login successful, handle accordingly
-            console.log('Login successful:', data);
-            localStorage.setItem('loginStreak', data.streak);
-            localStorage.setItem('loginDates', JSON.stringify(data.user.loginDates));
-            // In your login success handling code
-            const isLocalhost = window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1";
-            const redirectUrl = isLocalhost ? "http://localhost:3001/" : "https://www.hanguru.me/#/";
-
-            // Use this URL to redirect after successful login
-            window.location.href = redirectUrl;
-
-        } else {
-            // Login failed, handle errors
-            console.error('Login failed:', data.message);
-        }
+        body: JSON.stringify({ usernameOrEmail, password }),
+        credentials: 'include'
     })
-    .catch(error => {
-        console.error('Error:', error);
-    });
+    .then(response => {
+        if (response.ok) {
+            return response.json();
+        }
+        throw new Error('Login failed');
+    })
+    .then(data => {
+        console.log('Login successful:', data);
+        localStorage.setItem('loginStreak', data.streak);
+        localStorage.setItem('loginDates', JSON.stringify(data.user.loginDates));
+
+        window.parent.postMessage({ type: 'LOGIN_SUCCESS', userData: data }, '*');
+    })
+    .catch(error => console.error('Error:', error));
 });
+
 
 document.getElementById('registerForm').addEventListener('submit', function(event) {
     event.preventDefault();
@@ -62,10 +59,8 @@ document.getElementById('registerForm').addEventListener('submit', function(even
     .then(data => {
         if (data.message === 'User created') {
             console.log('Registration successful:', data);
-            // Additional actions like redirecting to login page
         } else {
             console.error('Registration failed:', data.message);
-            // Show error message to the user
         }
     })
     .catch(error => console.error('Registration Error:', error));
