@@ -5,7 +5,7 @@ registerLink.addEventListener('click', () => logregBox.classList.add('active'));
 loginLink.addEventListener('click', () => logregBox.classList.remove('active'));
 
 
-const apiUrl = 'http://localhost:8100';
+const apiUrl = process.env.REACT_APP_API_URL || 'http://localhost:8100';
 
 registerLink.addEventListener('click', () => {
     logregBox.classList.add('active');
@@ -37,7 +37,6 @@ document.getElementById('loginForm').addEventListener('submit', function(event) 
         localStorage.setItem('loginStreak', data.streak);
         localStorage.setItem('loginDates', JSON.stringify(data.user.loginDates));
 
-        // Post a message to parent window
         window.parent.postMessage({ type: 'LOGIN_SUCCESS', userData: data }, '*');
     })
     .catch(error => console.error('Error:', error));
@@ -60,10 +59,8 @@ document.getElementById('registerForm').addEventListener('submit', function(even
     .then(data => {
         if (data.message === 'User created') {
             console.log('Registration successful:', data);
-            // Additional actions like redirecting to login page
         } else {
             console.error('Registration failed:', data.message);
-            // Show error message to the user
         }
     })
     .catch(error => console.error('Registration Error:', error));
