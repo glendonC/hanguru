@@ -129,75 +129,11 @@ function AuthPage({ onLogin, showLogin, toggleAuthPage }) {
   
   // Render the component UI
   return (
-    <Container centerContent>
-      <Box
-        p={8}
-        maxWidth="400px"
-        borderWidth={1}
-        borderRadius={8}
-        boxShadow="lg"
-        bg={useColorModeValue('gray.50', 'gray.700')}
-      >
-        <form onSubmit={handleSubmit}>
-          <Stack spacing={4}>
-            {showLogin ? (
-              <>
-                <FormControl id="usernameOrEmail">
-                  <FormLabel>Username or Email</FormLabel>
-                  <Input
-                    type="text"
-                    value={usernameOrEmail}
-                    onChange={(e) => setUsernameOrEmail(e.target.value)}
-                  />
-                </FormControl>
-                <FormControl id="password">
-                  <FormLabel>Password</FormLabel>
-                  <Input
-                    type="password"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                  />
-                </FormControl>
-              </>
-            ) : (
-              <>
-                <FormControl id="username">
-                  <FormLabel>Username</FormLabel>
-                  <Input
-                    type="text"
-                    value={username}
-                    onChange={(e) => setUsername(e.target.value)}
-                  />
-                </FormControl>
-                <FormControl id="email">
-                  <FormLabel>Email</FormLabel>
-                  <Input
-                    type="email"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                  />
-                </FormControl>
-                <FormControl id="password">
-                  <FormLabel>Password</FormLabel>
-                  <Input
-                    type="password"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                  />
-                </FormControl>
-              </>
-            )}
-            {error && <Text color="red.500">{error}</Text>}
-            <Button type="submit" colorScheme="blue" width="full">
-              {showLogin ? 'Login' : 'Sign Up'}
-            </Button>
-            <ChakraLink color="blue.500" onClick={handleToggle}>
-              {isLogin ? 'Switch to Sign Up' : 'Switch to Login'}
-            </ChakraLink>
-          </Stack>
-        </form>
-      </Box>
-    </Container>
+    <iframe 
+      src="/auth/auth.html"
+      style={{ width: '100%', height: '100vh', border: 'none' }}
+      title="Authentication Page"
+    ></iframe>
   );
 }
 
