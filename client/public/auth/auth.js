@@ -5,7 +5,7 @@ registerLink.addEventListener('click', () => logregBox.classList.add('active'));
 loginLink.addEventListener('click', () => logregBox.classList.remove('active'));
 
 
-const apiUrl = process.env.REACT_APP_API_URL || 'http://localhost:8100';
+const apiUrl = window.REACT_APP_API_URL || 'http://localhost:8100';
 
 registerLink.addEventListener('click', () => {
     logregBox.classList.add('active');
