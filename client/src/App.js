@@ -28,9 +28,10 @@ function App() {
 
   return (
     <Router>
-       <AnimatedCursor/>
-      {/* Show NavBar only when logged in */}
-      {isLoggedIn && <NavBar user={user} />}
+      <AnimatedCursor/>
+        {/* Show NavBar only when logged in */}
+          {isLoggedIn && <NavBar user={user} setLoggedIn={setLoggedIn} />
+        }
 
       <Routes>
         {/* Authentication page route */}

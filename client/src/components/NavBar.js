@@ -105,23 +105,10 @@ const NavLink = ({ children, to }) => {
   );
 };
 
-// Handle user logout
-const handleLogout = async (navigate) => {
-  const apiUrl = process.env.REACT_APP_API_URL || 'http://localhost:8100';
-  try {
-    const response = await fetch(`${apiUrl}/hanguru/api/logout`, { method: 'POST' });
-    if (response.ok) {
-      navigate('/auth');
-    } else {
-      console.error('Logout failed');
-    }
-  } catch (error) {
-    console.error('Error:', error);
-  }
-};
 
 
-export default function NavBar({ user }) {
+
+export default function NavBar({ user, setLoggedIn }) {
   const { colorMode, toggleColorMode } = useColorMode();
   const { isOpen, onOpen, onClose } = useDisclosure();
   const navigate = useNavigate();
@@ -149,6 +136,25 @@ export default function NavBar({ user }) {
         });
     }
   }, [user]);
+
+  // Handle user logout
+  const handleLogout = async () => {
+    const apiUrl = process.env.REACT_APP_API_URL || 'http://localhost:8100';
+    try {
+      const response = await fetch(`${apiUrl}/hanguru/api/logout`, { 
+        method: 'POST',
+        credentials: 'include'
+      });
+      if (response.ok) {
+        setLoggedIn(false);
+        navigate('/auth');
+      } else {
+        console.error('Logout failed');
+      }
+    } catch (error) {
+      console.error('Error:', error);
+    }
+  };
   
   /**
    * handleAccountSettingsClick
@@ -218,7 +224,7 @@ export default function NavBar({ user }) {
                 <MenuDivider />
                 <MenuItem onClick={handleProgressCheckerClick}>Progress Checker</MenuItem>
                 <MenuItem onClick={handleAccountSettingsClick}>Account Settings</MenuItem>
-                <MenuItem onClick={() => handleLogout(navigate)}>Logout</MenuItem>
+                <MenuItem onClick={handleLogout}>Logout</MenuItem>
               </MenuList>
             </Menu>
           </Flex>
