@@ -9,8 +9,11 @@ function AuthPage({ onLogin }) {
       if (event.data.type === 'LOGIN_SUCCESS') {
         onLogin(event.data.userData);
         navigate('/');
+      } else if (event.data.type === 'NAVIGATE') {
+        navigate(event.data.path);
       }
     };
+    
 
     window.addEventListener('message', messageHandler);
 
