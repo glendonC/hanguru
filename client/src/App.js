@@ -10,6 +10,7 @@ import AccountSettingsPage from './pages/AccountSettingsPage';
 import ProgressChecker from './pages/ProgressChecker';
 import AnimatedCursor from './components/AnimatedCursor';
 
+import Dashboard from './pages/Dashboard';
 import About from './pages/About';
 import Purpose from './pages/Purpose';
 import Contact from './pages/Contact';
@@ -53,6 +54,12 @@ function App() {
         <Route 
           path="/" 
           element={isLoggedIn ? <HomePage /> : <Navigate to="/auth" />} 
+        />
+
+        {/* Dashboard route */}
+        <Route 
+          path="/dashboard" 
+          element={isLoggedIn ? <Dashboard /> : <Navigate to="/dashboard" />} 
         />
 
         {/* Progress checker route */}
