@@ -15,6 +15,14 @@ loginLink.addEventListener('click', () => {
     logregBox.classList.remove('active');
 });
 
+document.querySelector('.navbar').addEventListener('click', function(event) {
+    if(event.target.tagName === 'A') {
+      event.preventDefault();
+      const path = event.target.getAttribute('href');
+      window.parent.postMessage({ type: 'NAVIGATE', path: path }, '*');
+    }
+});
+
 document.getElementById('loginForm').addEventListener('submit', function(event) {
     event.preventDefault();
     var usernameOrEmail = document.querySelector('.login .input-box input[name="usernameOrEmail"]').value;
