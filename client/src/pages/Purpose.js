@@ -1,12 +1,30 @@
-import React from 'react';
+import React, { useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 
-function Purpose() {
+function PurposePage() {
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const messageHandler = (event) => {
+      if (event.data.type === 'NAVIGATE') {
+        navigate(event.data.path);
+      }
+    };
+
+    window.addEventListener('message', messageHandler);
+
+    return () => {
+      window.removeEventListener('message', messageHandler);
+    };
+  }, [navigate]);
+
   return (
-    <div>
-      <h1>Purpose</h1>
-      <p>Purpose Page</p>
-    </div>
+    <iframe 
+      src="/purpose/purpose.html"
+      style={{ width: '100%', height: '100vh', border: 'none' }}
+      title="Purpose Page"
+    ></iframe>
   );
 }
 
-export default Purpose;
+export default PurposePage;
