@@ -10,6 +10,11 @@ import AccountSettingsPage from './pages/AccountSettingsPage';
 import ProgressChecker from './pages/ProgressChecker';
 import AnimatedCursor from './components/AnimatedCursor';
 
+import About from './pages/About';
+import Purpose from './pages/Purpose';
+import Contact from './pages/Contact';
+
+
 
 function App() {
   const [isLoggedIn, setLoggedIn] = useState(false);
@@ -39,6 +44,10 @@ function App() {
           path="/auth" 
           element={!isLoggedIn ? <AuthPage onLogin={handleLogin} showLogin={showLogin} toggleAuthPage={toggleAuthPage} /> : <Navigate to="/" />} 
         />
+
+        <Route path="/about" element={<About />} />
+        <Route path="/purpose" element={<Purpose />} />
+        <Route path="/contact" element={<Contact />} />
 
         {/* Home page route */}
         <Route 
