@@ -155,6 +155,15 @@ export default function NavBar({ user, setLoggedIn }) {
       console.error('Error:', error);
     }
   };
+
+  /**
+   * handleDashboardClick
+   * Navigates the user to the dashboard page.
+  */
+  const handleDashboardClick = () => {
+    navigate('/dashboard');
+  };
+
   
   /**
    * handleAccountSettingsClick
@@ -222,6 +231,7 @@ export default function NavBar({ user, setLoggedIn }) {
                     <p>{user?.user?.username || 'Guest'}</p>
                 </Center>
                 <MenuDivider />
+                <MenuItem onClick={handleDashboardClick}>Dashboard</MenuItem>
                 <MenuItem onClick={handleProgressCheckerClick}>Progress Checker</MenuItem>
                 <MenuItem onClick={handleAccountSettingsClick}>Account Settings</MenuItem>
                 <MenuItem onClick={handleLogout}>Logout</MenuItem>
