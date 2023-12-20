@@ -22,7 +22,7 @@ function Dashboard() {
     <iframe 
       src="/dashboard/dashboard.html"
       style={{ width: '100%', height: '100vh', border: 'none' }}
-      title="Purpose Page"
+      title="Dashboard Page"
     ></iframe>
   );
 }

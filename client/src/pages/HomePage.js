@@ -61,7 +61,7 @@ function HomePage() {
   }, []);
 
   return (
-    <Box p={5} display="flex" flexDirection="column" justifyContent="center" alignItems="center" height="100vh">
+    <Box p={5} display="flex" flexDirection="column" justifyContent="center" alignItems="center" height="70vh">
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
