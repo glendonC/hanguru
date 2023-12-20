@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { HashRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
 import NavBar from './components/NavBar';
+import Footer from './components/Footer'
 import AuthPage from './pages/AuthPage';
 import HomePage from './pages/HomePage';
 import VocabularyPage from './pages/VocabularyPage';
@@ -39,7 +40,9 @@ function App() {
           {isLoggedIn && <NavBar user={user} setLoggedIn={setLoggedIn} />
         }
 
-      <Routes>
+      <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
+        <div style={{ flexGrow: 1 }}>
+        <Routes>
         {/* Authentication page route */}
         <Route 
           path="/auth" 
@@ -88,6 +91,11 @@ function App() {
           element={isLoggedIn ? <AudioRecordingPage /> : <Navigate to="/auth" />} 
         />
       </Routes>
+
+        </div> 
+      </div>
+      
+      <Footer />
     </Router>
   );
 }
